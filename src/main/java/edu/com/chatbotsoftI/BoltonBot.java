@@ -7,7 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
-public class Wladisbot extends TelegramLongPollingBot {
+public class BoltonBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         // Esta función se invocará cuando nuestro bot reciba un mensaje

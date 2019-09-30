@@ -16,7 +16,7 @@ public class MainClass {
         ApiContextInitializer.init();
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
         try {
-            telegramBotsApi.registerBot(new Wladisbot());
+            telegramBotsApi.registerBot(new BoltonBot());
 
         } catch (TelegramApiException e) {
             e.printStackTrace();
