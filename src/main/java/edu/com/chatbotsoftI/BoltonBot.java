@@ -8,9 +8,10 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
 public class BoltonBot extends TelegramLongPollingBot {
-    @Override
+
     public void onUpdateReceived(Update update) {
-        // Esta función se invocará cuando nuestro bot reciba un mensaje
+
+// Esta función se invocará cuando nuestro bot reciba un mensaje
 
         // Se obtiene el mensaje escrito por el usuario
         final String messageTextReceived = update.getMessage().getText();
@@ -28,14 +29,13 @@ public class BoltonBot extends TelegramLongPollingBot {
 
         }
     }
-
-    @Override
     public String getBotUsername() {
-        return "Bolton_EventBot";     //Nombre del bot creado en telegram @Wladisbot si quieren le cambian el nombre usando el token para tener el control
+        return  "Bolton_EventBot";  //Nombre del bot creado en telegram @Wladisbot si quieren le cambian el nombre usando el token para tener el control
     }
 
-    @Override
+
     public String getBotToken() {
-        return "751201519:AAE8AO3Uhe90sGC75MYu5btGhTb1ZrTuaAA"; //Token del bot
+        return "751201519:AAE8AO3Uhe90sGC75MYu5btGhTb1ZrTuaAA"; //Token del bot CORREGI TU TOKEN INTENTE REGISTRARLO varias veces PERO APARENTEMENTE ESTA MAL ESTA PARTE el mio funciona normal y esta registrado pero el tuyo no
     }
+
 }
