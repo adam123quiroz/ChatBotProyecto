@@ -35,7 +35,7 @@ public class BoltonBot extends TelegramLongPollingBot {
 
 
     public String getBotToken() {
-        return "751201519:AAGpBvLDr_56bftx-rzDG9iBr7d2ddbRPZs"; //Token del bot CORREGI TU TOKEN INTENTE REGISTRARLO varias veces PERO APARENTEMENTE ESTA MAL ESTA PARTE el mio funciona normal y esta registrado pero el tuyo no
+        return "751201519:AAGpBvLDr_56bftx-rzDG9iBr7d2ddbRPZs"; //Token del bot
     }
 
 }
