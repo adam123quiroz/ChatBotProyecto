@@ -15,7 +15,7 @@ import java.util.List;
 
 @Component
 public class BoltonBot extends TelegramLongPollingBot {
-    private static final String ADD_USERS = "Agregar";
+    private static final String ADD_USERS = "Registrarse";
     private static final String LOG_IN = "Iniciar Sesion";
     private static final String LOG_IN_ADM = "Iniciar Sesion Administrador";
 
@@ -26,7 +26,6 @@ public class BoltonBot extends TelegramLongPollingBot {
             if (update.hasMessage()) {
                 Message message = update.getMessage();
                 if (message.hasText() || message.hasLocation()) {
-
                     handleIncomingMessage(message, update);
                 }
             }
@@ -38,11 +37,17 @@ public class BoltonBot extends TelegramLongPollingBot {
 
     private void handleIncomingMessage(Message message, Update update ) throws TelegramApiException {
 
-        SendMessage sendMessageRequest = new SendMessage().setChatId(update.getMessage().getChatId()).setText("hola");
+        SendMessage sendMessageGreeting = new SendMessage().setChatId(update.getMessage().getChatId());
         switch(message.getText()) {
+            case "Hola":
+                System.out.println(message.getChat().getFirstName());
+                sendMessageGreeting = new SendMessage().setChatId(update.getMessage().getChatId()).setText("" +
+                        "Hola "+ message.getChat().getFirstName() +", soy Bolton, para ayudarte necesito que entres en sesión o te registres:");
+                setButtons(sendMessageGreeting);
+                break;
             case ADD_USERS:
 //                sendMessageRequest = messageOnMainMenu(message);
-                setButtons(sendMessageRequest);
+
                 break;
             case LOG_IN:
 //                sendMessageRequest = messageOnCurrentWeather(message);
@@ -54,17 +59,9 @@ public class BoltonBot extends TelegramLongPollingBot {
             default:
                 throw new IllegalStateException("Unexpected value: " + message.getText());
         }
-        execute(sendMessageRequest);
+        execute(sendMessageGreeting);
     }
 
-//    private SendMessage messageOnForecastWeather(Message message) {
-//    }
-//
-//    private SendMessage messageOnCurrentWeather(Message message) {
-//    }
-//
-//    private SendMessage messageOnMainMenu(Message message) {
-//    }
 
     public synchronized void setButtons(SendMessage sendMessage) {
         // Create a keyboard
@@ -80,16 +77,22 @@ public class BoltonBot extends TelegramLongPollingBot {
         // First keyboard row
         KeyboardRow keyboardFirstRow = new KeyboardRow();
         // Add buttons to the first keyboard row
-        keyboardFirstRow.add(new KeyboardButton("Hi"));
+        keyboardFirstRow.add(new KeyboardButton(ADD_USERS));
 
         // Second keyboard row
         KeyboardRow keyboardSecondRow = new KeyboardRow();
         // Add the buttons to the second keyboard row
-        keyboardSecondRow.add(new KeyboardButton("Help"));
+        keyboardSecondRow.add(new KeyboardButton(LOG_IN));
+
+        // Second keyboard row
+        KeyboardRow keyboardThirdRow = new KeyboardRow();
+        // Add the buttons to the second keyboard row
+        keyboardThirdRow.add(new KeyboardButton(LOG_IN_ADM));
 
         // Add all of the keyboard rows to the list
         keyboard.add(keyboardFirstRow);
         keyboard.add(keyboardSecondRow);
+        keyboard.add(keyboardThirdRow);
         // and assign this list to our keyboard
         replyKeyboardMarkup.setKeyboard(keyboard);
     }
