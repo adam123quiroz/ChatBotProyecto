@@ -1,16 +1,21 @@
 package edu.com.chatbotsoftI.domain;
 
-import javax.validation.constraints.Email;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 
-public class User extends Person {
+@Entity
+@Table(name = "cp_person")
+@XmlRootElement
+public class User extends org.telegram.telegrambots.meta.api.objects.User {
     private String nameUser;
     private String password;
 
     public User() {
     }
 
-    public User(long ci, String name, String lastName, String age, Email email, String nameUser, String password) {
-        super(ci, name, lastName, age, email);
+    public User(Integer id, String firstName, Boolean isBot, String lastName, String userName, String languageCode, String nameUser, String password) {
+        super(id, firstName, isBot, lastName, userName, languageCode);
         this.nameUser = nameUser;
         this.password = password;
     }
