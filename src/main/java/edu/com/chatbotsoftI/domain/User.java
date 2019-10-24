@@ -5,9 +5,10 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
-@Table(name = "cp_person")
+@Table(name = "ev_user")
 @XmlRootElement
 public class User extends org.telegram.telegrambots.meta.api.objects.User {
+
     private String nameUser;
     private String password;
 

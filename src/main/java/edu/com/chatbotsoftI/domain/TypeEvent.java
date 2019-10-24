@@ -1,7 +1,15 @@
 package edu.com.chatbotsoftI.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table
 public class TypeEvent {
-    private Long id;
+
+    private @Id @GeneratedValue Long id;
     private String nameTypeEvent;
 
     public TypeEvent(Long id, String nameTypeEvent) {

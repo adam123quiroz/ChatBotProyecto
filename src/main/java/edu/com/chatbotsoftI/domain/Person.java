@@ -1,9 +1,16 @@
 package edu.com.chatbotsoftI.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.Email;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@Entity
+@Table(name = "ev_person")
+@XmlRootElement
 public class Person {
-    private long ci;
+
+    private Long ci;
     private String name;
     private String lastName;
     private String age;

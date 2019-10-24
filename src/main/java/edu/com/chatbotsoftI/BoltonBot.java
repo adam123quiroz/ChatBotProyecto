@@ -15,6 +15,7 @@ import java.util.List;
 
 @Component
 public class BoltonBot extends TelegramLongPollingBot {
+
     private static final String ADD_USERS = "Registrarse";
     private static final String LOG_IN = "Iniciar Sesion";
     private static final String LOG_IN_ADM = "Iniciar Sesion Administrador";

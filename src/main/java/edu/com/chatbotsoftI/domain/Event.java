@@ -1,10 +1,19 @@
 package edu.com.chatbotsoftI.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.Time;
 import java.util.Date;
 
+@Entity
+@Table(name = "ev_event")
+@XmlRootElement
 public class Event {
-    private long id;
+
+    private @Id @GeneratedValue Long id;
     private String nameEvent;
     private double priceEvent;
     private Date date;
