@@ -1,5 +1,7 @@
 package edu.com.chatbotsoftI.bot;
 
+import edu.com.chatbotsoftI.dao.UserRepository;
+import edu.com.chatbotsoftI.domain.User;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -13,15 +15,30 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
 public class BoltonBot extends TelegramLongPollingBot {
 
     private static final String ADD_USERS = "Registrarse";
     private static final String LOG_IN = "Iniciar Sesion";
     private static final String LOG_IN_ADM = "Iniciar Sesion Administrador";
+    UserRepository userRepository;
 
+    public BoltonBot(UserRepository userRepository){this.userRepository= userRepository;}
     @Override
     public void onUpdateReceived(Update update) {
+
+        System.out.println(update);
+        if (update.hasMessage() && update.getMessage().hasText()) {
+            User user = userRepository.findById(1).get();
+            SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
+                    .setChatId(update.getMessage().getChatId())
+                    .setText("User desde BBDD: " + user );  //Hasta este punto solo obtiene el ID del user
+
+            try {
+                this.execute(message);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
 
         try {
             if (update.hasMessage()) {
