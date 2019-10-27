@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="ChatBot" />
         <module name="ChatBotProyecto" />
+        <module name="ChatBotProyectoTeam" />
       </profile>
     </annotationProcessing>
   </component>
@@ -15,6 +16,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="ChatBot" options="-parameters" />
       <module name="ChatBotProyecto" options="-parameters" />
+      <module name="ChatBotProyectoTeam" options="-parameters" />
     </option>
   </component>
 </project>

@@ -1,4 +1,5 @@
 package edu.com.chatbotsoftI;
+
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -8,13 +9,13 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.telegram.telegrambots.meta.logging.BotLogger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class BoltonBot extends TelegramLongPollingBot {
+
     private static final String ADD_USERS = "Registrarse";
     private static final String LOG_IN = "Iniciar Sesion";
     private static final String LOG_IN_ADM = "Iniciar Sesion Administrador";
@@ -29,8 +30,9 @@ public class BoltonBot extends TelegramLongPollingBot {
                     handleIncomingMessage(message, update);
                 }
             }
+
         } catch (Exception e) {
-            BotLogger.error("LOGTAG", e);
+            System.out.println(e.fillInStackTrace());
         }
     }
 
@@ -107,3 +109,4 @@ public class BoltonBot extends TelegramLongPollingBot {
         return "751201519:AAGpBvLDr_56bftx-rzDG9iBr7d2ddbRPZs"; //Token del bot
     }
 }
+// probando un commit para ver si funciona este commite
