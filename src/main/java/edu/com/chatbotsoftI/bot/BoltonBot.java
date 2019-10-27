@@ -1,4 +1,4 @@
-package edu.com.chatbotsoftI;
+package edu.com.chatbotsoftI.bot;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;

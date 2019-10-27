@@ -1,6 +1,7 @@
 package edu.com.chatbotsoftI;
 //Me base en esto https://github.com/rubenlagus/TelegramBots lo recomienda telegram
 // esto es util para 3.5 https://codegym.cc/groups/posts/telegram-bot-in-java de todos modos echarle una mirada
+import edu.com.chatbotsoftI.bot.BoltonBot;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.telegram.telegrambots.ApiContextInitializer;
 //import org.telegram.telegrambots.TelegramBotsApi;
