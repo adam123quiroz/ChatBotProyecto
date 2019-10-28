@@ -230,7 +230,15 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "domain.User[ iduser=" + iduser + " ]";
+        return "User{" +
+                "iduser=" + iduser +
+                ", ci='" + ci + '\'' +
+                ", name='" + name + '\'' +
+                ", age='" + age + '\'' +
+                ", email='" + email + '\'' +
+                ", nameuser='" + nameuser + '\'' +
+                ", password='" + password + '\'' +
+                ", status=" + status +
+                '}';
     }
-
 }

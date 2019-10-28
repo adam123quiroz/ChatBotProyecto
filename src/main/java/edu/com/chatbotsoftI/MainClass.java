@@ -13,6 +13,5 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class MainClass {
     public static void main(String[] args){
         SpringApplication.run(MainClass.class, args);
-
     }
 }
