@@ -7,6 +7,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ForceReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
@@ -26,7 +27,7 @@ public class BoltonBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
 
-        System.out.println(update);
+
         if (update.hasMessage() && update.getMessage().hasText()) {
             User user = userRepository.findById(1).get();
             SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
@@ -57,7 +58,9 @@ public class BoltonBot extends TelegramLongPollingBot {
     private void handleIncomingMessage(Message message, Update update ) throws TelegramApiException {
 
         SendMessage sendMessageGreeting = new SendMessage().setChatId(update.getMessage().getChatId());
+
         switch(message.getText()) {
+
             case "Hola":
                 System.out.println(message.getChat().getFirstName());
                 sendMessageGreeting = new SendMessage().setChatId(update.getMessage().getChatId()).setText("" +
@@ -65,9 +68,15 @@ public class BoltonBot extends TelegramLongPollingBot {
                 setButtons(sendMessageGreeting);
                 break;
             case ADD_USERS:
+
 //                sendMessageRequest = messageOnMainMenu(message);
 
+
                 break;
+
+
+
+
             case LOG_IN:
 //                sendMessageRequest = messageOnCurrentWeather(message);
                 break;
@@ -126,4 +135,3 @@ public class BoltonBot extends TelegramLongPollingBot {
         return "751201519:AAGpBvLDr_56bftx-rzDG9iBr7d2ddbRPZs"; //Token del bot
     }
 }
-// probando un commit para ver si funciona este commite
