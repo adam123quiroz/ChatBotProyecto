@@ -1,5 +1,6 @@
 package edu.com.chatbotsoftI.bot;
 
+import edu.com.chatbotsoftI.bl.UserBl;
 import edu.com.chatbotsoftI.dao.UserRepository;
 import edu.com.chatbotsoftI.domain.User;
 import org.springframework.stereotype.Component;
@@ -21,25 +22,27 @@ public class BoltonBot extends TelegramLongPollingBot {
     private static final String ADD_USERS = "Registrarse";
     private static final String LOG_IN = "Iniciar Sesion";
     private static final String LOG_IN_ADM = "Iniciar Sesion Administrador";
-    UserRepository userRepository;
 
-    public BoltonBot(UserRepository userRepository){this.userRepository= userRepository;}
+    private UserBl userBl;
+
+    public BoltonBot(UserBl userBl){this.userBl= userBl;}
+
     @Override
     public void onUpdateReceived(Update update) {
 
-
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            User user = userRepository.findById(1).get();
-            SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
-                    .setChatId(update.getMessage().getChatId())
-                    .setText("User desde BBDD: " + user );  //Hasta este punto solo obtiene el ID del user
-
-            try {
-                this.execute(message);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-        }
+//        System.out.println(update);
+//        if (update.hasMessage() && update.getMessage().hasText()) {
+//            User user = userBl.findById(1);
+//            SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
+//                    .setChatId(update.getMessage().getChatId())
+//                    .setText("User desde BBDD: " + user );  //Hasta este punto solo obtiene el ID del user
+//
+//            try {
+//                this.execute(message);
+//            } catch (TelegramApiException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
         try {
             if (update.hasMessage()) {
@@ -48,6 +51,7 @@ public class BoltonBot extends TelegramLongPollingBot {
                     handleIncomingMessage(message, update);
                 }
             }
+
 
         } catch (Exception e) {
             System.out.println(e.fillInStackTrace());
@@ -58,25 +62,20 @@ public class BoltonBot extends TelegramLongPollingBot {
     private void handleIncomingMessage(Message message, Update update ) throws TelegramApiException {
 
         SendMessage sendMessageGreeting = new SendMessage().setChatId(update.getMessage().getChatId());
-
         switch(message.getText()) {
-
             case "Hola":
                 System.out.println(message.getChat().getFirstName());
                 sendMessageGreeting = new SendMessage().setChatId(update.getMessage().getChatId()).setText("" +
-                        "Hola "+ message.getChat().getFirstName() +", soy Bolton, para ayudarte necesito que entres en sesión o te registres:");
+                        "Hola "+ message.getChat().getFirstName() +", soy Bolton, para ayudarte necesito que entres en " +
+                        "sesión o te registres:");
                 setButtons(sendMessageGreeting);
                 break;
             case ADD_USERS:
-
-//                sendMessageRequest = messageOnMainMenu(message);
-
-
+                sendMessageGreeting = new SendMessage()
+                        .setChatId(update.getMessage().getChatId())
+                        .setText("Rellene los siguientes espacios \n" +
+                                "Cual es tu nombre ?");
                 break;
-
-
-
-
             case LOG_IN:
 //                sendMessageRequest = messageOnCurrentWeather(message);
                 break;
@@ -135,3 +134,4 @@ public class BoltonBot extends TelegramLongPollingBot {
         return "751201519:AAGpBvLDr_56bftx-rzDG9iBr7d2ddbRPZs"; //Token del bot
     }
 }
+// probando un commit para ver si funciona este commite

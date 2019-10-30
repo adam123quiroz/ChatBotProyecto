@@ -1,5 +1,6 @@
-package edu.com.chatbotsoftI.controller;
+package edu.com.chatbotsoftI.api;
 
+import edu.com.chatbotsoftI.bl.UserBl;
 import edu.com.chatbotsoftI.dao.UserRepository;
 import edu.com.chatbotsoftI.domain.User;
 import edu.com.chatbotsoftI.dto.UserDto;
@@ -15,21 +16,18 @@ import java.util.*;
 public class UserController {
 
     //  @Autowired
-    private UserRepository userRepository;
+    private UserBl userBl;
 
     @Autowired
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserBl userBl) {
+        this.userBl = userBl;
     }
+
     @RequestMapping(value = "/",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    List<UserDto> all() {
-        List<UserDto> userDtoList = new ArrayList<>();
-        for (User user:userRepository.findAll()) {
-            userDtoList.add(new UserDto(user));
-        }
-        return userDtoList;
+    public List<UserDto> all() {
+        return userBl.findAllUsers();
     }
 /*
     @GetMapping("/user")
