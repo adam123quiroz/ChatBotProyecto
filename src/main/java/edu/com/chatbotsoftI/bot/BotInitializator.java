@@ -1,7 +1,9 @@
 package edu.com.chatbotsoftI.bot;
 
+import edu.com.chatbotsoftI.bl.EventBl;
 import edu.com.chatbotsoftI.bl.UserBl;
 import edu.com.chatbotsoftI.dao.UserRepository;
+import edu.com.chatbotsoftI.domain.Payment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.ApiContextInitializer;
@@ -14,10 +16,15 @@ import javax.annotation.PostConstruct;
 public class BotInitializator {
 
     UserBl userBl;
+    EventBl eventBl;
+
+
 
     @Autowired
-    public BotInitializator(UserBl userBl) {
+    public BotInitializator(UserBl userBl, EventBl eventBl) {
         this.userBl = userBl;
+        this.eventBl = eventBl;
+
     }
 
     public BotInitializator(){
@@ -29,7 +36,7 @@ public class BotInitializator {
         ApiContextInitializer.init();
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
         try {
-            telegramBotsApi.registerBot(new BoltonBot(userBl));
+            telegramBotsApi.registerBot(new BoltonBot(userBl, eventBl));
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
