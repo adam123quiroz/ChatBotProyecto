@@ -2,16 +2,15 @@ package edu.com.chatbotsoftI.bot;
 
 import edu.com.chatbotsoftI.bl.EventBl;
 import edu.com.chatbotsoftI.bl.UserBl;
-import edu.com.chatbotsoftI.domain.Event;
+import edu.com.chatbotsoftI.bot.special.keyboard.KeyboardBot;
+import edu.com.chatbotsoftI.dto.EventDto;
+import edu.com.chatbotsoftI.dto.TypeEvent;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendInvoice;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.payments.LabeledPrice;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
@@ -20,9 +19,9 @@ import java.util.List;
 
 public class BoltonBot extends TelegramLongPollingBot {
 
-    private static final String ADD_USERS = "Registrarse";
-    private static final String CONTINUE = "Continuar";
-    private static final String LOG_IN_ADM = "Iniciar Sesion Administrador";
+    private static final String OP_ADD_USERS = "Registrarse";
+    private static final String OP_CONTINUE = "Continuar";
+    private static final String OP_LOG_IN_ADM = "Iniciar Sesion Administrador";
 
     private static final String OP_MUSIC = "Musica";
     private static final String OP_MOVIE = "Pelicula";
@@ -32,10 +31,6 @@ public class BoltonBot extends TelegramLongPollingBot {
 
     private UserBl userBl;
     private EventBl eventBl;
-
-    public BoltonBot(UserBl userBl) {
-        this.userBl= userBl;
-    }
 
     public BoltonBot(UserBl userBl, EventBl eventBl) {
         this.userBl = userBl;
@@ -62,40 +57,56 @@ public class BoltonBot extends TelegramLongPollingBot {
         SendMessage sendMessageGreeting = new SendMessage().setChatId(update.getMessage().getChatId());
         Integer idChat = Integer.parseInt(message.getChatId().toString());
         SendInvoice inv;
+        List<String> options;
+        KeyboardBot keyboardBot;
+        List<EventDto> eventDtos;
+
         switch(message.getText()) {
             case "Hola":
-                System.out.println(message.getChat().getFirstName());
                 sendMessageGreeting = new SendMessage().setChatId(update.getMessage().getChatId()).setText("" +
                         "Hola "+ message.getChat().getFirstName() +", soy Bolton, para ayudarte necesito que entres en " +
                         "sesión o te registres:");
-                setButtons(sendMessageGreeting);
+
+                options = new ArrayList<>();
+                options.add(OP_ADD_USERS);
+                options.add(OP_CONTINUE);
+                options.add(OP_LOG_IN_ADM);
+                keyboardBot = new KeyboardBot(options);
+                sendMessageGreeting.setReplyMarkup(keyboardBot);
+                execute(sendMessageGreeting);
                 break;
-            case ADD_USERS:
+            case OP_ADD_USERS:
 //                sendMessageGreeting = new SendMessage()
 //                        .setChatId(update.getMessage().getChatId())
 //                        .setText("Rellene los siguientes espacios \n" +
 //                                "Cual es tu nombre ?");
                 break;
-            case CONTINUE:
+            case OP_CONTINUE:
                 sendMessageGreeting = new SendMessage()
                         .setChatId(update.getMessage().getChatId())
                         .setText("Bienvenido Adam, dime, ¿que te gustaría hacer hoy?");
-                setButtonsContinue(sendMessageGreeting);
-
+                options = new ArrayList<>();
+                options.add(OP_MUSIC);
+                options.add(OP_MOVIE);
+                options.add(OP_MUSEUM);
+                keyboardBot = new KeyboardBot(options);
+                sendMessageGreeting.setReplyMarkup(keyboardBot);
+                execute(sendMessageGreeting);
                 break;
-            case LOG_IN_ADM:
-//                sendMessageRequest = messageOnForecastWeather(message);
+            case OP_LOG_IN_ADM:
+                System.out.println("Admi ");
                 break;
             case OP_MOVIE:
-                List<Event> eventMovieDtos = eventBl.findAllEvent();
+                eventDtos = eventBl.findAllEventByTypeEvent(TypeEvent.MOVIE.getTypeEvent());
 
-                for (Event event:
-                        eventMovieDtos) {
+                for (EventDto event:
+                        eventDtos) {
                     String description = String.format("" +
                             "Fecha: " + event.getDate() + "\n" +
-                            "Hora: " + event.getStarttime() + "\n" );
-//                            "Categoria: " + event.getIdcategory().getCategory() + "\n" +
-//                            "Direccion: " + event.getIdaddress().getAddress());
+                            "Hora: " + event.getStarttime() + "\n"
+//                            "Categoria: " + event.getCategory() + "\n" +
+//                            "Direccion: " + event.getAddress()
+                    );
 
                     inv = new SendInvoice(
                             idChat,
@@ -107,87 +118,38 @@ public class BoltonBot extends TelegramLongPollingBot {
 
                     execute(inv);
                 }
-//                SendInvoice inv = new SendInvoice(idChat, "Hello", "Hello", "Visa", PROVIDER_TOKEN,
-//                        "StartParam", "USD", Collections.singletonList(new LabeledPrice("label", 200)))
-//                        .setPhotoUrl("https://www.yucatan.com.mx/wp-content/uploads/2019/03/2491246.jpg-r_1920_1080-f_jpg-q_x-xxyxx.jpg");
-//
-//                execute(inv);
                 break;
+
+            case OP_MUSEUM:
+                eventDtos = eventBl.findAllEventByTypeEvent(TypeEvent.MUSEUM.getTypeEvent());
+
+                for (EventDto event:
+                        eventDtos) {
+                    String description = String.format("" +
+                                    "Fecha: " + event.getDate() + "\n" +
+                                    "Hora: " + event.getStarttime() + "\n"
+//                            "Categoria: " + event.getCategory() + "\n" +
+//                            "Direccion: " + event.getAddress()
+                    );
+
+                    inv = new SendInvoice(
+                            idChat,
+                            event.getNameevent(),
+                            description,
+                            "Visa", PROVIDER_TOKEN,
+                            "StartParam", "USD", Collections.singletonList(new LabeledPrice("label", 200)))
+                            .setPhotoUrl("https://www.travelreport.mx/wp-content/uploads/2018/08/los-mejores-museos-en-aguascalientes-portada.jpg");
+
+                    execute(inv);
+                }
+                break;
+
 
             default:
                 throw new IllegalStateException("Unexpected value: " + message.getText());
         }
-        execute(sendMessageGreeting);
     }
 
-
-    public synchronized void setButtons(SendMessage sendMessage) {
-        // Create a keyboard
-        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
-        sendMessage.setReplyMarkup(replyKeyboardMarkup);
-        replyKeyboardMarkup.setSelective(true);
-        replyKeyboardMarkup.setResizeKeyboard(true);
-        replyKeyboardMarkup.setOneTimeKeyboard(false);
-
-        // Create a list of keyboard rows
-        List<KeyboardRow> keyboard = new ArrayList<>();
-
-        // First keyboard row
-        KeyboardRow keyboardFirstRow = new KeyboardRow();
-        // Add buttons to the first keyboard row
-        keyboardFirstRow.add(new KeyboardButton(ADD_USERS));
-
-        // Second keyboard row
-        KeyboardRow keyboardSecondRow = new KeyboardRow();
-        // Add the buttons to the second keyboard row
-        keyboardSecondRow.add(new KeyboardButton(CONTINUE));
-
-        // Second keyboard row
-        KeyboardRow keyboardThirdRow = new KeyboardRow();
-        // Add the buttons to the second keyboard row
-        keyboardThirdRow.add(new KeyboardButton(LOG_IN_ADM));
-
-        // Add all of the keyboard rows to the list
-        keyboard.add(keyboardFirstRow);
-        keyboard.add(keyboardSecondRow);
-        keyboard.add(keyboardThirdRow);
-        // and assign this list to our keyboard
-        replyKeyboardMarkup.setKeyboard(keyboard);
-    }
-
-    public synchronized void setButtonsContinue(SendMessage sendMessage) {
-        // Create a keyboard
-        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
-        sendMessage.setReplyMarkup(replyKeyboardMarkup);
-        replyKeyboardMarkup.setSelective(true);
-        replyKeyboardMarkup.setResizeKeyboard(true);
-        replyKeyboardMarkup.setOneTimeKeyboard(false);
-
-        // Create a list of keyboard rows
-        List<KeyboardRow> keyboard = new ArrayList<>();
-
-        // First keyboard row
-        KeyboardRow keyboardFirstRow = new KeyboardRow();
-        // Add buttons to the first keyboard row
-        keyboardFirstRow.add(new KeyboardButton(OP_MUSIC));
-
-        // Second keyboard row
-        KeyboardRow keyboardSecondRow = new KeyboardRow();
-        // Add the buttons to the second keyboard row
-        keyboardSecondRow.add(new KeyboardButton(OP_MOVIE));
-
-        // Second keyboard row
-        KeyboardRow keyboardThirdRow = new KeyboardRow();
-        // Add the buttons to the second keyboard row
-        keyboardThirdRow.add(new KeyboardButton(OP_MUSEUM));
-
-        // Add all of the keyboard rows to the list
-        keyboard.add(keyboardFirstRow);
-        keyboard.add(keyboardSecondRow);
-        keyboard.add(keyboardThirdRow);
-        // and assign this list to our keyboard
-        replyKeyboardMarkup.setKeyboard(keyboard);
-    }
 
     @Override
     public String getBotUsername() {

@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event, Integer> {
     List<Event> findAllByStatus(int status);
+    List<Event> findAllByIdtypeevent_TypeeventAndStatus(String typeEvent, int status);
 }
 
