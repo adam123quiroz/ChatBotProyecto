@@ -60,7 +60,7 @@ public class BoltonBot extends TelegramLongPollingBot {
     private void handleIncomingMessage(Message message, Update update ) throws TelegramApiException {
 
         SendMessage sendMessageGreeting = new SendMessage().setChatId(update.getMessage().getChatId());
-        Integer idChat = Integer.parseInt(message.getChatId().toString());
+
         SendInvoice inv;
         switch(message.getText()) {
             case "Hola":
@@ -74,7 +74,7 @@ public class BoltonBot extends TelegramLongPollingBot {
 //                sendMessageGreeting = new SendMessage()
 //                        .setChatId(update.getMessage().getChatId())
 //                        .setText("Rellene los siguientes espacios \n" +
-//                                "Cual es tu nombre ?");
+//                              "Cual es tu nombre ?");
                 break;
             case CONTINUE:
                 sendMessageGreeting = new SendMessage()
@@ -86,11 +86,12 @@ public class BoltonBot extends TelegramLongPollingBot {
             case LOG_IN_ADM:
 //                sendMessageRequest = messageOnForecastWeather(message);
                 break;
-            case OP_MOVIE:
-                List<Event> eventMovieDtos = eventBl.findAllEvent();
+            case OP_MUSIC:
+                Integer idChat = Integer.parseInt(message.getChatId().toString());
+                List<Event> eventMusicDtos = eventBl.findAllEvent();
 
                 for (Event event:
-                        eventMovieDtos) {
+                        eventMusicDtos) {
                     String description = String.format("" +
                             "Fecha: " + event.getDate() + "\n" +
                             "Hora: " + event.getStarttime() + "\n" );
