@@ -43,4 +43,13 @@ public class EventBl {
         return eventList;
     }
 
+    public List<EventDto> findAllEventByTypeEvent(String typeEvent) {
+        List<EventDto> eventDtos = new ArrayList<>();
+        for (Event event :
+                eventRepository.findAllByIdtypeevent_TypeeventAndStatus(typeEvent, Status.ACTIVE.getStatus())) {
+            eventDtos.add(new EventDto(event));
+        }
+        return eventDtos;
+    }
+
 }

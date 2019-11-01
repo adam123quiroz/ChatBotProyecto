@@ -25,21 +25,9 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-/**
- *
- * @author Ray Silva
- */
 @Entity
 @Table(name = "event")
 @XmlRootElement
-@NamedQueries({
-        @NamedQuery(name = "Event.findAll", query = "SELECT e FROM Event e")
-        , @NamedQuery(name = "Event.findByIdevent", query = "SELECT e FROM Event e WHERE e.idevent = :idevent")
-        , @NamedQuery(name = "Event.findByNameevent", query = "SELECT e FROM Event e WHERE e.nameevent = :nameevent")
-        , @NamedQuery(name = "Event.findByPrice", query = "SELECT e FROM Event e WHERE e.price = :price")
-        , @NamedQuery(name = "Event.findByDate", query = "SELECT e FROM Event e WHERE e.date = :date")
-        , @NamedQuery(name = "Event.findByStarttime", query = "SELECT e FROM Event e WHERE e.starttime = :starttime")
-        , @NamedQuery(name = "Event.findByStatus", query = "SELECT e FROM Event e WHERE e.status = :status")})
 public class Event implements Serializable {
 
     private static final long serialVersionUID = 1L;

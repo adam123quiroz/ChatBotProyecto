@@ -11,6 +11,8 @@ public class EventDto {
     private BigDecimal price;
     private Date date;
     private Date starttime;
+    private String category;
+    private String address;
 
     public EventDto() {
     }
@@ -61,6 +63,22 @@ public class EventDto {
 
     public void setStarttime(Date starttime) {
         this.starttime = starttime;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     @Override
