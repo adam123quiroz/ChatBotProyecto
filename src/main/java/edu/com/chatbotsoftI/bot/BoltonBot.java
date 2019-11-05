@@ -84,7 +84,7 @@ public class BoltonBot extends TelegramLongPollingBot {
             case OP_CONTINUE:
                 sendMessageGreeting = new SendMessage()
                         .setChatId(update.getMessage().getChatId())
-                        .setText("Bienvenido Adam, dime, ¿que te gustaría hacer hoy?");
+                        .setText("Bienvenido/a"+ message.getChat().getFirstName()+ ", dime, ¿que te gustaría hacer hoy?");
                 options = new ArrayList<>();
                 options.add(OP_MUSIC);
                 options.add(OP_MOVIE);
