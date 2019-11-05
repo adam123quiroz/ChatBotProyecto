@@ -9,9 +9,11 @@ public class BotBl {
     private UserBl userBl;
     private EventBl eventBl;
 
+
     @Autowired
     public BotBl(UserBl userBl, EventBl eventBl) {
         this.userBl = userBl;
         this.eventBl = eventBl;
+
     }
 }
