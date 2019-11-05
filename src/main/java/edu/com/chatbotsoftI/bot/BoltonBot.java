@@ -10,6 +10,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.payments.LabeledPrice;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -41,11 +42,18 @@ public class BoltonBot extends TelegramLongPollingBot {
         if (update.hasMessage()) {
             Message message = update.getMessage();
             if (message.hasText() || message.hasLocation()) {
-                try {
-                    handleIncomingMessage(message, update);
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
+                List<String> messages = botBl.processUpdate(update);
+                for(String messageText: messages) {
+                    SendMessage sendMessage = new SendMessage() // Create a SendMessage object with mandatory fields
+                            .setChatId(update.getMessage().getChatId())
+                            .setText(messageText);
+                    try {
+                        this.execute(sendMessage);
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
+                    }
                 }
+
             }
         }
     }

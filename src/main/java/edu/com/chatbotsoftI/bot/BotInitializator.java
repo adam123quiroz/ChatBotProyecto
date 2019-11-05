@@ -1,5 +1,6 @@
 package edu.com.chatbotsoftI.bot;
 
+import edu.com.chatbotsoftI.bl.BotBl;
 import edu.com.chatbotsoftI.bl.EventBl;
 import edu.com.chatbotsoftI.bl.UserBl;
 import edu.com.chatbotsoftI.dao.UserRepository;
@@ -14,17 +15,11 @@ import javax.annotation.PostConstruct;
 
 @Component
 public class BotInitializator {
-
-    UserBl userBl;
-    EventBl eventBl;
-
-
+    BotBl botBl;
 
     @Autowired
-    public BotInitializator(UserBl userBl, EventBl eventBl) {
-        this.userBl = userBl;
-        this.eventBl = eventBl;
-
+    public BotInitializator(BotBl botBl) {
+        this.botBl = botBl;
     }
 
     public BotInitializator(){
@@ -36,7 +31,7 @@ public class BotInitializator {
         ApiContextInitializer.init();
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
         try {
-            telegramBotsApi.registerBot(new BoltonBot(userBl, eventBl));
+            telegramBotsApi.registerBot(new BoltonBot(botBl));
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
