@@ -3,7 +3,7 @@ package edu.com.chatbotsoftI.bl;
 import edu.com.chatbotsoftI.dao.EventRepository;
 import edu.com.chatbotsoftI.domain.Event;
 import edu.com.chatbotsoftI.dto.EventDto;
-import edu.com.chatbotsoftI.dto.Status;
+import edu.com.chatbotsoftI.enums.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

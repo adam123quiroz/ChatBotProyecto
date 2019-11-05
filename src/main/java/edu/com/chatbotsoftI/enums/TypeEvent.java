@@ -1,4 +1,4 @@
-package edu.com.chatbotsoftI.dto;
+package edu.com.chatbotsoftI.enums;
 
 public enum TypeEvent {
     MUSIC("Festival Musical"), MOVIE("Pelicula"), MUSEUM("Museos");
