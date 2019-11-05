@@ -20,7 +20,7 @@ import java.util.List;
 
 public class BoltonBot extends TelegramLongPollingBot {
 
-    private static final String OP_ADD_USERS = "Registrarse";
+  //  private static final String OP_ADD_USERS = "Registrarse";
     private static final String OP_CONTINUE = "Continuar";
     private static final String OP_LOG_IN_ADM = "Iniciar Sesion Administrador";
 
@@ -32,7 +32,7 @@ public class BoltonBot extends TelegramLongPollingBot {
 
     private BotBl botBl;
 
-    public BoltonBot(BotBl botBl) {
+    public BoltonBot(UserBl userBl, EventBl eventBl, BotBl botBl) {
         this.botBl = botBl;
     }
 
@@ -74,7 +74,7 @@ public class BoltonBot extends TelegramLongPollingBot {
                         "sesión o te registres:");
 
                 options = new ArrayList<>();
-                options.add(OP_ADD_USERS);
+     //           options.add(OP_ADD_USERS);
                 options.add(OP_CONTINUE);
                 options.add(OP_LOG_IN_ADM);
                 keyboardBot = new KbOptionsBot(options);
@@ -82,19 +82,19 @@ public class BoltonBot extends TelegramLongPollingBot {
                 execute(sendMessageGreeting);
                 break;
 
-            case OP_ADD_USERS:
-/*
+/*            case OP_ADD_USERS:
+
                 sendMessageGreeting = new SendMessage()
                         .setChatId(update.getMessage().getChatId())
                         .setText("Rellene los siguientes espacios \n" +
                                 "Cual es tu nombre ?");
-*/
-                break;
 
+                break;
+*/
             case OP_CONTINUE:
                 sendMessageGreeting = new SendMessage()
                         .setChatId(update.getMessage().getChatId())
-                        .setText("Bienvenido Adam, dime, ¿que te gustaría hacer hoy?");
+                        .setText("Bienvenido/a"+ message.getChat().getFirstName()+ ", dime, ¿que te gustaría hacer hoy?");
                 options = new ArrayList<>();
                 options.add(OP_MUSIC);
                 options.add(OP_MOVIE);

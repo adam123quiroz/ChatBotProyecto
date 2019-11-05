@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package edu.com.chatbotsoftI.domain;
 
 import java.io.Serializable;
@@ -23,13 +28,13 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Ray Silva
  */
 @Entity
-@Table(name = "typeevent")
+@Table(name = "evetypeevent")
 @XmlRootElement
 @NamedQueries({
-        @NamedQuery(name = "Typeevent.findAll", query = "SELECT t FROM Typeevent t")
-        , @NamedQuery(name = "Typeevent.findByIdtypeevent", query = "SELECT t FROM Typeevent t WHERE t.idtypeevent = :idtypeevent")
-        , @NamedQuery(name = "Typeevent.findByTypeevent", query = "SELECT t FROM Typeevent t WHERE t.typeevent = :typeevent")})
-public class Typeevent implements Serializable {
+    @NamedQuery(name = "Evetypeevent.findAll", query = "SELECT e FROM Evetypeevent e")
+    , @NamedQuery(name = "Evetypeevent.findByIdtypeevent", query = "SELECT e FROM Evetypeevent e WHERE e.idtypeevent = :idtypeevent")
+    , @NamedQuery(name = "Evetypeevent.findByTypeevent", query = "SELECT e FROM Evetypeevent e WHERE e.typeevent = :typeevent")})
+public class Evetypeevent implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -41,12 +46,12 @@ public class Typeevent implements Serializable {
     @Column(name = "typeevent")
     private String typeevent;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idtypeevent", fetch = FetchType.LAZY)
-    private List<Event> eventList;
+    private List<Eveevent> eveeventList;
 
-    public Typeevent() {
+    public Evetypeevent() {
     }
 
-    public Typeevent(Integer idtypeevent) {
+    public Evetypeevent(Integer idtypeevent) {
         this.idtypeevent = idtypeevent;
     }
 
@@ -67,12 +72,12 @@ public class Typeevent implements Serializable {
     }
 
     @XmlTransient
-    public List<Event> getEventList() {
-        return eventList;
+    public List<Eveevent> getEveeventList() {
+        return eveeventList;
     }
 
-    public void setEventList(List<Event> eventList) {
-        this.eventList = eventList;
+    public void setEveeventList(List<Eveevent> eveeventList) {
+        this.eveeventList = eveeventList;
     }
 
     @Override
@@ -85,10 +90,10 @@ public class Typeevent implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Typeevent)) {
+        if (!(object instanceof Evetypeevent)) {
             return false;
         }
-        Typeevent other = (Typeevent) object;
+        Evetypeevent other = (Evetypeevent) object;
         if ((this.idtypeevent == null && other.idtypeevent != null) || (this.idtypeevent != null && !this.idtypeevent.equals(other.idtypeevent))) {
             return false;
         }
@@ -97,8 +102,7 @@ public class Typeevent implements Serializable {
 
     @Override
     public String toString() {
-        return "domain.Typeevent[ idtypeevent=" + idtypeevent + " ]";
+        return "edu.com.chatbotsoftI.domain.Evetypeevent[ idtypeevent=" + idtypeevent + " ]";
     }
-
+    
 }
-

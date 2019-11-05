@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package edu.com.chatbotsoftI.domain;
 
 import java.io.Serializable;
@@ -25,13 +30,13 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Ray Silva
  */
 @Entity
-@Table(name = "address")
+@Table(name = "eveaddress")
 @XmlRootElement
 @NamedQueries({
-        @NamedQuery(name = "Address.findAll", query = "SELECT a FROM Address a")
-        , @NamedQuery(name = "Address.findByIdaddress", query = "SELECT a FROM Address a WHERE a.idaddress = :idaddress")
-        , @NamedQuery(name = "Address.findByAddress", query = "SELECT a FROM Address a WHERE a.address = :address")})
-public class Address implements Serializable {
+    @NamedQuery(name = "Eveaddress.findAll", query = "SELECT e FROM Eveaddress e")
+    , @NamedQuery(name = "Eveaddress.findByIdaddress", query = "SELECT e FROM Eveaddress e WHERE e.idaddress = :idaddress")
+    , @NamedQuery(name = "Eveaddress.findByAddress", query = "SELECT e FROM Eveaddress e WHERE e.address = :address")})
+public class Eveaddress implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -44,16 +49,16 @@ public class Address implements Serializable {
     private String address;
     @JoinColumn(name = "idcity", referencedColumnName = "idcity")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private City idcity;
+    private Evecity idcity;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idaddress", fetch = FetchType.LAZY)
-    private List<Event> eventList;
+    private List<Eveevent> eveeventList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idaddress", fetch = FetchType.LAZY)
-    private List<Leaseplace> leaseplaceList;
+    private List<Eveleaseplace> eveleaseplaceList;
 
-    public Address() {
+    public Eveaddress() {
     }
 
-    public Address(Integer idaddress) {
+    public Eveaddress(Integer idaddress) {
         this.idaddress = idaddress;
     }
 
@@ -73,30 +78,30 @@ public class Address implements Serializable {
         this.address = address;
     }
 
-    public City getIdcity() {
+    public Evecity getIdcity() {
         return idcity;
     }
 
-    public void setIdcity(City idcity) {
+    public void setIdcity(Evecity idcity) {
         this.idcity = idcity;
     }
 
     @XmlTransient
-    public List<Event> getEventList() {
-        return eventList;
+    public List<Eveevent> getEveeventList() {
+        return eveeventList;
     }
 
-    public void setEventList(List<Event> eventList) {
-        this.eventList = eventList;
+    public void setEveeventList(List<Eveevent> eveeventList) {
+        this.eveeventList = eveeventList;
     }
 
     @XmlTransient
-    public List<Leaseplace> getLeaseplaceList() {
-        return leaseplaceList;
+    public List<Eveleaseplace> getEveleaseplaceList() {
+        return eveleaseplaceList;
     }
 
-    public void setLeaseplaceList(List<Leaseplace> leaseplaceList) {
-        this.leaseplaceList = leaseplaceList;
+    public void setEveleaseplaceList(List<Eveleaseplace> eveleaseplaceList) {
+        this.eveleaseplaceList = eveleaseplaceList;
     }
 
     @Override
@@ -109,10 +114,10 @@ public class Address implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Address)) {
+        if (!(object instanceof Eveaddress)) {
             return false;
         }
-        Address other = (Address) object;
+        Eveaddress other = (Eveaddress) object;
         if ((this.idaddress == null && other.idaddress != null) || (this.idaddress != null && !this.idaddress.equals(other.idaddress))) {
             return false;
         }
@@ -121,7 +126,7 @@ public class Address implements Serializable {
 
     @Override
     public String toString() {
-        return "domain.Address[ idaddress=" + idaddress + " ]";
+        return "edu.com.chatbotsoftI.domain.Eveaddress[ idaddress=" + idaddress + " ]";
     }
-
+    
 }

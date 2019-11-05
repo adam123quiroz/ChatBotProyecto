@@ -22,10 +22,12 @@ public class BotBl {
     private EventBl eventBl;
     private UserRepository userRepository;
 
+
     @Autowired
     public BotBl(UserBl userBl, EventBl eventBl) {
         this.userBl = userBl;
         this.eventBl = eventBl;
+
     }
 
     public List<String> processUpdate(Update update) {

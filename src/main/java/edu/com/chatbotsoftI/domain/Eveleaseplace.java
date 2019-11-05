@@ -1,5 +1,9 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package edu.com.chatbotsoftI.domain;
-
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -30,16 +34,19 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Ray Silva
  */
 @Entity
-@Table(name = "leaseplace")
+@Table(name = "eveleaseplace")
 @XmlRootElement
 @NamedQueries({
-        @NamedQuery(name = "Leaseplace.findAll", query = "SELECT l FROM Leaseplace l")
-        , @NamedQuery(name = "Leaseplace.findByIdleaseplace", query = "SELECT l FROM Leaseplace l WHERE l.idleaseplace = :idleaseplace")
-        , @NamedQuery(name = "Leaseplace.findByNameplace", query = "SELECT l FROM Leaseplace l WHERE l.nameplace = :nameplace")
-        , @NamedQuery(name = "Leaseplace.findByDate", query = "SELECT l FROM Leaseplace l WHERE l.date = :date")
-        , @NamedQuery(name = "Leaseplace.findByPrice", query = "SELECT l FROM Leaseplace l WHERE l.price = :price")
-        , @NamedQuery(name = "Leaseplace.findByStatus", query = "SELECT l FROM Leaseplace l WHERE l.status = :status")})
-public class Leaseplace implements Serializable {
+    @NamedQuery(name = "Eveleaseplace.findAll", query = "SELECT e FROM Eveleaseplace e")
+    , @NamedQuery(name = "Eveleaseplace.findByIdleaseplace", query = "SELECT e FROM Eveleaseplace e WHERE e.idleaseplace = :idleaseplace")
+    , @NamedQuery(name = "Eveleaseplace.findByNameplace", query = "SELECT e FROM Eveleaseplace e WHERE e.nameplace = :nameplace")
+    , @NamedQuery(name = "Eveleaseplace.findByDate", query = "SELECT e FROM Eveleaseplace e WHERE e.date = :date")
+    , @NamedQuery(name = "Eveleaseplace.findByPrice", query = "SELECT e FROM Eveleaseplace e WHERE e.price = :price")
+    , @NamedQuery(name = "Eveleaseplace.findByStatus", query = "SELECT e FROM Eveleaseplace e WHERE e.status = :status")
+    , @NamedQuery(name = "Eveleaseplace.findByTxuser", query = "SELECT e FROM Eveleaseplace e WHERE e.txuser = :txuser")
+    , @NamedQuery(name = "Eveleaseplace.findByTxhost", query = "SELECT e FROM Eveleaseplace e WHERE e.txhost = :txhost")
+    , @NamedQuery(name = "Eveleaseplace.findByTxdate", query = "SELECT e FROM Eveleaseplace e WHERE e.txdate = :txdate")})
+public class Eveleaseplace implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -58,19 +65,28 @@ public class Leaseplace implements Serializable {
     private BigDecimal price;
     @Column(name = "status")
     private Integer status;
+    @Size(max = 45)
+    @Column(name = "txuser")
+    private String txuser;
+    @Size(max = 100)
+    @Column(name = "txhost")
+    private String txhost;
+    @Column(name = "txdate")
+    @Temporal(TemporalType.DATE)
+    private Date txdate;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idleaseplace", fetch = FetchType.LAZY)
-    private List<Notification> notificationList;
+    private List<Evenotification> evenotificationList;
     @JoinColumn(name = "idaddress", referencedColumnName = "idaddress")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Address idaddress;
+    private Eveaddress idaddress;
     @JoinColumn(name = "iduser", referencedColumnName = "iduser")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private User iduser;
+    private Eveuser iduser;
 
-    public Leaseplace() {
+    public Eveleaseplace() {
     }
 
-    public Leaseplace(Integer idleaseplace) {
+    public Eveleaseplace(Integer idleaseplace) {
         this.idleaseplace = idleaseplace;
     }
 
@@ -114,28 +130,52 @@ public class Leaseplace implements Serializable {
         this.status = status;
     }
 
+    public String getTxuser() {
+        return txuser;
+    }
+
+    public void setTxuser(String txuser) {
+        this.txuser = txuser;
+    }
+
+    public String getTxhost() {
+        return txhost;
+    }
+
+    public void setTxhost(String txhost) {
+        this.txhost = txhost;
+    }
+
+    public Date getTxdate() {
+        return txdate;
+    }
+
+    public void setTxdate(Date txdate) {
+        this.txdate = txdate;
+    }
+
     @XmlTransient
-    public List<Notification> getNotificationList() {
-        return notificationList;
+    public List<Evenotification> getEvenotificationList() {
+        return evenotificationList;
     }
 
-    public void setNotificationList(List<Notification> notificationList) {
-        this.notificationList = notificationList;
+    public void setEvenotificationList(List<Evenotification> evenotificationList) {
+        this.evenotificationList = evenotificationList;
     }
 
-    public Address getIdaddress() {
+    public Eveaddress getIdaddress() {
         return idaddress;
     }
 
-    public void setIdaddress(Address idaddress) {
+    public void setIdaddress(Eveaddress idaddress) {
         this.idaddress = idaddress;
     }
 
-    public User getIduser() {
+    public Eveuser getIduser() {
         return iduser;
     }
 
-    public void setIduser(User iduser) {
+    public void setIduser(Eveuser iduser) {
         this.iduser = iduser;
     }
 
@@ -149,10 +189,10 @@ public class Leaseplace implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Leaseplace)) {
+        if (!(object instanceof Eveleaseplace)) {
             return false;
         }
-        Leaseplace other = (Leaseplace) object;
+        Eveleaseplace other = (Eveleaseplace) object;
         if ((this.idleaseplace == null && other.idleaseplace != null) || (this.idleaseplace != null && !this.idleaseplace.equals(other.idleaseplace))) {
             return false;
         }
@@ -161,8 +201,7 @@ public class Leaseplace implements Serializable {
 
     @Override
     public String toString() {
-        return "domain.Leaseplace[ idleaseplace=" + idleaseplace + " ]";
+        return "edu.com.chatbotsoftI.domain.Eveleaseplace[ idleaseplace=" + idleaseplace + " ]";
     }
-
+    
 }
-

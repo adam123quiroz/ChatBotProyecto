@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package edu.com.chatbotsoftI.domain;
 
 import java.io.Serializable;
@@ -23,13 +28,13 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Ray Silva
  */
 @Entity
-@Table(name = "category")
+@Table(name = "evecategory")
 @XmlRootElement
 @NamedQueries({
-        @NamedQuery(name = "Category.findAll", query = "SELECT c FROM Category c")
-        , @NamedQuery(name = "Category.findByIdcategory", query = "SELECT c FROM Category c WHERE c.idcategory = :idcategory")
-        , @NamedQuery(name = "Category.findByCategory", query = "SELECT c FROM Category c WHERE c.category = :category")})
-public class Category implements Serializable {
+    @NamedQuery(name = "Evecategory.findAll", query = "SELECT e FROM Evecategory e")
+    , @NamedQuery(name = "Evecategory.findByIdcategory", query = "SELECT e FROM Evecategory e WHERE e.idcategory = :idcategory")
+    , @NamedQuery(name = "Evecategory.findByCategory", query = "SELECT e FROM Evecategory e WHERE e.category = :category")})
+public class Evecategory implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -41,12 +46,12 @@ public class Category implements Serializable {
     @Column(name = "category")
     private String category;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idcategory", fetch = FetchType.LAZY)
-    private List<Event> eventList;
+    private List<Eveevent> eveeventList;
 
-    public Category() {
+    public Evecategory() {
     }
 
-    public Category(Integer idcategory) {
+    public Evecategory(Integer idcategory) {
         this.idcategory = idcategory;
     }
 
@@ -67,12 +72,12 @@ public class Category implements Serializable {
     }
 
     @XmlTransient
-    public List<Event> getEventList() {
-        return eventList;
+    public List<Eveevent> getEveeventList() {
+        return eveeventList;
     }
 
-    public void setEventList(List<Event> eventList) {
-        this.eventList = eventList;
+    public void setEveeventList(List<Eveevent> eveeventList) {
+        this.eveeventList = eveeventList;
     }
 
     @Override
@@ -85,10 +90,10 @@ public class Category implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Category)) {
+        if (!(object instanceof Evecategory)) {
             return false;
         }
-        Category other = (Category) object;
+        Evecategory other = (Evecategory) object;
         if ((this.idcategory == null && other.idcategory != null) || (this.idcategory != null && !this.idcategory.equals(other.idcategory))) {
             return false;
         }
@@ -97,8 +102,7 @@ public class Category implements Serializable {
 
     @Override
     public String toString() {
-        return "domain.Category[ idcategory=" + idcategory + " ]";
+        return "edu.com.chatbotsoftI.domain.Evecategory[ idcategory=" + idcategory + " ]";
     }
-
+    
 }
-

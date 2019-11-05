@@ -80,4 +80,16 @@ public class UserDto {
     public void setPassword(String password) {
         this.password = password;
     }
+    @Override
+    public String toString() {
+        return "UserDto{" +
+                "iduser=" + iduser +
+                ", ci='" + ci + '\'' +
+                ", name=" + name + '\''+
+                ", age=" + age + '\''+
+                ", email=" + email + '\''+
+                ", nameuser=" + nameuser + '\''+
+                ", password=" + password +
+                '}';
+    }
 }

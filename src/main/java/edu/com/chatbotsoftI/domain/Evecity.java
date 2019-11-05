@@ -1,5 +1,9 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package edu.com.chatbotsoftI.domain;
-
 
 import java.io.Serializable;
 import java.util.List;
@@ -26,13 +30,13 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Ray Silva
  */
 @Entity
-@Table(name = "city")
+@Table(name = "evecity")
 @XmlRootElement
 @NamedQueries({
-        @NamedQuery(name = "City.findAll", query = "SELECT c FROM City c")
-        , @NamedQuery(name = "City.findByIdcity", query = "SELECT c FROM City c WHERE c.idcity = :idcity")
-        , @NamedQuery(name = "City.findByCity", query = "SELECT c FROM City c WHERE c.city = :city")})
-public class City implements Serializable {
+    @NamedQuery(name = "Evecity.findAll", query = "SELECT e FROM Evecity e")
+    , @NamedQuery(name = "Evecity.findByIdcity", query = "SELECT e FROM Evecity e WHERE e.idcity = :idcity")
+    , @NamedQuery(name = "Evecity.findByCity", query = "SELECT e FROM Evecity e WHERE e.city = :city")})
+public class Evecity implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -43,16 +47,16 @@ public class City implements Serializable {
     @Size(max = 45)
     @Column(name = "city")
     private String city;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idcity", fetch = FetchType.LAZY)
-    private List<Address> addressList;
     @JoinColumn(name = "idstate", referencedColumnName = "idstate")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private State idstate;
+    private Evestate idstate;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idcity", fetch = FetchType.LAZY)
+    private List<Eveaddress> eveaddressList;
 
-    public City() {
+    public Evecity() {
     }
 
-    public City(Integer idcity) {
+    public Evecity(Integer idcity) {
         this.idcity = idcity;
     }
 
@@ -72,21 +76,21 @@ public class City implements Serializable {
         this.city = city;
     }
 
-    @XmlTransient
-    public List<Address> getAddressList() {
-        return addressList;
-    }
-
-    public void setAddressList(List<Address> addressList) {
-        this.addressList = addressList;
-    }
-
-    public State getIdstate() {
+    public Evestate getIdstate() {
         return idstate;
     }
 
-    public void setIdstate(State idstate) {
+    public void setIdstate(Evestate idstate) {
         this.idstate = idstate;
+    }
+
+    @XmlTransient
+    public List<Eveaddress> getEveaddressList() {
+        return eveaddressList;
+    }
+
+    public void setEveaddressList(List<Eveaddress> eveaddressList) {
+        this.eveaddressList = eveaddressList;
     }
 
     @Override
@@ -99,10 +103,10 @@ public class City implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof City)) {
+        if (!(object instanceof Evecity)) {
             return false;
         }
-        City other = (City) object;
+        Evecity other = (Evecity) object;
         if ((this.idcity == null && other.idcity != null) || (this.idcity != null && !this.idcity.equals(other.idcity))) {
             return false;
         }
@@ -111,7 +115,7 @@ public class City implements Serializable {
 
     @Override
     public String toString() {
-        return "domain.City[ idcity=" + idcity + " ]";
+        return "edu.com.chatbotsoftI.domain.Evecity[ idcity=" + idcity + " ]";
     }
-
+    
 }

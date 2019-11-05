@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package edu.com.chatbotsoftI.domain;
 
 import java.io.Serializable;
@@ -20,12 +25,12 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Ray Silva
  */
 @Entity
-@Table(name = "notificationuser")
+@Table(name = "evenotificationuser")
 @XmlRootElement
 @NamedQueries({
-        @NamedQuery(name = "Notificationuser.findAll", query = "SELECT n FROM Notificationuser n")
-        , @NamedQuery(name = "Notificationuser.findByIdnotificationuser", query = "SELECT n FROM Notificationuser n WHERE n.idnotificationuser = :idnotificationuser")})
-public class Notificationuser implements Serializable {
+    @NamedQuery(name = "Evenotificationuser.findAll", query = "SELECT e FROM Evenotificationuser e")
+    , @NamedQuery(name = "Evenotificationuser.findByIdnotificationuser", query = "SELECT e FROM Evenotificationuser e WHERE e.idnotificationuser = :idnotificationuser")})
+public class Evenotificationuser implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -35,15 +40,15 @@ public class Notificationuser implements Serializable {
     private Integer idnotificationuser;
     @JoinColumn(name = "idnotification", referencedColumnName = "idnotification")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Notification idnotification;
+    private Evenotification idnotification;
     @JoinColumn(name = "iduser", referencedColumnName = "iduser")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private User iduser;
+    private Eveuser iduser;
 
-    public Notificationuser() {
+    public Evenotificationuser() {
     }
 
-    public Notificationuser(Integer idnotificationuser) {
+    public Evenotificationuser(Integer idnotificationuser) {
         this.idnotificationuser = idnotificationuser;
     }
 
@@ -55,19 +60,19 @@ public class Notificationuser implements Serializable {
         this.idnotificationuser = idnotificationuser;
     }
 
-    public Notification getIdnotification() {
+    public Evenotification getIdnotification() {
         return idnotification;
     }
 
-    public void setIdnotification(Notification idnotification) {
+    public void setIdnotification(Evenotification idnotification) {
         this.idnotification = idnotification;
     }
 
-    public User getIduser() {
+    public Eveuser getIduser() {
         return iduser;
     }
 
-    public void setIduser(User iduser) {
+    public void setIduser(Eveuser iduser) {
         this.iduser = iduser;
     }
 
@@ -81,10 +86,10 @@ public class Notificationuser implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Notificationuser)) {
+        if (!(object instanceof Evenotificationuser)) {
             return false;
         }
-        Notificationuser other = (Notificationuser) object;
+        Evenotificationuser other = (Evenotificationuser) object;
         if ((this.idnotificationuser == null && other.idnotificationuser != null) || (this.idnotificationuser != null && !this.idnotificationuser.equals(other.idnotificationuser))) {
             return false;
         }
@@ -93,8 +98,7 @@ public class Notificationuser implements Serializable {
 
     @Override
     public String toString() {
-        return "domain.Notificationuser[ idnotificationuser=" + idnotificationuser + " ]";
+        return "edu.com.chatbotsoftI.domain.Evenotificationuser[ idnotificationuser=" + idnotificationuser + " ]";
     }
-
+    
 }
-

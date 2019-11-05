@@ -1,5 +1,9 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package edu.com.chatbotsoftI.domain;
-
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -25,10 +29,25 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+/**
+ *
+ * @author Ray Silva
+ */
 @Entity
-@Table(name = "event")
+@Table(name = "eveevent")
 @XmlRootElement
-public class Event implements Serializable {
+@NamedQueries({
+    @NamedQuery(name = "Eveevent.findAll", query = "SELECT e FROM Eveevent e")
+    , @NamedQuery(name = "Eveevent.findByIdevent", query = "SELECT e FROM Eveevent e WHERE e.idevent = :idevent")
+    , @NamedQuery(name = "Eveevent.findByNameevent", query = "SELECT e FROM Eveevent e WHERE e.nameevent = :nameevent")
+    , @NamedQuery(name = "Eveevent.findByPrice", query = "SELECT e FROM Eveevent e WHERE e.price = :price")
+    , @NamedQuery(name = "Eveevent.findByDate", query = "SELECT e FROM Eveevent e WHERE e.date = :date")
+    , @NamedQuery(name = "Eveevent.findByStarttime", query = "SELECT e FROM Eveevent e WHERE e.starttime = :starttime")
+    , @NamedQuery(name = "Eveevent.findByStatus", query = "SELECT e FROM Eveevent e WHERE e.status = :status")
+    , @NamedQuery(name = "Eveevent.findByTxuser", query = "SELECT e FROM Eveevent e WHERE e.txuser = :txuser")
+    , @NamedQuery(name = "Eveevent.findByTxhost", query = "SELECT e FROM Eveevent e WHERE e.txhost = :txhost")
+    , @NamedQuery(name = "Eveevent.findByTxdate", query = "SELECT e FROM Eveevent e WHERE e.txdate = :txdate")})
+public class Eveevent implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -36,7 +55,7 @@ public class Event implements Serializable {
     @Basic(optional = false)
     @Column(name = "idevent")
     private Integer idevent;
-    @Size(max = 45)
+    @Size(max = 100)
     @Column(name = "nameevent")
     private String nameevent;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
@@ -50,27 +69,38 @@ public class Event implements Serializable {
     private Date starttime;
     @Column(name = "status")
     private Integer status;
+    @Size(max = 45)
+    @Column(name = "txuser")
+    private String txuser;
+    @Size(max = 100)
+    @Column(name = "txhost")
+    private String txhost;
+    @Column(name = "txdate")
+    @Temporal(TemporalType.DATE)
+    private Date txdate;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idevent", fetch = FetchType.LAZY)
-    private List<Booking> bookingList;
+    private List<Eveeventfile> eveeventfileList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idevent", fetch = FetchType.LAZY)
-    private List<Buyticket> buyticketList;
+    private List<Evebuyticket> evebuyticketList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idevent", fetch = FetchType.LAZY)
+    private List<Evebooking> evebookingList;
     @JoinColumn(name = "idcategory", referencedColumnName = "idcategory")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Category idcategory;
+    private Evecategory idcategory;
     @JoinColumn(name = "idaddress", referencedColumnName = "idaddress")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Address idaddress;
+    private Eveaddress idaddress;
     @JoinColumn(name = "idtypeevent", referencedColumnName = "idtypeevent")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Typeevent idtypeevent;
+    private Evetypeevent idtypeevent;
     @JoinColumn(name = "iduser", referencedColumnName = "iduser")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private User iduser;
+    private Eveuser iduser;
 
-    public Event() {
+    public Eveevent() {
     }
 
-    public Event(Integer idevent) {
+    public Eveevent(Integer idevent) {
         this.idevent = idevent;
     }
 
@@ -122,53 +152,86 @@ public class Event implements Serializable {
         this.status = status;
     }
 
+    public String getTxuser() {
+        return txuser;
+    }
+
+    public void setTxuser(String txuser) {
+        this.txuser = txuser;
+    }
+
+    public String getTxhost() {
+        return txhost;
+    }
+
+    public void setTxhost(String txhost) {
+        this.txhost = txhost;
+    }
+
+    public Date getTxdate() {
+        return txdate;
+    }
+
+    public void setTxdate(Date txdate) {
+        this.txdate = txdate;
+    }
+
     @XmlTransient
-    public List<Booking> getBookingList() {
-        return bookingList;
+    public List<Eveeventfile> getEveeventfileList() {
+        return eveeventfileList;
     }
 
-    public void setBookingList(List<Booking> bookingList) {
-        this.bookingList = bookingList;
+    public void setEveeventfileList(List<Eveeventfile> eveeventfileList) {
+        this.eveeventfileList = eveeventfileList;
     }
 
     @XmlTransient
-    public List<Buyticket> getBuyticketList() {
-        return buyticketList;
+    public List<Evebuyticket> getEvebuyticketList() {
+        return evebuyticketList;
     }
 
-    public void setBuyticketList(List<Buyticket> buyticketList) {
-        this.buyticketList = buyticketList;
+    public void setEvebuyticketList(List<Evebuyticket> evebuyticketList) {
+        this.evebuyticketList = evebuyticketList;
     }
 
-    public Category getIdcategory() {
+    @XmlTransient
+    public List<Evebooking> getEvebookingList() {
+        return evebookingList;
+    }
+
+    public void setEvebookingList(List<Evebooking> evebookingList) {
+        this.evebookingList = evebookingList;
+    }
+
+    public Evecategory getIdcategory() {
         return idcategory;
     }
 
-    public void setIdcategory(Category idcategory) {
+    public void setIdcategory(Evecategory idcategory) {
         this.idcategory = idcategory;
     }
 
-    public Address getIdaddress() {
+    public Eveaddress getIdaddress() {
         return idaddress;
     }
 
-    public void setIdaddress(Address idaddress) {
+    public void setIdaddress(Eveaddress idaddress) {
         this.idaddress = idaddress;
     }
 
-    public Typeevent getIdtypeevent() {
+    public Evetypeevent getIdtypeevent() {
         return idtypeevent;
     }
 
-    public void setIdtypeevent(Typeevent idtypeevent) {
+    public void setIdtypeevent(Evetypeevent idtypeevent) {
         this.idtypeevent = idtypeevent;
     }
 
-    public User getIduser() {
+    public Eveuser getIduser() {
         return iduser;
     }
 
-    public void setIduser(User iduser) {
+    public void setIduser(Eveuser iduser) {
         this.iduser = iduser;
     }
 
@@ -182,10 +245,10 @@ public class Event implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Event)) {
+        if (!(object instanceof Eveevent)) {
             return false;
         }
-        Event other = (Event) object;
+        Eveevent other = (Eveevent) object;
         if ((this.idevent == null && other.idevent != null) || (this.idevent != null && !this.idevent.equals(other.idevent))) {
             return false;
         }
@@ -194,8 +257,7 @@ public class Event implements Serializable {
 
     @Override
     public String toString() {
-        return "domain.Event[ idevent=" + idevent + " ]";
+        return "edu.com.chatbotsoftI.domain.Eveevent[ idevent=" + idevent + " ]";
     }
-
+    
 }
-
