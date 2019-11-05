@@ -36,17 +36,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "eveleaseplace")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Eveleaseplace.findAll", query = "SELECT e FROM Eveleaseplace e")
-    , @NamedQuery(name = "Eveleaseplace.findByIdleaseplace", query = "SELECT e FROM Eveleaseplace e WHERE e.idleaseplace = :idleaseplace")
-    , @NamedQuery(name = "Eveleaseplace.findByNameplace", query = "SELECT e FROM Eveleaseplace e WHERE e.nameplace = :nameplace")
-    , @NamedQuery(name = "Eveleaseplace.findByDate", query = "SELECT e FROM Eveleaseplace e WHERE e.date = :date")
-    , @NamedQuery(name = "Eveleaseplace.findByPrice", query = "SELECT e FROM Eveleaseplace e WHERE e.price = :price")
-    , @NamedQuery(name = "Eveleaseplace.findByStatus", query = "SELECT e FROM Eveleaseplace e WHERE e.status = :status")
-    , @NamedQuery(name = "Eveleaseplace.findByTxuser", query = "SELECT e FROM Eveleaseplace e WHERE e.txuser = :txuser")
-    , @NamedQuery(name = "Eveleaseplace.findByTxhost", query = "SELECT e FROM Eveleaseplace e WHERE e.txhost = :txhost")
-    , @NamedQuery(name = "Eveleaseplace.findByTxdate", query = "SELECT e FROM Eveleaseplace e WHERE e.txdate = :txdate")})
-public class Eveleaseplace implements Serializable {
+public class EveLeasePlace implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -75,18 +65,18 @@ public class Eveleaseplace implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date txdate;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idleaseplace", fetch = FetchType.LAZY)
-    private List<Evenotification> evenotificationList;
+    private List<EveNotification> evenotificationList;
     @JoinColumn(name = "idaddress", referencedColumnName = "idaddress")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Eveaddress idaddress;
+    private EveAddress idaddress;
     @JoinColumn(name = "iduser", referencedColumnName = "iduser")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Eveuser iduser;
+    private EveUser iduser;
 
-    public Eveleaseplace() {
+    public EveLeasePlace() {
     }
 
-    public Eveleaseplace(Integer idleaseplace) {
+    public EveLeasePlace(Integer idleaseplace) {
         this.idleaseplace = idleaseplace;
     }
 
@@ -155,27 +145,27 @@ public class Eveleaseplace implements Serializable {
     }
 
     @XmlTransient
-    public List<Evenotification> getEvenotificationList() {
+    public List<EveNotification> getEvenotificationList() {
         return evenotificationList;
     }
 
-    public void setEvenotificationList(List<Evenotification> evenotificationList) {
+    public void setEvenotificationList(List<EveNotification> evenotificationList) {
         this.evenotificationList = evenotificationList;
     }
 
-    public Eveaddress getIdaddress() {
+    public EveAddress getIdaddress() {
         return idaddress;
     }
 
-    public void setIdaddress(Eveaddress idaddress) {
+    public void setIdaddress(EveAddress idaddress) {
         this.idaddress = idaddress;
     }
 
-    public Eveuser getIduser() {
+    public EveUser getIduser() {
         return iduser;
     }
 
-    public void setIduser(Eveuser iduser) {
+    public void setIduser(EveUser iduser) {
         this.iduser = iduser;
     }
 
@@ -189,10 +179,10 @@ public class Eveleaseplace implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Eveleaseplace)) {
+        if (!(object instanceof EveLeasePlace)) {
             return false;
         }
-        Eveleaseplace other = (Eveleaseplace) object;
+        EveLeasePlace other = (EveLeasePlace) object;
         if ((this.idleaseplace == null && other.idleaseplace != null) || (this.idleaseplace != null && !this.idleaseplace.equals(other.idleaseplace))) {
             return false;
         }

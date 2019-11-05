@@ -30,11 +30,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "evetypeevent")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Evetypeevent.findAll", query = "SELECT e FROM Evetypeevent e")
-    , @NamedQuery(name = "Evetypeevent.findByIdtypeevent", query = "SELECT e FROM Evetypeevent e WHERE e.idtypeevent = :idtypeevent")
-    , @NamedQuery(name = "Evetypeevent.findByTypeevent", query = "SELECT e FROM Evetypeevent e WHERE e.typeevent = :typeevent")})
-public class Evetypeevent implements Serializable {
+public class EveTypeEvent implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -46,12 +42,12 @@ public class Evetypeevent implements Serializable {
     @Column(name = "typeevent")
     private String typeevent;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idtypeevent", fetch = FetchType.LAZY)
-    private List<Eveevent> eveeventList;
+    private List<EveEvent> eveeventList;
 
-    public Evetypeevent() {
+    public EveTypeEvent() {
     }
 
-    public Evetypeevent(Integer idtypeevent) {
+    public EveTypeEvent(Integer idtypeevent) {
         this.idtypeevent = idtypeevent;
     }
 
@@ -72,11 +68,11 @@ public class Evetypeevent implements Serializable {
     }
 
     @XmlTransient
-    public List<Eveevent> getEveeventList() {
+    public List<EveEvent> getEveeventList() {
         return eveeventList;
     }
 
-    public void setEveeventList(List<Eveevent> eveeventList) {
+    public void setEveeventList(List<EveEvent> eveeventList) {
         this.eveeventList = eveeventList;
     }
 
@@ -90,10 +86,10 @@ public class Evetypeevent implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Evetypeevent)) {
+        if (!(object instanceof EveTypeEvent)) {
             return false;
         }
-        Evetypeevent other = (Evetypeevent) object;
+        EveTypeEvent other = (EveTypeEvent) object;
         if ((this.idtypeevent == null && other.idtypeevent != null) || (this.idtypeevent != null && !this.idtypeevent.equals(other.idtypeevent))) {
             return false;
         }

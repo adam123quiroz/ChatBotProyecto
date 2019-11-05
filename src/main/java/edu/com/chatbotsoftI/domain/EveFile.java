@@ -33,17 +33,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "evefile")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Evefile.findAll", query = "SELECT e FROM Evefile e")
-    , @NamedQuery(name = "Evefile.findByIdfile", query = "SELECT e FROM Evefile e WHERE e.idfile = :idfile")
-    , @NamedQuery(name = "Evefile.findByFilename", query = "SELECT e FROM Evefile e WHERE e.filename = :filename")
-    , @NamedQuery(name = "Evefile.findByMimetype", query = "SELECT e FROM Evefile e WHERE e.mimetype = :mimetype")
-    , @NamedQuery(name = "Evefile.findByPath", query = "SELECT e FROM Evefile e WHERE e.path = :path")
-    , @NamedQuery(name = "Evefile.findByStoretype", query = "SELECT e FROM Evefile e WHERE e.storetype = :storetype")
-    , @NamedQuery(name = "Evefile.findByTxuser", query = "SELECT e FROM Evefile e WHERE e.txuser = :txuser")
-    , @NamedQuery(name = "Evefile.findByTxhost", query = "SELECT e FROM Evefile e WHERE e.txhost = :txhost")
-    , @NamedQuery(name = "Evefile.findByTxdate", query = "SELECT e FROM Evefile e WHERE e.txdate = :txdate")})
-public class Evefile implements Serializable {
+public class EveFile implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -73,12 +63,12 @@ public class Evefile implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date txdate;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idevefile", fetch = FetchType.LAZY)
-    private List<Eveeventfile> eveeventfileList;
+    private List<EveEventFile> eveeventfileList;
 
-    public Evefile() {
+    public EveFile() {
     }
 
-    public Evefile(Integer idfile) {
+    public EveFile(Integer idfile) {
         this.idfile = idfile;
     }
 
@@ -147,11 +137,11 @@ public class Evefile implements Serializable {
     }
 
     @XmlTransient
-    public List<Eveeventfile> getEveeventfileList() {
+    public List<EveEventFile> getEveeventfileList() {
         return eveeventfileList;
     }
 
-    public void setEveeventfileList(List<Eveeventfile> eveeventfileList) {
+    public void setEveeventfileList(List<EveEventFile> eveeventfileList) {
         this.eveeventfileList = eveeventfileList;
     }
 
@@ -165,10 +155,10 @@ public class Evefile implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Evefile)) {
+        if (!(object instanceof EveFile)) {
             return false;
         }
-        Evefile other = (Evefile) object;
+        EveFile other = (EveFile) object;
         if ((this.idfile == null && other.idfile != null) || (this.idfile != null && !this.idfile.equals(other.idfile))) {
             return false;
         }

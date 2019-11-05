@@ -30,11 +30,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "evestate")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Evestate.findAll", query = "SELECT e FROM Evestate e")
-    , @NamedQuery(name = "Evestate.findByIdstate", query = "SELECT e FROM Evestate e WHERE e.idstate = :idstate")
-    , @NamedQuery(name = "Evestate.findByState", query = "SELECT e FROM Evestate e WHERE e.state = :state")})
-public class Evestate implements Serializable {
+public class EveState implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -46,12 +42,12 @@ public class Evestate implements Serializable {
     @Column(name = "state")
     private String state;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idstate", fetch = FetchType.LAZY)
-    private List<Evecity> evecityList;
+    private List<EveCity> evecityList;
 
-    public Evestate() {
+    public EveState() {
     }
 
-    public Evestate(Integer idstate) {
+    public EveState(Integer idstate) {
         this.idstate = idstate;
     }
 
@@ -72,11 +68,11 @@ public class Evestate implements Serializable {
     }
 
     @XmlTransient
-    public List<Evecity> getEvecityList() {
+    public List<EveCity> getEvecityList() {
         return evecityList;
     }
 
-    public void setEvecityList(List<Evecity> evecityList) {
+    public void setEvecityList(List<EveCity> evecityList) {
         this.evecityList = evecityList;
     }
 
@@ -90,10 +86,10 @@ public class Evestate implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Evestate)) {
+        if (!(object instanceof EveState)) {
             return false;
         }
-        Evestate other = (Evestate) object;
+        EveState other = (EveState) object;
         if ((this.idstate == null && other.idstate != null) || (this.idstate != null && !this.idstate.equals(other.idstate))) {
             return false;
         }

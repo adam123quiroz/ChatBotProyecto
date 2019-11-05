@@ -29,12 +29,7 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "evepaymentmethod")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Evepaymentmethod.findAll", query = "SELECT e FROM Evepaymentmethod e")
-    , @NamedQuery(name = "Evepaymentmethod.findByIdpaymentmethod", query = "SELECT e FROM Evepaymentmethod e WHERE e.idpaymentmethod = :idpaymentmethod")
-    , @NamedQuery(name = "Evepaymentmethod.findByPaymentmethod", query = "SELECT e FROM Evepaymentmethod e WHERE e.paymentmethod = :paymentmethod")})
-public class Evepaymentmethod implements Serializable {
+public class EvePaymentMethod implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -46,14 +41,14 @@ public class Evepaymentmethod implements Serializable {
     @Column(name = "paymentmethod")
     private String paymentmethod;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idpaymentmethod", fetch = FetchType.LAZY)
-    private List<Evepayment> evepaymentList;
+    private List<EvePayment> evepaymentList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idpaymentmethod", fetch = FetchType.LAZY)
-    private List<Evebuyticket> evebuyticketList;
+    private List<EveBuyTicket> evebuyticketList;
 
-    public Evepaymentmethod() {
+    public EvePaymentMethod() {
     }
 
-    public Evepaymentmethod(Integer idpaymentmethod) {
+    public EvePaymentMethod(Integer idpaymentmethod) {
         this.idpaymentmethod = idpaymentmethod;
     }
 
@@ -74,20 +69,20 @@ public class Evepaymentmethod implements Serializable {
     }
 
     @XmlTransient
-    public List<Evepayment> getEvepaymentList() {
+    public List<EvePayment> getEvepaymentList() {
         return evepaymentList;
     }
 
-    public void setEvepaymentList(List<Evepayment> evepaymentList) {
+    public void setEvepaymentList(List<EvePayment> evepaymentList) {
         this.evepaymentList = evepaymentList;
     }
 
     @XmlTransient
-    public List<Evebuyticket> getEvebuyticketList() {
+    public List<EveBuyTicket> getEvebuyticketList() {
         return evebuyticketList;
     }
 
-    public void setEvebuyticketList(List<Evebuyticket> evebuyticketList) {
+    public void setEvebuyticketList(List<EveBuyTicket> evebuyticketList) {
         this.evebuyticketList = evebuyticketList;
     }
 
@@ -101,10 +96,10 @@ public class Evepaymentmethod implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Evepaymentmethod)) {
+        if (!(object instanceof EvePaymentMethod)) {
             return false;
         }
-        Evepaymentmethod other = (Evepaymentmethod) object;
+        EvePaymentMethod other = (EvePaymentMethod) object;
         if ((this.idpaymentmethod == null && other.idpaymentmethod != null) || (this.idpaymentmethod != null && !this.idpaymentmethod.equals(other.idpaymentmethod))) {
             return false;
         }

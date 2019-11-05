@@ -1,32 +1,27 @@
 package edu.com.chatbotsoftI.api;
 
-import edu.com.chatbotsoftI.bl.UserBl;
-import edu.com.chatbotsoftI.dao.UserRepository;
-import edu.com.chatbotsoftI.domain.User;
-import edu.com.chatbotsoftI.dto.UserDto;
+import edu.com.chatbotsoftI.bl.PersonBl;
+import edu.com.chatbotsoftI.dto.PersonDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-//import java.util.List;
 import java.util.*;
 
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
 
-    //  @Autowired
-    private UserBl userBl;
+    private PersonBl userBl;
 
     @Autowired
-    public UserController(UserBl userBl) {
+    public UserController(PersonBl userBl) {
         this.userBl = userBl;
     }
 
     @RequestMapping(value = "/",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<UserDto> all() {
+    public List<PersonDto> all() {
         return userBl.findAllUsers();
     }
 /*

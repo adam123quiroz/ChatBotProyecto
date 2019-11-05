@@ -27,10 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Table(name = "evenotificationuser")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Evenotificationuser.findAll", query = "SELECT e FROM Evenotificationuser e")
-    , @NamedQuery(name = "Evenotificationuser.findByIdnotificationuser", query = "SELECT e FROM Evenotificationuser e WHERE e.idnotificationuser = :idnotificationuser")})
-public class Evenotificationuser implements Serializable {
+public class EveNotificationUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -40,15 +37,15 @@ public class Evenotificationuser implements Serializable {
     private Integer idnotificationuser;
     @JoinColumn(name = "idnotification", referencedColumnName = "idnotification")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Evenotification idnotification;
+    private EveNotification idnotification;
     @JoinColumn(name = "iduser", referencedColumnName = "iduser")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Eveuser iduser;
+    private EveUser iduser;
 
-    public Evenotificationuser() {
+    public EveNotificationUser() {
     }
 
-    public Evenotificationuser(Integer idnotificationuser) {
+    public EveNotificationUser(Integer idnotificationuser) {
         this.idnotificationuser = idnotificationuser;
     }
 
@@ -60,19 +57,19 @@ public class Evenotificationuser implements Serializable {
         this.idnotificationuser = idnotificationuser;
     }
 
-    public Evenotification getIdnotification() {
+    public EveNotification getIdnotification() {
         return idnotification;
     }
 
-    public void setIdnotification(Evenotification idnotification) {
+    public void setIdnotification(EveNotification idnotification) {
         this.idnotification = idnotification;
     }
 
-    public Eveuser getIduser() {
+    public EveUser getIduser() {
         return iduser;
     }
 
-    public void setIduser(Eveuser iduser) {
+    public void setIduser(EveUser iduser) {
         this.iduser = iduser;
     }
 
@@ -86,10 +83,10 @@ public class Evenotificationuser implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Evenotificationuser)) {
+        if (!(object instanceof EveNotificationUser)) {
             return false;
         }
-        Evenotificationuser other = (Evenotificationuser) object;
+        EveNotificationUser other = (EveNotificationUser) object;
         if ((this.idnotificationuser == null && other.idnotificationuser != null) || (this.idnotificationuser != null && !this.idnotificationuser.equals(other.idnotificationuser))) {
             return false;
         }

@@ -36,18 +36,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "eveuser")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Eveuser.findAll", query = "SELECT e FROM Eveuser e")
-    , @NamedQuery(name = "Eveuser.findByIduser", query = "SELECT e FROM Eveuser e WHERE e.iduser = :iduser")
-    , @NamedQuery(name = "Eveuser.findByBirthday", query = "SELECT e FROM Eveuser e WHERE e.birthday = :birthday")
-    , @NamedQuery(name = "Eveuser.findByEmail", query = "SELECT e FROM Eveuser e WHERE e.email = :email")
-    , @NamedQuery(name = "Eveuser.findByNameuser", query = "SELECT e FROM Eveuser e WHERE e.nameuser = :nameuser")
-    , @NamedQuery(name = "Eveuser.findByPassword", query = "SELECT e FROM Eveuser e WHERE e.password = :password")
-    , @NamedQuery(name = "Eveuser.findByStatus", query = "SELECT e FROM Eveuser e WHERE e.status = :status")
-    , @NamedQuery(name = "Eveuser.findByTxuser", query = "SELECT e FROM Eveuser e WHERE e.txuser = :txuser")
-    , @NamedQuery(name = "Eveuser.findByTxhost", query = "SELECT e FROM Eveuser e WHERE e.txhost = :txhost")
-    , @NamedQuery(name = "Eveuser.findByTxdate", query = "SELECT e FROM Eveuser e WHERE e.txdate = :txdate")})
-public class Eveuser implements Serializable {
+public class EveUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -85,26 +74,26 @@ public class Eveuser implements Serializable {
     private Date txdate;
     @JoinColumn(name = "idperson", referencedColumnName = "idperson")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Eveperson idperson;
+    private EvePerson idperson;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "iduser", fetch = FetchType.LAZY)
-    private List<Evebuyticket> evebuyticketList;
+    private List<EveBuyTicket> evebuyticketList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "iduser", fetch = FetchType.LAZY)
-    private List<Evenotificationuser> evenotificationuserList;
+    private List<EveNotificationUser> evenotificationuserList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "iduser", fetch = FetchType.LAZY)
-    private List<Evebooking> evebookingList;
+    private List<EveBooking> evebookingList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "iduser", fetch = FetchType.LAZY)
-    private List<Eveevent> eveeventList;
+    private List<EveEvent> eveeventList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "iduser", fetch = FetchType.LAZY)
-    private List<Eveleaseplace> eveleaseplaceList;
+    private List<EveLeasePlace> eveleaseplaceList;
 
-    public Eveuser() {
+    public EveUser() {
     }
 
-    public Eveuser(Integer iduser) {
+    public EveUser(Integer iduser) {
         this.iduser = iduser;
     }
 
-    public Eveuser(Integer iduser, String nameuser, String password) {
+    public EveUser(Integer iduser, String nameuser, String password) {
         this.iduser = iduser;
         this.nameuser = nameuser;
         this.password = password;
@@ -182,56 +171,56 @@ public class Eveuser implements Serializable {
         this.txdate = txdate;
     }
 
-    public Eveperson getIdperson() {
+    public EvePerson getIdperson() {
         return idperson;
     }
 
-    public void setIdperson(Eveperson idperson) {
+    public void setIdperson(EvePerson idperson) {
         this.idperson = idperson;
     }
 
     @XmlTransient
-    public List<Evebuyticket> getEvebuyticketList() {
+    public List<EveBuyTicket> getEvebuyticketList() {
         return evebuyticketList;
     }
 
-    public void setEvebuyticketList(List<Evebuyticket> evebuyticketList) {
+    public void setEvebuyticketList(List<EveBuyTicket> evebuyticketList) {
         this.evebuyticketList = evebuyticketList;
     }
 
     @XmlTransient
-    public List<Evenotificationuser> getEvenotificationuserList() {
+    public List<EveNotificationUser> getEvenotificationuserList() {
         return evenotificationuserList;
     }
 
-    public void setEvenotificationuserList(List<Evenotificationuser> evenotificationuserList) {
+    public void setEvenotificationuserList(List<EveNotificationUser> evenotificationuserList) {
         this.evenotificationuserList = evenotificationuserList;
     }
 
     @XmlTransient
-    public List<Evebooking> getEvebookingList() {
+    public List<EveBooking> getEvebookingList() {
         return evebookingList;
     }
 
-    public void setEvebookingList(List<Evebooking> evebookingList) {
+    public void setEvebookingList(List<EveBooking> evebookingList) {
         this.evebookingList = evebookingList;
     }
 
     @XmlTransient
-    public List<Eveevent> getEveeventList() {
+    public List<EveEvent> getEveeventList() {
         return eveeventList;
     }
 
-    public void setEveeventList(List<Eveevent> eveeventList) {
+    public void setEveeventList(List<EveEvent> eveeventList) {
         this.eveeventList = eveeventList;
     }
 
     @XmlTransient
-    public List<Eveleaseplace> getEveleaseplaceList() {
+    public List<EveLeasePlace> getEveleaseplaceList() {
         return eveleaseplaceList;
     }
 
-    public void setEveleaseplaceList(List<Eveleaseplace> eveleaseplaceList) {
+    public void setEveleaseplaceList(List<EveLeasePlace> eveleaseplaceList) {
         this.eveleaseplaceList = eveleaseplaceList;
     }
 
@@ -245,10 +234,10 @@ public class Eveuser implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Eveuser)) {
+        if (!(object instanceof EveUser)) {
             return false;
         }
-        Eveuser other = (Eveuser) object;
+        EveUser other = (EveUser) object;
         if ((this.iduser == null && other.iduser != null) || (this.iduser != null && !this.iduser.equals(other.iduser))) {
             return false;
         }

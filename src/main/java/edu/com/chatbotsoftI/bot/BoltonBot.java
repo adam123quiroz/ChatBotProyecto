@@ -1,16 +1,12 @@
 package edu.com.chatbotsoftI.bot;
 
 import edu.com.chatbotsoftI.bl.BotBl;
-import edu.com.chatbotsoftI.bl.EventBl;
-import edu.com.chatbotsoftI.bl.UserBl;
 import edu.com.chatbotsoftI.bot.special.keyboard.KbOptionsBot;
 import edu.com.chatbotsoftI.dto.EventDto;
-import edu.com.chatbotsoftI.enums.TypeEvent;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.payments.LabeledPrice;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -32,7 +28,7 @@ public class BoltonBot extends TelegramLongPollingBot {
 
     private BotBl botBl;
 
-    public BoltonBot(UserBl userBl, EventBl eventBl, BotBl botBl) {
+    public BoltonBot(BotBl botBl) {
         this.botBl = botBl;
     }
 
@@ -43,7 +39,8 @@ public class BoltonBot extends TelegramLongPollingBot {
             Message message = update.getMessage();
             if (message.hasText() || message.hasLocation()) {
                 List<String> messages = botBl.processUpdate(update);
-                for(String messageText: messages) {
+                for(String messageText :
+                        messages) {
                     SendMessage sendMessage = new SendMessage() // Create a SendMessage object with mandatory fields
                             .setChatId(update.getMessage().getChatId())
                             .setText(messageText);

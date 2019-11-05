@@ -35,16 +35,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "evebooking")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Evebooking.findAll", query = "SELECT e FROM Evebooking e")
-    , @NamedQuery(name = "Evebooking.findByIdbooking", query = "SELECT e FROM Evebooking e WHERE e.idbooking = :idbooking")
-    , @NamedQuery(name = "Evebooking.findByQuantity", query = "SELECT e FROM Evebooking e WHERE e.quantity = :quantity")
-    , @NamedQuery(name = "Evebooking.findByDate", query = "SELECT e FROM Evebooking e WHERE e.date = :date")
-    , @NamedQuery(name = "Evebooking.findByStatus", query = "SELECT e FROM Evebooking e WHERE e.status = :status")
-    , @NamedQuery(name = "Evebooking.findByTxuser", query = "SELECT e FROM Evebooking e WHERE e.txuser = :txuser")
-    , @NamedQuery(name = "Evebooking.findByTxhost", query = "SELECT e FROM Evebooking e WHERE e.txhost = :txhost")
-    , @NamedQuery(name = "Evebooking.findByTxdate", query = "SELECT e FROM Evebooking e WHERE e.txdate = :txdate")})
-public class Evebooking implements Serializable {
+public class EveBooking implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -69,21 +60,21 @@ public class Evebooking implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date txdate;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idbooking", fetch = FetchType.LAZY)
-    private List<Evepayment> evepaymentList;
+    private List<EvePayment> evepaymentList;
     @JoinColumn(name = "idticket", referencedColumnName = "idticket")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Eveticket idticket;
+    private EveTicket idticket;
     @JoinColumn(name = "idevent", referencedColumnName = "idevent")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Eveevent idevent;
+    private EveEvent idevent;
     @JoinColumn(name = "iduser", referencedColumnName = "iduser")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Eveuser iduser;
+    private EveUser iduser;
 
-    public Evebooking() {
+    public EveBooking() {
     }
 
-    public Evebooking(Integer idbooking) {
+    public EveBooking(Integer idbooking) {
         this.idbooking = idbooking;
     }
 
@@ -144,35 +135,35 @@ public class Evebooking implements Serializable {
     }
 
     @XmlTransient
-    public List<Evepayment> getEvepaymentList() {
+    public List<EvePayment> getEvepaymentList() {
         return evepaymentList;
     }
 
-    public void setEvepaymentList(List<Evepayment> evepaymentList) {
+    public void setEvepaymentList(List<EvePayment> evepaymentList) {
         this.evepaymentList = evepaymentList;
     }
 
-    public Eveticket getIdticket() {
+    public EveTicket getIdticket() {
         return idticket;
     }
 
-    public void setIdticket(Eveticket idticket) {
+    public void setIdticket(EveTicket idticket) {
         this.idticket = idticket;
     }
 
-    public Eveevent getIdevent() {
+    public EveEvent getIdevent() {
         return idevent;
     }
 
-    public void setIdevent(Eveevent idevent) {
+    public void setIdevent(EveEvent idevent) {
         this.idevent = idevent;
     }
 
-    public Eveuser getIduser() {
+    public EveUser getIduser() {
         return iduser;
     }
 
-    public void setIduser(Eveuser iduser) {
+    public void setIduser(EveUser iduser) {
         this.iduser = iduser;
     }
 
@@ -186,10 +177,10 @@ public class Evebooking implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Evebooking)) {
+        if (!(object instanceof EveBooking)) {
             return false;
         }
-        Evebooking other = (Evebooking) object;
+        EveBooking other = (EveBooking) object;
         if ((this.idbooking == null && other.idbooking != null) || (this.idbooking != null && !this.idbooking.equals(other.idbooking))) {
             return false;
         }

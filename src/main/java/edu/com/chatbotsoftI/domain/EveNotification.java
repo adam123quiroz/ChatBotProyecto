@@ -32,11 +32,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "evenotification")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Evenotification.findAll", query = "SELECT e FROM Evenotification e")
-    , @NamedQuery(name = "Evenotification.findByIdnotification", query = "SELECT e FROM Evenotification e WHERE e.idnotification = :idnotification")
-    , @NamedQuery(name = "Evenotification.findByMsnotification", query = "SELECT e FROM Evenotification e WHERE e.msnotification = :msnotification")})
-public class Evenotification implements Serializable {
+public class EveNotification implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -49,14 +45,14 @@ public class Evenotification implements Serializable {
     private String msnotification;
     @JoinColumn(name = "idleaseplace", referencedColumnName = "idleaseplace")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Eveleaseplace idleaseplace;
+    private EveLeasePlace idleaseplace;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idnotification", fetch = FetchType.LAZY)
-    private List<Evenotificationuser> evenotificationuserList;
+    private List<EveNotificationUser> evenotificationuserList;
 
-    public Evenotification() {
+    public EveNotification() {
     }
 
-    public Evenotification(Integer idnotification) {
+    public EveNotification(Integer idnotification) {
         this.idnotification = idnotification;
     }
 
@@ -76,20 +72,20 @@ public class Evenotification implements Serializable {
         this.msnotification = msnotification;
     }
 
-    public Eveleaseplace getIdleaseplace() {
+    public EveLeasePlace getIdleaseplace() {
         return idleaseplace;
     }
 
-    public void setIdleaseplace(Eveleaseplace idleaseplace) {
+    public void setIdleaseplace(EveLeasePlace idleaseplace) {
         this.idleaseplace = idleaseplace;
     }
 
     @XmlTransient
-    public List<Evenotificationuser> getEvenotificationuserList() {
+    public List<EveNotificationUser> getEvenotificationuserList() {
         return evenotificationuserList;
     }
 
-    public void setEvenotificationuserList(List<Evenotificationuser> evenotificationuserList) {
+    public void setEvenotificationuserList(List<EveNotificationUser> evenotificationuserList) {
         this.evenotificationuserList = evenotificationuserList;
     }
 
@@ -103,10 +99,10 @@ public class Evenotification implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Evenotification)) {
+        if (!(object instanceof EveNotification)) {
             return false;
         }
-        Evenotification other = (Evenotification) object;
+        EveNotification other = (EveNotification) object;
         if ((this.idnotification == null && other.idnotification != null) || (this.idnotification != null && !this.idnotification.equals(other.idnotification))) {
             return false;
         }

@@ -30,11 +30,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "evecategory")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Evecategory.findAll", query = "SELECT e FROM Evecategory e")
-    , @NamedQuery(name = "Evecategory.findByIdcategory", query = "SELECT e FROM Evecategory e WHERE e.idcategory = :idcategory")
-    , @NamedQuery(name = "Evecategory.findByCategory", query = "SELECT e FROM Evecategory e WHERE e.category = :category")})
-public class Evecategory implements Serializable {
+public class EveCategory implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -46,12 +42,12 @@ public class Evecategory implements Serializable {
     @Column(name = "category")
     private String category;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idcategory", fetch = FetchType.LAZY)
-    private List<Eveevent> eveeventList;
+    private List<EveEvent> eveeventList;
 
-    public Evecategory() {
+    public EveCategory() {
     }
 
-    public Evecategory(Integer idcategory) {
+    public EveCategory(Integer idcategory) {
         this.idcategory = idcategory;
     }
 
@@ -72,11 +68,11 @@ public class Evecategory implements Serializable {
     }
 
     @XmlTransient
-    public List<Eveevent> getEveeventList() {
+    public List<EveEvent> getEveeventList() {
         return eveeventList;
     }
 
-    public void setEveeventList(List<Eveevent> eveeventList) {
+    public void setEveeventList(List<EveEvent> eveeventList) {
         this.eveeventList = eveeventList;
     }
 
@@ -90,10 +86,10 @@ public class Evecategory implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Evecategory)) {
+        if (!(object instanceof EveCategory)) {
             return false;
         }
-        Evecategory other = (Evecategory) object;
+        EveCategory other = (EveCategory) object;
         if ((this.idcategory == null && other.idcategory != null) || (this.idcategory != null && !this.idcategory.equals(other.idcategory))) {
             return false;
         }

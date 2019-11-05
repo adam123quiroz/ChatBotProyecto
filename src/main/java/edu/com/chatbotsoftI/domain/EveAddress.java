@@ -32,11 +32,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "eveaddress")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Eveaddress.findAll", query = "SELECT e FROM Eveaddress e")
-    , @NamedQuery(name = "Eveaddress.findByIdaddress", query = "SELECT e FROM Eveaddress e WHERE e.idaddress = :idaddress")
-    , @NamedQuery(name = "Eveaddress.findByAddress", query = "SELECT e FROM Eveaddress e WHERE e.address = :address")})
-public class Eveaddress implements Serializable {
+public class EveAddress implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -49,16 +45,16 @@ public class Eveaddress implements Serializable {
     private String address;
     @JoinColumn(name = "idcity", referencedColumnName = "idcity")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Evecity idcity;
+    private EveCity idcity;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idaddress", fetch = FetchType.LAZY)
-    private List<Eveevent> eveeventList;
+    private List<EveEvent> eveeventList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idaddress", fetch = FetchType.LAZY)
-    private List<Eveleaseplace> eveleaseplaceList;
+    private List<EveLeasePlace> eveleaseplaceList;
 
-    public Eveaddress() {
+    public EveAddress() {
     }
 
-    public Eveaddress(Integer idaddress) {
+    public EveAddress(Integer idaddress) {
         this.idaddress = idaddress;
     }
 
@@ -78,29 +74,29 @@ public class Eveaddress implements Serializable {
         this.address = address;
     }
 
-    public Evecity getIdcity() {
+    public EveCity getIdcity() {
         return idcity;
     }
 
-    public void setIdcity(Evecity idcity) {
+    public void setIdcity(EveCity idcity) {
         this.idcity = idcity;
     }
 
     @XmlTransient
-    public List<Eveevent> getEveeventList() {
+    public List<EveEvent> getEveeventList() {
         return eveeventList;
     }
 
-    public void setEveeventList(List<Eveevent> eveeventList) {
+    public void setEveeventList(List<EveEvent> eveeventList) {
         this.eveeventList = eveeventList;
     }
 
     @XmlTransient
-    public List<Eveleaseplace> getEveleaseplaceList() {
+    public List<EveLeasePlace> getEveleaseplaceList() {
         return eveleaseplaceList;
     }
 
-    public void setEveleaseplaceList(List<Eveleaseplace> eveleaseplaceList) {
+    public void setEveleaseplaceList(List<EveLeasePlace> eveleaseplaceList) {
         this.eveleaseplaceList = eveleaseplaceList;
     }
 
@@ -114,10 +110,10 @@ public class Eveaddress implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Eveaddress)) {
+        if (!(object instanceof EveAddress)) {
             return false;
         }
-        Eveaddress other = (Eveaddress) object;
+        EveAddress other = (EveAddress) object;
         if ((this.idaddress == null && other.idaddress != null) || (this.idaddress != null && !this.idaddress.equals(other.idaddress))) {
             return false;
         }

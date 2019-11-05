@@ -33,14 +33,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "eveticket")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Eveticket.findAll", query = "SELECT e FROM Eveticket e")
-    , @NamedQuery(name = "Eveticket.findByIdticket", query = "SELECT e FROM Eveticket e WHERE e.idticket = :idticket")
-    , @NamedQuery(name = "Eveticket.findByNumberticket", query = "SELECT e FROM Eveticket e WHERE e.numberticket = :numberticket")
-    , @NamedQuery(name = "Eveticket.findByTxuser", query = "SELECT e FROM Eveticket e WHERE e.txuser = :txuser")
-    , @NamedQuery(name = "Eveticket.findByTxhost", query = "SELECT e FROM Eveticket e WHERE e.txhost = :txhost")
-    , @NamedQuery(name = "Eveticket.findByTxdate", query = "SELECT e FROM Eveticket e WHERE e.txdate = :txdate")})
-public class Eveticket implements Serializable {
+public class EveTicket implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -61,14 +54,14 @@ public class Eveticket implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date txdate;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idticket", fetch = FetchType.LAZY)
-    private List<Evebuyticket> evebuyticketList;
+    private List<EveBuyTicket> evebuyticketList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idticket", fetch = FetchType.LAZY)
-    private List<Evebooking> evebookingList;
+    private List<EveBooking> evebookingList;
 
-    public Eveticket() {
+    public EveTicket() {
     }
 
-    public Eveticket(Integer idticket) {
+    public EveTicket(Integer idticket) {
         this.idticket = idticket;
     }
 
@@ -113,20 +106,20 @@ public class Eveticket implements Serializable {
     }
 
     @XmlTransient
-    public List<Evebuyticket> getEvebuyticketList() {
+    public List<EveBuyTicket> getEvebuyticketList() {
         return evebuyticketList;
     }
 
-    public void setEvebuyticketList(List<Evebuyticket> evebuyticketList) {
+    public void setEvebuyticketList(List<EveBuyTicket> evebuyticketList) {
         this.evebuyticketList = evebuyticketList;
     }
 
     @XmlTransient
-    public List<Evebooking> getEvebookingList() {
+    public List<EveBooking> getEvebookingList() {
         return evebookingList;
     }
 
-    public void setEvebookingList(List<Evebooking> evebookingList) {
+    public void setEvebookingList(List<EveBooking> evebookingList) {
         this.evebookingList = evebookingList;
     }
 
@@ -140,10 +133,10 @@ public class Eveticket implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Eveticket)) {
+        if (!(object instanceof EveTicket)) {
             return false;
         }
-        Eveticket other = (Eveticket) object;
+        EveTicket other = (EveTicket) object;
         if ((this.idticket == null && other.idticket != null) || (this.idticket != null && !this.idticket.equals(other.idticket))) {
             return false;
         }

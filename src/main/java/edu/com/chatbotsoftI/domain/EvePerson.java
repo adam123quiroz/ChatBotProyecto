@@ -19,6 +19,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -30,13 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "eveperson")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Eveperson.findAll", query = "SELECT e FROM Eveperson e")
-    , @NamedQuery(name = "Eveperson.findByIdperson", query = "SELECT e FROM Eveperson e WHERE e.idperson = :idperson")
-    , @NamedQuery(name = "Eveperson.findByCi", query = "SELECT e FROM Eveperson e WHERE e.ci = :ci")
-    , @NamedQuery(name = "Eveperson.findByName", query = "SELECT e FROM Eveperson e WHERE e.name = :name")
-    , @NamedQuery(name = "Eveperson.findByLastname", query = "SELECT e FROM Eveperson e WHERE e.lastname = :lastname")})
-public class Eveperson implements Serializable {
+public class EvePerson implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -53,15 +48,22 @@ public class Eveperson implements Serializable {
     @Size(max = 45)
     @Column(name = "lastname")
     private String lastname;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 100)
+    @Column(name = "bot_user_id")
+    private String botUserId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idperson", fetch = FetchType.LAZY)
-    private List<Eveuser> eveuserList;
+    private List<EveUser> eveuserList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idperson", fetch = FetchType.LAZY)
-    private List<Evepersonchat> evepersonchatList;
+    private List<EvePersonChat> evepersonchatList;
 
-    public Eveperson() {
+    public EvePerson() {
     }
 
-    public Eveperson(Integer idperson) {
+
+
+    public EvePerson(Integer idperson) {
         this.idperson = idperson;
     }
 
@@ -98,20 +100,28 @@ public class Eveperson implements Serializable {
     }
 
     @XmlTransient
-    public List<Eveuser> getEveuserList() {
+    public List<EveUser> getEveuserList() {
         return eveuserList;
     }
 
-    public void setEveuserList(List<Eveuser> eveuserList) {
+    public String getBotUserId() {
+        return botUserId;
+    }
+
+    public void setBotUserId(String botUserId) {
+        this.botUserId = botUserId;
+    }
+
+    public void setEveuserList(List<EveUser> eveuserList) {
         this.eveuserList = eveuserList;
     }
 
     @XmlTransient
-    public List<Evepersonchat> getEvepersonchatList() {
+    public List<EvePersonChat> getEvepersonchatList() {
         return evepersonchatList;
     }
 
-    public void setEvepersonchatList(List<Evepersonchat> evepersonchatList) {
+    public void setEvepersonchatList(List<EvePersonChat> evepersonchatList) {
         this.evepersonchatList = evepersonchatList;
     }
 
@@ -125,10 +135,10 @@ public class Eveperson implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Eveperson)) {
+        if (!(object instanceof EvePerson)) {
             return false;
         }
-        Eveperson other = (Eveperson) object;
+        EvePerson other = (EvePerson) object;
         if ((this.idperson == null && other.idperson != null) || (this.idperson != null && !this.idperson.equals(other.idperson))) {
             return false;
         }

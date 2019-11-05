@@ -36,18 +36,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "eveevent")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Eveevent.findAll", query = "SELECT e FROM Eveevent e")
-    , @NamedQuery(name = "Eveevent.findByIdevent", query = "SELECT e FROM Eveevent e WHERE e.idevent = :idevent")
-    , @NamedQuery(name = "Eveevent.findByNameevent", query = "SELECT e FROM Eveevent e WHERE e.nameevent = :nameevent")
-    , @NamedQuery(name = "Eveevent.findByPrice", query = "SELECT e FROM Eveevent e WHERE e.price = :price")
-    , @NamedQuery(name = "Eveevent.findByDate", query = "SELECT e FROM Eveevent e WHERE e.date = :date")
-    , @NamedQuery(name = "Eveevent.findByStarttime", query = "SELECT e FROM Eveevent e WHERE e.starttime = :starttime")
-    , @NamedQuery(name = "Eveevent.findByStatus", query = "SELECT e FROM Eveevent e WHERE e.status = :status")
-    , @NamedQuery(name = "Eveevent.findByTxuser", query = "SELECT e FROM Eveevent e WHERE e.txuser = :txuser")
-    , @NamedQuery(name = "Eveevent.findByTxhost", query = "SELECT e FROM Eveevent e WHERE e.txhost = :txhost")
-    , @NamedQuery(name = "Eveevent.findByTxdate", query = "SELECT e FROM Eveevent e WHERE e.txdate = :txdate")})
-public class Eveevent implements Serializable {
+public class EveEvent implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -79,28 +68,28 @@ public class Eveevent implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date txdate;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idevent", fetch = FetchType.LAZY)
-    private List<Eveeventfile> eveeventfileList;
+    private List<EveEventFile> eveeventfileList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idevent", fetch = FetchType.LAZY)
-    private List<Evebuyticket> evebuyticketList;
+    private List<EveBuyTicket> evebuyticketList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idevent", fetch = FetchType.LAZY)
-    private List<Evebooking> evebookingList;
+    private List<EveBooking> evebookingList;
     @JoinColumn(name = "idcategory", referencedColumnName = "idcategory")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Evecategory idcategory;
+    private EveCategory idcategory;
     @JoinColumn(name = "idaddress", referencedColumnName = "idaddress")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Eveaddress idaddress;
+    private EveAddress idaddress;
     @JoinColumn(name = "idtypeevent", referencedColumnName = "idtypeevent")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Evetypeevent idtypeevent;
+    private EveTypeEvent idtypeevent;
     @JoinColumn(name = "iduser", referencedColumnName = "iduser")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Eveuser iduser;
+    private EveUser iduser;
 
-    public Eveevent() {
+    public EveEvent() {
     }
 
-    public Eveevent(Integer idevent) {
+    public EveEvent(Integer idevent) {
         this.idevent = idevent;
     }
 
@@ -177,61 +166,61 @@ public class Eveevent implements Serializable {
     }
 
     @XmlTransient
-    public List<Eveeventfile> getEveeventfileList() {
+    public List<EveEventFile> getEveeventfileList() {
         return eveeventfileList;
     }
 
-    public void setEveeventfileList(List<Eveeventfile> eveeventfileList) {
+    public void setEveeventfileList(List<EveEventFile> eveeventfileList) {
         this.eveeventfileList = eveeventfileList;
     }
 
     @XmlTransient
-    public List<Evebuyticket> getEvebuyticketList() {
+    public List<EveBuyTicket> getEvebuyticketList() {
         return evebuyticketList;
     }
 
-    public void setEvebuyticketList(List<Evebuyticket> evebuyticketList) {
+    public void setEvebuyticketList(List<EveBuyTicket> evebuyticketList) {
         this.evebuyticketList = evebuyticketList;
     }
 
     @XmlTransient
-    public List<Evebooking> getEvebookingList() {
+    public List<EveBooking> getEvebookingList() {
         return evebookingList;
     }
 
-    public void setEvebookingList(List<Evebooking> evebookingList) {
+    public void setEvebookingList(List<EveBooking> evebookingList) {
         this.evebookingList = evebookingList;
     }
 
-    public Evecategory getIdcategory() {
+    public EveCategory getIdcategory() {
         return idcategory;
     }
 
-    public void setIdcategory(Evecategory idcategory) {
+    public void setIdcategory(EveCategory idcategory) {
         this.idcategory = idcategory;
     }
 
-    public Eveaddress getIdaddress() {
+    public EveAddress getIdaddress() {
         return idaddress;
     }
 
-    public void setIdaddress(Eveaddress idaddress) {
+    public void setIdaddress(EveAddress idaddress) {
         this.idaddress = idaddress;
     }
 
-    public Evetypeevent getIdtypeevent() {
+    public EveTypeEvent getIdtypeevent() {
         return idtypeevent;
     }
 
-    public void setIdtypeevent(Evetypeevent idtypeevent) {
+    public void setIdtypeevent(EveTypeEvent idtypeevent) {
         this.idtypeevent = idtypeevent;
     }
 
-    public Eveuser getIduser() {
+    public EveUser getIduser() {
         return iduser;
     }
 
-    public void setIduser(Eveuser iduser) {
+    public void setIduser(EveUser iduser) {
         this.iduser = iduser;
     }
 
@@ -245,10 +234,10 @@ public class Eveevent implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Eveevent)) {
+        if (!(object instanceof EveEvent)) {
             return false;
         }
-        Eveevent other = (Eveevent) object;
+        EveEvent other = (EveEvent) object;
         if ((this.idevent == null && other.idevent != null) || (this.idevent != null && !this.idevent.equals(other.idevent))) {
             return false;
         }

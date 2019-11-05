@@ -29,22 +29,19 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Ray Silva
  */
 @Entity
-@Table(name = "eveeventfile")
+@Table(name = "evepersonchat")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Eveeventfile.findAll", query = "SELECT e FROM Eveeventfile e")
-    , @NamedQuery(name = "Eveeventfile.findByIdeveventfile", query = "SELECT e FROM Eveeventfile e WHERE e.ideveventfile = :ideveventfile")
-    , @NamedQuery(name = "Eveeventfile.findByTxuser", query = "SELECT e FROM Eveeventfile e WHERE e.txuser = :txuser")
-    , @NamedQuery(name = "Eveeventfile.findByTxhost", query = "SELECT e FROM Eveeventfile e WHERE e.txhost = :txhost")
-    , @NamedQuery(name = "Eveeventfile.findByTxdate", query = "SELECT e FROM Eveeventfile e WHERE e.txdate = :txdate")})
-public class Eveeventfile implements Serializable {
+public class EvePersonChat implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "ideveventfile")
-    private Integer ideveventfile;
+    @Column(name = "idevuserchat")
+    private Integer idevuserchat;
+    @Size(max = 45)
+    @Column(name = "userbotchatid")
+    private String userbotchatid;
     @Size(max = 45)
     @Column(name = "txuser")
     private String txuser;
@@ -54,26 +51,31 @@ public class Eveeventfile implements Serializable {
     @Column(name = "txdate")
     @Temporal(TemporalType.DATE)
     private Date txdate;
-    @JoinColumn(name = "idevefile", referencedColumnName = "idfile")
+    @JoinColumn(name = "idperson", referencedColumnName = "idperson")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Evefile idevefile;
-    @JoinColumn(name = "idevent", referencedColumnName = "idevent")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Eveevent idevent;
+    private EvePerson idperson;
 
-    public Eveeventfile() {
+    public EvePersonChat() {
     }
 
-    public Eveeventfile(Integer ideveventfile) {
-        this.ideveventfile = ideveventfile;
+    public EvePersonChat(Integer idevuserchat) {
+        this.idevuserchat = idevuserchat;
     }
 
-    public Integer getIdeveventfile() {
-        return ideveventfile;
+    public Integer getIdevuserchat() {
+        return idevuserchat;
     }
 
-    public void setIdeveventfile(Integer ideveventfile) {
-        this.ideveventfile = ideveventfile;
+    public void setIdevuserchat(Integer idevuserchat) {
+        this.idevuserchat = idevuserchat;
+    }
+
+    public String getUserbotchatid() {
+        return userbotchatid;
+    }
+
+    public void setUserbotchatid(String userbotchatid) {
+        this.userbotchatid = userbotchatid;
     }
 
     public String getTxuser() {
@@ -100,37 +102,29 @@ public class Eveeventfile implements Serializable {
         this.txdate = txdate;
     }
 
-    public Evefile getIdevefile() {
-        return idevefile;
+    public EvePerson getIdperson() {
+        return idperson;
     }
 
-    public void setIdevefile(Evefile idevefile) {
-        this.idevefile = idevefile;
-    }
-
-    public Eveevent getIdevent() {
-        return idevent;
-    }
-
-    public void setIdevent(Eveevent idevent) {
-        this.idevent = idevent;
+    public void setIdperson(EvePerson idperson) {
+        this.idperson = idperson;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (ideveventfile != null ? ideveventfile.hashCode() : 0);
+        hash += (idevuserchat != null ? idevuserchat.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Eveeventfile)) {
+        if (!(object instanceof EvePersonChat)) {
             return false;
         }
-        Eveeventfile other = (Eveeventfile) object;
-        if ((this.ideveventfile == null && other.ideveventfile != null) || (this.ideveventfile != null && !this.ideveventfile.equals(other.ideveventfile))) {
+        EvePersonChat other = (EvePersonChat) object;
+        if ((this.idevuserchat == null && other.idevuserchat != null) || (this.idevuserchat != null && !this.idevuserchat.equals(other.idevuserchat))) {
             return false;
         }
         return true;
@@ -138,7 +132,7 @@ public class Eveeventfile implements Serializable {
 
     @Override
     public String toString() {
-        return "edu.com.chatbotsoftI.domain.Eveeventfile[ ideveventfile=" + ideveventfile + " ]";
+        return "edu.com.chatbotsoftI.domain.Evepersonchat[ idevuserchat=" + idevuserchat + " ]";
     }
     
 }

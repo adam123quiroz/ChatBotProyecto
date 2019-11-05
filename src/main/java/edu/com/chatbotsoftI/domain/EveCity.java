@@ -32,11 +32,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "evecity")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Evecity.findAll", query = "SELECT e FROM Evecity e")
-    , @NamedQuery(name = "Evecity.findByIdcity", query = "SELECT e FROM Evecity e WHERE e.idcity = :idcity")
-    , @NamedQuery(name = "Evecity.findByCity", query = "SELECT e FROM Evecity e WHERE e.city = :city")})
-public class Evecity implements Serializable {
+public class EveCity implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -49,14 +45,14 @@ public class Evecity implements Serializable {
     private String city;
     @JoinColumn(name = "idstate", referencedColumnName = "idstate")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Evestate idstate;
+    private EveState idstate;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idcity", fetch = FetchType.LAZY)
-    private List<Eveaddress> eveaddressList;
+    private List<EveAddress> eveaddressList;
 
-    public Evecity() {
+    public EveCity() {
     }
 
-    public Evecity(Integer idcity) {
+    public EveCity(Integer idcity) {
         this.idcity = idcity;
     }
 
@@ -76,20 +72,20 @@ public class Evecity implements Serializable {
         this.city = city;
     }
 
-    public Evestate getIdstate() {
+    public EveState getIdstate() {
         return idstate;
     }
 
-    public void setIdstate(Evestate idstate) {
+    public void setIdstate(EveState idstate) {
         this.idstate = idstate;
     }
 
     @XmlTransient
-    public List<Eveaddress> getEveaddressList() {
+    public List<EveAddress> getEveaddressList() {
         return eveaddressList;
     }
 
-    public void setEveaddressList(List<Eveaddress> eveaddressList) {
+    public void setEveaddressList(List<EveAddress> eveaddressList) {
         this.eveaddressList = eveaddressList;
     }
 
@@ -103,10 +99,10 @@ public class Evecity implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Evecity)) {
+        if (!(object instanceof EveCity)) {
             return false;
         }
-        Evecity other = (Evecity) object;
+        EveCity other = (EveCity) object;
         if ((this.idcity == null && other.idcity != null) || (this.idcity != null && !this.idcity.equals(other.idcity))) {
             return false;
         }
