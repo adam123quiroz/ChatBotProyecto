@@ -1,6 +1,5 @@
 package edu.com.chatbotsoftI.bot.special.keyboard;
 
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
@@ -8,16 +7,16 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import java.util.ArrayList;
 import java.util.List;
 
-public class KeyboardBot extends ReplyKeyboardMarkup {
+public class KbOptionsBot extends ReplyKeyboardMarkup {
     private List<String> options;
     private List<KeyboardRow> keyboard;
     KeyboardRow keyboardRow;
 
-    public KeyboardBot() {
+    public KbOptionsBot() {
         initKeyboard();
     }
 
-    public KeyboardBot(List<String> options) {
+    public KbOptionsBot(List<String> options) {
         this.options = options;
         initKeyboard();
     }

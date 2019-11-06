@@ -1,5 +1,9 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package edu.com.chatbotsoftI.domain;
-
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -18,6 +22,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -25,14 +30,17 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Ray Silva
  */
 @Entity
-@Table(name = "payment")
+@Table(name = "evepayment")
 @XmlRootElement
 @NamedQueries({
-        @NamedQuery(name = "Payment.findAll", query = "SELECT p FROM Payment p")
-        , @NamedQuery(name = "Payment.findByIdpayment", query = "SELECT p FROM Payment p WHERE p.idpayment = :idpayment")
-        , @NamedQuery(name = "Payment.findByDate", query = "SELECT p FROM Payment p WHERE p.date = :date")
-        , @NamedQuery(name = "Payment.findByTotal", query = "SELECT p FROM Payment p WHERE p.total = :total")})
-public class Payment implements Serializable {
+    @NamedQuery(name = "Evepayment.findAll", query = "SELECT e FROM Evepayment e")
+    , @NamedQuery(name = "Evepayment.findByIdpayment", query = "SELECT e FROM Evepayment e WHERE e.idpayment = :idpayment")
+    , @NamedQuery(name = "Evepayment.findByDate", query = "SELECT e FROM Evepayment e WHERE e.date = :date")
+    , @NamedQuery(name = "Evepayment.findByTotal", query = "SELECT e FROM Evepayment e WHERE e.total = :total")
+    , @NamedQuery(name = "Evepayment.findByTxuser", query = "SELECT e FROM Evepayment e WHERE e.txuser = :txuser")
+    , @NamedQuery(name = "Evepayment.findByTxhost", query = "SELECT e FROM Evepayment e WHERE e.txhost = :txhost")
+    , @NamedQuery(name = "Evepayment.findByTxdate", query = "SELECT e FROM Evepayment e WHERE e.txdate = :txdate")})
+public class Evepayment implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -46,17 +54,26 @@ public class Payment implements Serializable {
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "total")
     private BigDecimal total;
+    @Size(max = 45)
+    @Column(name = "txuser")
+    private String txuser;
+    @Size(max = 45)
+    @Column(name = "txhost")
+    private String txhost;
+    @Column(name = "txdate")
+    @Temporal(TemporalType.DATE)
+    private Date txdate;
     @JoinColumn(name = "idpaymentmethod", referencedColumnName = "idpaymentmethod")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Paymentmethod idpaymentmethod;
+    private Evepaymentmethod idpaymentmethod;
     @JoinColumn(name = "idbooking", referencedColumnName = "idbooking")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Booking idbooking;
+    private Evebooking idbooking;
 
-    public Payment() {
+    public Evepayment() {
     }
 
-    public Payment(Integer idpayment) {
+    public Evepayment(Integer idpayment) {
         this.idpayment = idpayment;
     }
 
@@ -84,19 +101,43 @@ public class Payment implements Serializable {
         this.total = total;
     }
 
-    public Paymentmethod getIdpaymentmethod() {
+    public String getTxuser() {
+        return txuser;
+    }
+
+    public void setTxuser(String txuser) {
+        this.txuser = txuser;
+    }
+
+    public String getTxhost() {
+        return txhost;
+    }
+
+    public void setTxhost(String txhost) {
+        this.txhost = txhost;
+    }
+
+    public Date getTxdate() {
+        return txdate;
+    }
+
+    public void setTxdate(Date txdate) {
+        this.txdate = txdate;
+    }
+
+    public Evepaymentmethod getIdpaymentmethod() {
         return idpaymentmethod;
     }
 
-    public void setIdpaymentmethod(Paymentmethod idpaymentmethod) {
+    public void setIdpaymentmethod(Evepaymentmethod idpaymentmethod) {
         this.idpaymentmethod = idpaymentmethod;
     }
 
-    public Booking getIdbooking() {
+    public Evebooking getIdbooking() {
         return idbooking;
     }
 
-    public void setIdbooking(Booking idbooking) {
+    public void setIdbooking(Evebooking idbooking) {
         this.idbooking = idbooking;
     }
 
@@ -110,10 +151,10 @@ public class Payment implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Payment)) {
+        if (!(object instanceof Evepayment)) {
             return false;
         }
-        Payment other = (Payment) object;
+        Evepayment other = (Evepayment) object;
         if ((this.idpayment == null && other.idpayment != null) || (this.idpayment != null && !this.idpayment.equals(other.idpayment))) {
             return false;
         }
@@ -122,7 +163,7 @@ public class Payment implements Serializable {
 
     @Override
     public String toString() {
-        return "domain.Payment[ idpayment=" + idpayment + " ]";
+        return "edu.com.chatbotsoftI.domain.Evepayment[ idpayment=" + idpayment + " ]";
     }
-
+    
 }

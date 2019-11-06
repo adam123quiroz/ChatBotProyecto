@@ -2,10 +2,8 @@ package edu.com.chatbotsoftI.bl;
 
 import edu.com.chatbotsoftI.dao.EventRepository;
 import edu.com.chatbotsoftI.domain.Event;
-import edu.com.chatbotsoftI.dto.Category;
 import edu.com.chatbotsoftI.dto.EventDto;
-import edu.com.chatbotsoftI.dto.Status;
-import edu.com.chatbotsoftI.dto.Category;
+import edu.com.chatbotsoftI.enums.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,14 +31,6 @@ public class EventBl {
 
     public List<Event> findAllEvent(){
         return eventRepository.findAllByStatus(Status.ACTIVE.getStatus());
-    }
-    public List<Event> findByCategory(String category){
-        List<Event> eventList = eventRepository.findAllByIdcategory_Category(category);
-        return eventList;
-    }
-    public List<Event> findEventMusic(){
-        List<Event> eventList = eventRepository.findAllByIdcategory_Category(Category.MUSIC.getCategory());
-        return eventList;
     }
 
     public List<EventDto> findAllEventByTypeEvent(String typeEvent) {

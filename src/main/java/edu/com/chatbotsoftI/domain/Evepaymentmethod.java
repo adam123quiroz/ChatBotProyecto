@@ -1,5 +1,9 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package edu.com.chatbotsoftI.domain;
-
 
 import java.io.Serializable;
 import java.util.List;
@@ -24,13 +28,13 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Ray Silva
  */
 @Entity
-@Table(name = "paymentmethod")
+@Table(name = "evepaymentmethod")
 @XmlRootElement
 @NamedQueries({
-        @NamedQuery(name = "Paymentmethod.findAll", query = "SELECT p FROM Paymentmethod p")
-        , @NamedQuery(name = "Paymentmethod.findByIdpaymentmethod", query = "SELECT p FROM Paymentmethod p WHERE p.idpaymentmethod = :idpaymentmethod")
-        , @NamedQuery(name = "Paymentmethod.findByPaymentmethod", query = "SELECT p FROM Paymentmethod p WHERE p.paymentmethod = :paymentmethod")})
-public class Paymentmethod implements Serializable {
+    @NamedQuery(name = "Evepaymentmethod.findAll", query = "SELECT e FROM Evepaymentmethod e")
+    , @NamedQuery(name = "Evepaymentmethod.findByIdpaymentmethod", query = "SELECT e FROM Evepaymentmethod e WHERE e.idpaymentmethod = :idpaymentmethod")
+    , @NamedQuery(name = "Evepaymentmethod.findByPaymentmethod", query = "SELECT e FROM Evepaymentmethod e WHERE e.paymentmethod = :paymentmethod")})
+public class Evepaymentmethod implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -42,14 +46,14 @@ public class Paymentmethod implements Serializable {
     @Column(name = "paymentmethod")
     private String paymentmethod;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idpaymentmethod", fetch = FetchType.LAZY)
-    private List<Buyticket> buyticketList;
+    private List<Evepayment> evepaymentList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idpaymentmethod", fetch = FetchType.LAZY)
-    private List<Payment> paymentList;
+    private List<Evebuyticket> evebuyticketList;
 
-    public Paymentmethod() {
+    public Evepaymentmethod() {
     }
 
-    public Paymentmethod(Integer idpaymentmethod) {
+    public Evepaymentmethod(Integer idpaymentmethod) {
         this.idpaymentmethod = idpaymentmethod;
     }
 
@@ -70,21 +74,21 @@ public class Paymentmethod implements Serializable {
     }
 
     @XmlTransient
-    public List<Buyticket> getBuyticketList() {
-        return buyticketList;
+    public List<Evepayment> getEvepaymentList() {
+        return evepaymentList;
     }
 
-    public void setBuyticketList(List<Buyticket> buyticketList) {
-        this.buyticketList = buyticketList;
+    public void setEvepaymentList(List<Evepayment> evepaymentList) {
+        this.evepaymentList = evepaymentList;
     }
 
     @XmlTransient
-    public List<Payment> getPaymentList() {
-        return paymentList;
+    public List<Evebuyticket> getEvebuyticketList() {
+        return evebuyticketList;
     }
 
-    public void setPaymentList(List<Payment> paymentList) {
-        this.paymentList = paymentList;
+    public void setEvebuyticketList(List<Evebuyticket> evebuyticketList) {
+        this.evebuyticketList = evebuyticketList;
     }
 
     @Override
@@ -97,10 +101,10 @@ public class Paymentmethod implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Paymentmethod)) {
+        if (!(object instanceof Evepaymentmethod)) {
             return false;
         }
-        Paymentmethod other = (Paymentmethod) object;
+        Evepaymentmethod other = (Evepaymentmethod) object;
         if ((this.idpaymentmethod == null && other.idpaymentmethod != null) || (this.idpaymentmethod != null && !this.idpaymentmethod.equals(other.idpaymentmethod))) {
             return false;
         }
@@ -109,8 +113,7 @@ public class Paymentmethod implements Serializable {
 
     @Override
     public String toString() {
-        return "domain.Paymentmethod[ idpaymentmethod=" + idpaymentmethod + " ]";
+        return "edu.com.chatbotsoftI.domain.Evepaymentmethod[ idpaymentmethod=" + idpaymentmethod + " ]";
     }
-
+    
 }
-

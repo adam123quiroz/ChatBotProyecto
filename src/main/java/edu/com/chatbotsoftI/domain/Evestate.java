@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package edu.com.chatbotsoftI.domain;
 
 import java.io.Serializable;
@@ -23,13 +28,13 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Ray Silva
  */
 @Entity
-@Table(name = "state")
+@Table(name = "evestate")
 @XmlRootElement
 @NamedQueries({
-        @NamedQuery(name = "State.findAll", query = "SELECT s FROM State s")
-        , @NamedQuery(name = "State.findByIdstate", query = "SELECT s FROM State s WHERE s.idstate = :idstate")
-        , @NamedQuery(name = "State.findByState", query = "SELECT s FROM State s WHERE s.state = :state")})
-public class State implements Serializable {
+    @NamedQuery(name = "Evestate.findAll", query = "SELECT e FROM Evestate e")
+    , @NamedQuery(name = "Evestate.findByIdstate", query = "SELECT e FROM Evestate e WHERE e.idstate = :idstate")
+    , @NamedQuery(name = "Evestate.findByState", query = "SELECT e FROM Evestate e WHERE e.state = :state")})
+public class Evestate implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -41,12 +46,12 @@ public class State implements Serializable {
     @Column(name = "state")
     private String state;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idstate", fetch = FetchType.LAZY)
-    private List<City> cityList;
+    private List<Evecity> evecityList;
 
-    public State() {
+    public Evestate() {
     }
 
-    public State(Integer idstate) {
+    public Evestate(Integer idstate) {
         this.idstate = idstate;
     }
 
@@ -67,12 +72,12 @@ public class State implements Serializable {
     }
 
     @XmlTransient
-    public List<City> getCityList() {
-        return cityList;
+    public List<Evecity> getEvecityList() {
+        return evecityList;
     }
 
-    public void setCityList(List<City> cityList) {
-        this.cityList = cityList;
+    public void setEvecityList(List<Evecity> evecityList) {
+        this.evecityList = evecityList;
     }
 
     @Override
@@ -85,10 +90,10 @@ public class State implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof State)) {
+        if (!(object instanceof Evestate)) {
             return false;
         }
-        State other = (State) object;
+        Evestate other = (Evestate) object;
         if ((this.idstate == null && other.idstate != null) || (this.idstate != null && !this.idstate.equals(other.idstate))) {
             return false;
         }
@@ -97,8 +102,7 @@ public class State implements Serializable {
 
     @Override
     public String toString() {
-        return "domain.State[ idstate=" + idstate + " ]";
+        return "edu.com.chatbotsoftI.domain.Evestate[ idstate=" + idstate + " ]";
     }
-
+    
 }
-

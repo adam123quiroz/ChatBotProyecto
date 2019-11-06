@@ -1,5 +1,9 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package edu.com.chatbotsoftI.domain;
-
 
 import java.io.Serializable;
 import java.util.List;
@@ -26,13 +30,13 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Ray Silva
  */
 @Entity
-@Table(name = "notification")
+@Table(name = "evenotification")
 @XmlRootElement
 @NamedQueries({
-        @NamedQuery(name = "Notification.findAll", query = "SELECT n FROM Notification n")
-        , @NamedQuery(name = "Notification.findByIdnotification", query = "SELECT n FROM Notification n WHERE n.idnotification = :idnotification")
-        , @NamedQuery(name = "Notification.findByMsnotification", query = "SELECT n FROM Notification n WHERE n.msnotification = :msnotification")})
-public class Notification implements Serializable {
+    @NamedQuery(name = "Evenotification.findAll", query = "SELECT e FROM Evenotification e")
+    , @NamedQuery(name = "Evenotification.findByIdnotification", query = "SELECT e FROM Evenotification e WHERE e.idnotification = :idnotification")
+    , @NamedQuery(name = "Evenotification.findByMsnotification", query = "SELECT e FROM Evenotification e WHERE e.msnotification = :msnotification")})
+public class Evenotification implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -43,16 +47,16 @@ public class Notification implements Serializable {
     @Size(max = 45)
     @Column(name = "msnotification")
     private String msnotification;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idnotification", fetch = FetchType.LAZY)
-    private List<Notificationuser> notificationuserList;
     @JoinColumn(name = "idleaseplace", referencedColumnName = "idleaseplace")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Leaseplace idleaseplace;
+    private Eveleaseplace idleaseplace;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idnotification", fetch = FetchType.LAZY)
+    private List<Evenotificationuser> evenotificationuserList;
 
-    public Notification() {
+    public Evenotification() {
     }
 
-    public Notification(Integer idnotification) {
+    public Evenotification(Integer idnotification) {
         this.idnotification = idnotification;
     }
 
@@ -72,21 +76,21 @@ public class Notification implements Serializable {
         this.msnotification = msnotification;
     }
 
-    @XmlTransient
-    public List<Notificationuser> getNotificationuserList() {
-        return notificationuserList;
-    }
-
-    public void setNotificationuserList(List<Notificationuser> notificationuserList) {
-        this.notificationuserList = notificationuserList;
-    }
-
-    public Leaseplace getIdleaseplace() {
+    public Eveleaseplace getIdleaseplace() {
         return idleaseplace;
     }
 
-    public void setIdleaseplace(Leaseplace idleaseplace) {
+    public void setIdleaseplace(Eveleaseplace idleaseplace) {
         this.idleaseplace = idleaseplace;
+    }
+
+    @XmlTransient
+    public List<Evenotificationuser> getEvenotificationuserList() {
+        return evenotificationuserList;
+    }
+
+    public void setEvenotificationuserList(List<Evenotificationuser> evenotificationuserList) {
+        this.evenotificationuserList = evenotificationuserList;
     }
 
     @Override
@@ -99,10 +103,10 @@ public class Notification implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Notification)) {
+        if (!(object instanceof Evenotification)) {
             return false;
         }
-        Notification other = (Notification) object;
+        Evenotification other = (Evenotification) object;
         if ((this.idnotification == null && other.idnotification != null) || (this.idnotification != null && !this.idnotification.equals(other.idnotification))) {
             return false;
         }
@@ -111,8 +115,7 @@ public class Notification implements Serializable {
 
     @Override
     public String toString() {
-        return "domain.Notification[ idnotification=" + idnotification + " ]";
+        return "edu.com.chatbotsoftI.domain.Evenotification[ idnotification=" + idnotification + " ]";
     }
-
+    
 }
-

@@ -2,7 +2,7 @@ package edu.com.chatbotsoftI.bl;
 
 import edu.com.chatbotsoftI.dao.UserRepository;
 import edu.com.chatbotsoftI.domain.User;
-import edu.com.chatbotsoftI.dto.Status;
+import edu.com.chatbotsoftI.enums.Status;
 import edu.com.chatbotsoftI.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,5 +46,6 @@ public class UserBl {
     public void saveUser(User user) {
         userRepository.save(user);
     }
+
 
 }
