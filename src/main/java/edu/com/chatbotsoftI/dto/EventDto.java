@@ -1,6 +1,6 @@
 package edu.com.chatbotsoftI.dto;
 
-import edu.com.chatbotsoftI.domain.Eveevent;
+import edu.com.chatbotsoftI.entity.EveEventEntity;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -11,18 +11,19 @@ public class EventDto {
     private BigDecimal price;
     private Date date;
     private Date starttime;
+    private Integer status;
     private String category;
-    private String address;
 
     public EventDto() {
     }
 
-    public EventDto(Eveevent event) {
+    public EventDto(EveEventEntity event) {
         this.idevent = event.getIdevent();
         this.nameevent = event.getNameevent();
         this.price = event.getPrice();
         this.date = event.getDate();
         this.starttime = event.getStarttime();
+        this.status = event.getStatus();
     }
 
     public Integer getIdevent() {
@@ -65,20 +66,20 @@ public class EventDto {
         this.starttime = starttime;
     }
 
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     public String getCategory() {
         return category;
     }
 
     public void setCategory(String category) {
         this.category = category;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     @Override
@@ -89,6 +90,8 @@ public class EventDto {
                 ", price=" + price +
                 ", date=" + date +
                 ", starttime=" + starttime +
+                ", status=" + status +
+                ", category='" + category + '\'' +
                 '}';
     }
 }
