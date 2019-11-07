@@ -2,12 +2,12 @@ package edu.com.chatbotsoftI.dto;
 
 import edu.com.chatbotsoftI.domain.EveCategory;
 
-public class CatagoryDto {
+public class CategoryDto {
 
     private Integer idcategory;
     private String category;
 
-    public CatagoryDto(EveCategory category) {
+    public CategoryDto(EveCategory category) {
         this.idcategory = category.getIdcategory();
         this.category = category.getCategory();
     }

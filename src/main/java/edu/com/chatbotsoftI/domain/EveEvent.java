@@ -5,29 +5,14 @@
  */
 package edu.com.chatbotsoftI.domain;
 
+import javax.persistence.*;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -67,12 +52,14 @@ public class EveEvent implements Serializable {
     @Column(name = "txdate")
     @Temporal(TemporalType.DATE)
     private Date txdate;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idevent", fetch = FetchType.LAZY)
     private List<EveEventFile> eveeventfileList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idevent", fetch = FetchType.LAZY)
     private List<EveBuyTicket> evebuyticketList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idevent", fetch = FetchType.LAZY)
     private List<EveBooking> evebookingList;
+
     @JoinColumn(name = "idcategory", referencedColumnName = "idcategory")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private EveCategory idcategory;
@@ -246,7 +233,7 @@ public class EveEvent implements Serializable {
 
     @Override
     public String toString() {
-        return "edu.com.chatbotsoftI.domain.Eveevent[ idevent=" + idevent + " ]";
+        return "edu.com.chatbotsoftI.domain.Eveevent[ idevent=" + idcategory.toString() + " ]";
     }
     
 }

@@ -1,11 +1,12 @@
 package edu.com.chatbotsoftI.bl;
 
+
 import edu.com.chatbotsoftI.dao.EvePersonRepository;
-import edu.com.chatbotsoftI.domain.EvePerson;
-import edu.com.chatbotsoftI.enums.Status;
 import edu.com.chatbotsoftI.dto.PersonDto;
+import edu.com.chatbotsoftI.entity.EvePersonEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,15 +23,15 @@ public class PersonBl {
 
     public List<PersonDto> findAllUsers() {
         List<PersonDto> userDtoList = new ArrayList<>();
-        for (EvePerson user :
+        for (EvePersonEntity user :
                 userRepository.findAll()) {
             userDtoList.add(new PersonDto(user));
         }
         return userDtoList;
     }
 
-    public EvePerson findById(Integer id) {
-        Optional<EvePerson> optional = this.userRepository.findById(id);
+    public EvePersonEntity findById(Integer id) {
+        Optional<EvePersonEntity> optional = this.userRepository.findById(id);
         if (optional.isPresent()) {
             return optional.get();
         } else {
@@ -39,7 +40,7 @@ public class PersonBl {
         }
     }
 
-    public void saveUser(EvePerson user) {
+    public void saveUser(EvePersonEntity user) {
         userRepository.save(user);
     }
 

@@ -1,7 +1,6 @@
 package edu.com.chatbotsoftI.dto;
 
-
-import edu.com.chatbotsoftI.domain.EvePerson;
+import edu.com.chatbotsoftI.entity.EvePersonEntity;
 
 public class PersonDto {
 
@@ -14,7 +13,7 @@ public class PersonDto {
     public PersonDto(){
     }
 
-    public PersonDto(EvePerson user){
+    public PersonDto(EvePersonEntity user){
         this.idperson = user.getIdperson();
         this.ci = user.getCi();
         this.name = user.getName();
