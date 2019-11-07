@@ -141,6 +141,12 @@ public class BotBl {
                 showEventsInformation(eventDtos, idChat,
                         "https://www.yucatan.com.mx/wp-content/uploads/2019/03/2491246.jpg-r_1920_1080-f_jpg-q_x-xxyxx.jpg?width=1200&enable=upscale");
                 break;
+            case Options.OP_MUSIC:
+                eventDtos = eventBl.findAllEventByTypeEvent(TypeEvent.MUSIC.getTypeEvent());
+                showEventsInformation(eventDtos,idChat,"https://static.rfstat.com/bloggers_folders/user_2540376/my_media/aab8b888-e24f-43af-83db-cc4cd88de9b3.jpeg");
+
+
+                break;
 
             case Options.OP_MUSEUM:
                 eventDtos = eventBl.findAllEventByTypeEvent(TypeEvent.MUSEUM.getTypeEvent());

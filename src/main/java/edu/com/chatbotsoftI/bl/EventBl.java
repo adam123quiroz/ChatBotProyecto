@@ -2,6 +2,8 @@ package edu.com.chatbotsoftI.bl;
 
 import edu.com.chatbotsoftI.dao.EveCategoryRepository;
 import edu.com.chatbotsoftI.dao.EveEventRepository;
+import edu.com.chatbotsoftI.domain.EveEvent;
+import edu.com.chatbotsoftI.dto.Category;
 import edu.com.chatbotsoftI.dto.EventDto;
 import edu.com.chatbotsoftI.entity.EveEventEntity;
 import edu.com.chatbotsoftI.enums.Status;
