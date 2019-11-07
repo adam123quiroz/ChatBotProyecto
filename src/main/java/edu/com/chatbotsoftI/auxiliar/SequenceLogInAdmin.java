@@ -42,6 +42,8 @@ public class SequenceLogInAdmin extends Sequence {
 //        LOGGER.info("numero de pasos  {}", getNumberSteps());
         Message message = update.getMessage();
 
+
+        LOGGER.info("numero de pasos  {}", getNumberSteps());
         if (getStepNow() < getNumberSteps()) {
             switch (getStepNow()) {
                 case 0: // primera pregunta al usuario
