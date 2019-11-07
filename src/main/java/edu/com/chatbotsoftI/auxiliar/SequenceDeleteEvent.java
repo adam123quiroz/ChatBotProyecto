@@ -5,6 +5,7 @@ import edu.com.chatbotsoftI.dao.EveEventRepository;
 import edu.com.chatbotsoftI.entity.EveEventEntity;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ForceReplyKeyboard;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -25,7 +26,7 @@ public class SequenceDeleteEvent extends Sequence {
     private static final String DELETED_MESSAGE = "Evento eliminado satisfactoriamente";
     private static final String CANCELED_MESSAGE = "Se cancelo la eliminacion del evento";
     @Override
-    public void runSequence(Message update, BoltonBot bot) throws TelegramApiException, ParseException {
+    public void runSequence(Update update, BoltonBot bot) throws TelegramApiException, ParseException {
             Message mesagge = update.getMessage();
             String Data;
             List<EveEventEntity> usereventlist = eveEventRepository.findAllByEveuserByIduser_Nameuser("admin");
