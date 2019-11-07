@@ -8,6 +8,7 @@ import java.util.List;
 public interface EveEventRepository extends JpaRepository<EveEventEntity, Integer> {
     List<EveEventEntity> findAllByStatus(int status);
     List<EveEventEntity> findAllByEvetypeeventByIdtypeevent_TypeeventAndStatus(String typeEvent, int status);
-    List<EveEventEntity> findAllByEveuserByIduser_Nameuser(String username);
+
+    List<EveEventEntity> findAllByEveuserByIduser_Nameuser(String userName);
 }
 

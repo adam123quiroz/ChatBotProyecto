@@ -1,15 +1,14 @@
 package edu.com.chatbotsoftI.bl;
 
 import edu.com.chatbotsoftI.auxiliar.Sequence;
+import edu.com.chatbotsoftI.auxiliar.SequenceAddEvent;
 import edu.com.chatbotsoftI.auxiliar.SequenceLogInAdmin;
 import edu.com.chatbotsoftI.bot.BoltonBot;
-import edu.com.chatbotsoftI.bot.commands.Options;
+import edu.com.chatbotsoftI.bot.commands.Option;
 import edu.com.chatbotsoftI.bot.special.keyboard.KbOptionsBot;
-import edu.com.chatbotsoftI.dao.EvePersonRepository;
-import edu.com.chatbotsoftI.dao.EveUserRepository;
+import edu.com.chatbotsoftI.dao.*;
 import edu.com.chatbotsoftI.dto.EventDto;
 import edu.com.chatbotsoftI.entity.EvePersonEntity;
-import edu.com.chatbotsoftI.entity.EveUserEntity;
 import edu.com.chatbotsoftI.enums.TypeEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,39 +32,55 @@ public class BotBl {
     private static final Logger LOGGER = LoggerFactory.getLogger(BotBl.class);
 
     private static List<String> optionListI = new ArrayList<>(List.of(
-            Options.OP_CONTINUE, Options.OP_LOG_IN_ADM));
+            Option.OP_CONTINUE, Option.OP_LOG_IN_ADM));
     private static List<String> optionListII = new ArrayList<>(List.of(
-            Options.OP_MOVIE, Options.OP_MUSIC, Options.OP_MUSEUM));
+            Option.OP_MOVIE, Option.OP_MUSIC, Option.OP_MUSEUM));
 
     static final String PROVIDER_TOKEN = "284685063:TEST:ZjhmMDU1MTM2MjVi";
 
     private EventBl eventBl;
     private EvePersonRepository userRepository;
-    private EveUserRepository eveUserEntity;
+    private EveUserRepository eveUserRepository;
+    private EveEventRepository eveEventRepository;
+    private EveCategoryRepository eveCategoryRepository;
+    private EveTypeEventRepository eveTypeEventRepository;
+    private EveAddressRepository eveAddressRepository;
+    private EveStatusRepository eveStatusRepository;
+    private EveCityRepository eveCityRepository;
 
 
     private static Sequence sequence;
     private static BoltonBot boltonBot;
 
     @Autowired
-    public BotBl(EvePersonRepository userRepository, EventBl eventBl, EveUserRepository eveUserEntity) {
+    public BotBl(EvePersonRepository userRepository, EventBl eventBl,
+                 EveUserRepository eveUserEntity, EveEventRepository eveEventRepository,
+                 EveCategoryRepository eveCategoryRepository,
+                 EveTypeEventRepository eveTypeEventRepository,
+                 EveAddressRepository eveAddressRepository,
+                 EveStatusRepository eveStatusRepository,
+                 EveCityRepository eveCityRepository) {
         this.userRepository = userRepository;
         this.eventBl = eventBl;
-        this.eveUserEntity = eveUserEntity;
+        this.eveUserRepository = eveUserEntity;
+        this.eveEventRepository = eveEventRepository;
+        this.eveCategoryRepository = eveCategoryRepository;
+        this.eveTypeEventRepository = eveTypeEventRepository;
+        this.eveAddressRepository = eveAddressRepository;
+        this.eveStatusRepository = eveStatusRepository;
+        this.eveCityRepository = eveCityRepository;
+
     }
 
     public List<String> processUpdate(Update update, BoltonBot boltonBot) throws TelegramApiException, ParseException {
         this.boltonBot = boltonBot;
-//        LOGGER.info("Recibiendo update {} ", update);
         List<String> result = new ArrayList<>();
 
         if (initUser(update.getMessage().getFrom())) {
-//            LOGGER.info("Primer inicio de sesion para: {} ",update.getMessage().getFrom() );
             result.add("Por favor ingrese una imagen para su foto de perfil");
         } else {
             // Mostrar el menu de opciones
             if (this.sequence == null) {
-//                LOGGER.info("Dando bienvenida a: {} ",update.getMessage().getFrom() );
                 result.add("Bienvenido al Bot");
                 handleIncomingMessage(update.getMessage(), update);
             }
@@ -77,11 +92,7 @@ public class BotBl {
                 result.add("Bienvenido al Bot");
                 handleIncomingMessage(update.getMessage(), update);
             } else {
-                LOGGER.info( "running!!!  isRunning {}, stepNow {}, step {}",
-                        this.sequence.isRunning(),
-                        this.sequence.getStepNow(),
-                        this.sequence.getNumberSteps() );
-                this.sequence.runSequence(update.getMessage(), boltonBot);
+                this.sequence.runSequence(update, boltonBot);
             }
         }
         //continueChatWihtUser(CpUser, CpChat)
@@ -103,7 +114,7 @@ public class BotBl {
         return result;
     }
 
-    private void handleIncomingMessage( Message message, Update update ) throws TelegramApiException {
+    private void handleIncomingMessage( Message message, Update update ) throws TelegramApiException, ParseException {
 
         Integer idChat = Integer.parseInt(message.getChatId().toString());
 
@@ -120,39 +131,55 @@ public class BotBl {
                         update));
                 break;
 
-            case Options.OP_CONTINUE:
+            case Option.OP_CONTINUE:
                 kbOptionsBot = new KbOptionsBot(optionListII);
                 boltonBot.execute(kbOptionsBot.showMenu(String.format("Bienvenido %s, " +
                                 "dime, ¿que te gustaría hacer hoy?", message.getChat().getFirstName()),
                         update));
                 break;
 
-            case Options.OP_LOG_IN_ADM:
+            case Option.OP_LOG_IN_ADM:
                 SequenceLogInAdmin sequenceLogInAdmin;
-                sequenceLogInAdmin = new SequenceLogInAdmin(eveUserEntity);
+                sequenceLogInAdmin = new SequenceLogInAdmin(eveUserRepository);
                 sequenceLogInAdmin.setRunning(true);
                 sequenceLogInAdmin.setNumberSteps(2);
-                sequenceLogInAdmin.runSequence(message, boltonBot);
+                sequenceLogInAdmin.runSequence(update, boltonBot);
                 boltonBot.execute(sequenceLogInAdmin.getSendMessage());
                 this.sequence = sequenceLogInAdmin;
                 break;
 
-            case Options.OP_MOVIE:
+            case Option.OP_MOVIE:
                 eventDtos = eventBl.findAllEventByTypeEvent(TypeEvent.MOVIE.getTypeEvent());
                 showEventsInformation(eventDtos, idChat,
                         "https://www.yucatan.com.mx/wp-content/uploads/2019/03/2491246.jpg-r_1920_1080-f_jpg-q_x-xxyxx.jpg?width=1200&enable=upscale");
                 break;
-            case Options.OP_MUSIC:
+            case Option.OP_MUSIC:
                 eventDtos = eventBl.findAllEventByTypeEvent(TypeEvent.MUSIC.getTypeEvent());
-                showEventsInformation(eventDtos,idChat,"https://static.rfstat.com/bloggers_folders/user_2540376/my_media/aab8b888-e24f-43af-83db-cc4cd88de9b3.jpeg");
-
-
+                showEventsInformation(eventDtos,idChat,
+                        "https://static.rfstat.com/bloggers_folders/user_2540376/my_media/aab8b888-e24f-43af-83db-cc4cd88de9b3.jpeg");
                 break;
 
-            case Options.OP_MUSEUM:
+            case Option.OP_MUSEUM:
                 eventDtos = eventBl.findAllEventByTypeEvent(TypeEvent.MUSEUM.getTypeEvent());
                 showEventsInformation(eventDtos, idChat,
                         "https://ep00.epimg.net/elviajero/imagenes/2016/11/23/album/1479923555_950451_1479926380_album_normal.jpg");
+                break;
+
+            case Option.OP_ADD:
+                SequenceAddEvent sequenceAddEvent;
+                sequenceAddEvent = new SequenceAddEvent(eveEventRepository, eveCategoryRepository,
+                        eveAddressRepository, eveTypeEventRepository, eveStatusRepository, eveCityRepository);
+                sequenceAddEvent.setRunning(true);
+                sequenceAddEvent.setNumberSteps(7);
+                sequenceAddEvent.runSequence(update, boltonBot);
+                boltonBot.execute(sequenceAddEvent.getSendMessage());
+                this.sequence = sequenceAddEvent;
+                break;
+
+            case Option.OP_MODIFY:
+                break;
+
+            case Option.OP_DELETE:
                 break;
 
             default:
