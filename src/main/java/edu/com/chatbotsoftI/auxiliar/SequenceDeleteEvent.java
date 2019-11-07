@@ -5,7 +5,6 @@ import edu.com.chatbotsoftI.dao.EveEventRepository;
 import edu.com.chatbotsoftI.entity.EveEventEntity;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ForceReplyKeyboard;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -18,19 +17,40 @@ public class SequenceDeleteEvent extends Sequence {
 
 
     public SequenceDeleteEvent(EveEventRepository eveEventRepository) {
-        super(true, 5, 0);
+        super(true, 2, 0);
         this.eveEventRepository = eveEventRepository;
     }
-
+    private static final String REQUEST_DELETE = " Seleccione que evento desea eliminar";
+    private static final String CONFIRM_DELETE = "Esta seguro que desea eliminar este evento? Si / No";
+    private static final String DELETED_MESSAGE = "Evento eliminado satisfactoriamente";
+    private static final String CANCELED_MESSAGE = "Se cancelo la eliminacion del evento";
     @Override
-    public void runSequence(Update update, BoltonBot bot) throws TelegramApiException, ParseException {
+    public void runSequence(Message update, BoltonBot bot) throws TelegramApiException, ParseException {
             Message mesagge = update.getMessage();
             String Data;
+            List<EveEventEntity> usereventlist = eveEventRepository.findAllByEveuserByIduser_Nameuser("admin");
+
             if(getStepNow() < getNumberSteps()){
                 switch (getStepNow()){
                     case 0:
-                        List<EveEventEntity> usereventlist = eveEventRepository.findAllByEveuserByIduser_Nameuser("admin");
+                        sendMessage = sendMessage(mesagge, REQUEST_DELETE);
+                        break;
+                    case 1:
+                        String opcion = mesagge.getText();
+                        sendMessage = sendMessage(mesagge,CONFIRM_DELETE);
+                        break;
 
+
+                }
+                setStepNow(getStepNow()+1);
+            }
+            else{
+                String confirm = mesagge.getText();
+                if(confirm =="Si"){
+                    sendMessage = sendMessage(mesagge,DELETED_MESSAGE);
+                }
+                else{
+                    sendMessage = sendMessage(mesagge,CANCELED_MESSAGE);
                 }
             }
         }

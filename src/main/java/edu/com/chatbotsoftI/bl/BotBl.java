@@ -22,6 +22,7 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.payments.LabeledPrice;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -53,7 +54,7 @@ public class BotBl {
         this.eveUserEntity = eveUserEntity;
     }
 
-    public List<String> processUpdate(Update update, BoltonBot boltonBot) throws TelegramApiException {
+    public List<String> processUpdate(Update update, BoltonBot boltonBot) throws TelegramApiException, ParseException {
         this.boltonBot = boltonBot;
 //        LOGGER.info("Recibiendo update {} ", update);
         List<String> result = new ArrayList<>();

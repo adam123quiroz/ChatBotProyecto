@@ -2,7 +2,6 @@ package edu.com.chatbotsoftI.auxiliar;
 
 import edu.com.chatbotsoftI.bot.BoltonBot;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.text.ParseException;
@@ -43,5 +42,5 @@ public abstract class Sequence {
         this.stepNow = stepNow;
     }
 
-    public abstract void runSequence(Update update, BoltonBot bot) throws TelegramApiException, ParseException;
+    public abstract void runSequence(Message update, BoltonBot bot) throws TelegramApiException, ParseException;
 }
