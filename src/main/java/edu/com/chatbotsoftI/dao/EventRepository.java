@@ -1,6 +1,7 @@
 package edu.com.chatbotsoftI.dao;
 
-import edu.com.chatbotsoftI.domain.Event;
+import edu.com.chatbotsoftI.domain.Eveevent;
+import jdk.jfr.Event;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -8,5 +9,6 @@ import java.util.List;
 public interface EventRepository extends JpaRepository<Event, Integer> {
     List<Event> findAllByStatus(int status);
     List<Event> findAllByIdtypeevent_TypeeventAndStatus(String typeEvent, int status);
+
 }
 

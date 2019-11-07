@@ -51,7 +51,7 @@ public class BoltonBot extends TelegramLongPollingBot {
     }
 
     private void handleIncomingMessage(Message message, Update update ) throws TelegramApiException {
-
+        SendInvoice inv;
         SendMessage sendMessageGreeting = new SendMessage().setChatId(update.getMessage().getChatId());
         Integer idChat = Integer.parseInt(message.getChatId().toString());
 
@@ -100,11 +100,8 @@ public class BoltonBot extends TelegramLongPollingBot {
                 System.out.println("Admi ");
                 break;
 
-//            case OP_MOVIE:
-//                eventDtos = eventBl.findAllEventByTypeEvent(TypeEvent.MOVIE.getTypeEvent());
-//                showEventsInformation(eventDtos, idChat,
-//                        "https://www.yucatan.com.mx/wp-content/uploads/2019/03/2491246.jpg-r_1920_1080-f_jpg-q_x-xxyxx.jpg?width=1200&enable=upscale");
-//                break;
+            case OP_MUSIC:
+
 //
 //            case OP_MUSEUM:
 //                eventDtos = eventBl.findAllEventByTypeEvent(TypeEvent.MUSEUM.getTypeEvent());

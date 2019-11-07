@@ -1,6 +1,6 @@
 package edu.com.chatbotsoftI.dto;
 
-import edu.com.chatbotsoftI.domain.Event;
+import edu.com.chatbotsoftI.domain.Eveevent;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -17,7 +17,7 @@ public class EventDto {
     public EventDto() {
     }
 
-    public EventDto(Event event) {
+    public EventDto(Eveevent event) {
         this.idevent = event.getIdevent();
         this.nameevent = event.getNameevent();
         this.price = event.getPrice();
