@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ForceReplyKeyboard;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -29,7 +30,8 @@ public class SequenceLogInAdmin extends Sequence {
     }
 
     @Override
-    public void runSequence(Message message, BoltonBot bot) throws TelegramApiException {
+    public void runSequence(Update update, BoltonBot bot) throws TelegramApiException {
+        Message message = update.getMessage();
         LOGGER.info("numero de pasos  {}", getNumberSteps());
         if (getStepNow() < getNumberSteps()) {
             switch (getStepNow()) {
