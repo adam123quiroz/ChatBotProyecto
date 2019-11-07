@@ -1,6 +1,6 @@
 package edu.com.chatbotsoftI.bot.commands;
 
-public class Commands {
+public class Command {
     public static final String commandInitChar = "/";
     /// Help command
     public static final String help = commandInitChar + "help";

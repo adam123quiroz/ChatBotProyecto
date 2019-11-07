@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.text.ParseException;
 import java.util.List;
 
 public class BoltonBot extends TelegramLongPollingBot {
@@ -30,7 +31,7 @@ public class BoltonBot extends TelegramLongPollingBot {
                 List<String> messages = null;
                 try {
                     messages = botBl.processUpdate(update, this);
-                } catch (TelegramApiException e) {
+                } catch (TelegramApiException | ParseException e) {
                     e.printStackTrace();
                 }
                 for( String messageText :
