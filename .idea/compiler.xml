@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="chatbotsoftI" />
+        <module name="EventChatBot" />
         <module name="ChatBot" />
         <module name="ChatBotProyecto" />
       </profile>
@@ -19,6 +20,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="ChatBot" options="-parameters" />
       <module name="ChatBotProyecto" options="-parameters" />
+      <module name="EventChatBot" options="-parameters" />
       <module name="chatbot" options="-parameters" />
       <module name="chatbotsoftI" options="-parameters" />
     </option>

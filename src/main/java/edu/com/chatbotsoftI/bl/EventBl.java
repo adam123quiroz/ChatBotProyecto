@@ -43,10 +43,8 @@ public class EventBl {
     public List<EventDto> findAllEventByTypeEvent(String typeEvent) {
         List<EventDto> eventDtos = new ArrayList<>();
         for (EveEventEntity eventEntity :
-                eventRepository.findAll()) {
-            EventDto eventDto = new EventDto(eventEntity);
-            eventDto.setCategory(eventEntity.getEvecategoryByIdcategory().getCategory());
-            eventDtos.add(eventDto);
+                eventRepository.findAllByEvetypeeventByIdtypeevent_TypeeventAndStatus(typeEvent, Status.ACTIVE.getStatus())) {
+            eventDtos.add(new EventDto(eventEntity));
         }
         return eventDtos;
     }

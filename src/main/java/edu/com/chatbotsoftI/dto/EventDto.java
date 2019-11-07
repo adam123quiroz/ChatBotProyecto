@@ -13,6 +13,7 @@ public class EventDto {
     private Date starttime;
     private Integer status;
     private String category;
+    private String address;
 
     public EventDto() {
     }
@@ -24,6 +25,8 @@ public class EventDto {
         this.date = event.getDate();
         this.starttime = event.getStarttime();
         this.status = event.getStatus();
+        this.category = event.getEvecategoryByIdcategory().getCategory();
+        this.address = event.getEveaddressByIdaddress().getAddress();
     }
 
     public Integer getIdevent() {
@@ -82,6 +85,14 @@ public class EventDto {
         this.category = category;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     @Override
     public String toString() {
         return "EventDto{" +
@@ -92,6 +103,7 @@ public class EventDto {
                 ", starttime=" + starttime +
                 ", status=" + status +
                 ", category='" + category + '\'' +
+                ", address='" + address + '\'' +
                 '}';
     }
 }

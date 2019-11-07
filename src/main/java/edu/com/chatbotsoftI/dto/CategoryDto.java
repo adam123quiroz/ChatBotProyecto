@@ -1,13 +1,14 @@
 package edu.com.chatbotsoftI.dto;
 
-import edu.com.chatbotsoftI.domain.EveCategory;
+
+import edu.com.chatbotsoftI.entity.EveCategoryEntity;
 
 public class CategoryDto {
 
     private Integer idcategory;
     private String category;
 
-    public CategoryDto(EveCategory category) {
+    public CategoryDto(EveCategoryEntity category) {
         this.idcategory = category.getIdcategory();
         this.category = category.getCategory();
     }
