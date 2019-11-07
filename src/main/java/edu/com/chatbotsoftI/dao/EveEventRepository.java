@@ -2,6 +2,8 @@ package edu.com.chatbotsoftI.dao;
 
 
 
+import edu.com.chatbotsoftI.domain.EveCategory;
+import edu.com.chatbotsoftI.domain.EveEvent;
 import edu.com.chatbotsoftI.entity.EveEventEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -9,5 +11,6 @@ import java.util.List;
 
 public interface EveEventRepository extends JpaRepository<EveEventEntity, Integer> {
     List<EveEventEntity> findAllByStatus(int status);
+
 }
 
