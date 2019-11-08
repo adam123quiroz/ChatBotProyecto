@@ -1,17 +1,47 @@
 package edu.com.chatbotsoftI.entity;
 
-import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
-@Table(name = "evetypeevent", schema = "dbbot", catalog = "")
-public class EveTypeEventEntity {
-    private Integer idtypeevent;
-    private String typeevent;
-    private List<EveEventEntity> eveeventsByIdtypeevent;
+@Table(name = "evetypeevent")
+@XmlRootElement
 
+public class EveTypeEventEntity implements Serializable{
+    private static final long serialVersionUID = 1L;
     @Id
-    @Column(name = "idtypeevent", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "idtypeevent")
+    private Integer idtypeevent;
+    @Size(max = 45)
+    @Column(name = "typeevent")
+    private String typeevent;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idtypeevent", fetch = FetchType.LAZY)
+    private List<EveEventEntity> eveeventList;
+
+    public EveTypeEventEntity() {
+    }
+
+    public EveTypeEventEntity(Integer idtypeevent) {
+        this.idtypeevent = idtypeevent;
+    }
+
     public Integer getIdtypeevent() {
         return idtypeevent;
     }
@@ -20,8 +50,6 @@ public class EveTypeEventEntity {
         this.idtypeevent = idtypeevent;
     }
 
-    @Basic
-    @Column(name = "typeevent", nullable = true, length = 45)
     public String getTypeevent() {
         return typeevent;
     }
@@ -30,32 +58,38 @@ public class EveTypeEventEntity {
         this.typeevent = typeevent;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    @XmlTransient
+    public List<EveEventEntity> getEveeventList() {
+        return eveeventList;
+    }
 
-        EveTypeEventEntity that = (EveTypeEventEntity) o;
-
-        if (idtypeevent != null ? !idtypeevent.equals(that.idtypeevent) : that.idtypeevent != null) return false;
-        if (typeevent != null ? !typeevent.equals(that.typeevent) : that.typeevent != null) return false;
-
-        return true;
+    public void setEveeventList(List<EveEventEntity> eveeventList) {
+        this.eveeventList = eveeventList;
     }
 
     @Override
     public int hashCode() {
-        int result = idtypeevent != null ? idtypeevent.hashCode() : 0;
-        result = 31 * result + (typeevent != null ? typeevent.hashCode() : 0);
-        return result;
+        int hash = 0;
+        hash += (idtypeevent != null ? idtypeevent.hashCode() : 0);
+        return hash;
     }
 
-    @OneToMany(mappedBy = "evetypeeventByIdtypeevent")
-    public List<EveEventEntity> getEveeventsByIdtypeevent() {
-        return eveeventsByIdtypeevent;
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof EveTypeEventEntity)) {
+            return false;
+        }
+        EveTypeEventEntity other = (EveTypeEventEntity) object;
+        if ((this.idtypeevent == null && other.idtypeevent != null) || (this.idtypeevent != null && !this.idtypeevent.equals(other.idtypeevent))) {
+            return false;
+        }
+        return true;
     }
 
-    public void setEveeventsByIdtypeevent(List<EveEventEntity> eveeventsByIdtypeevent) {
-        this.eveeventsByIdtypeevent = eveeventsByIdtypeevent;
+    @Override
+    public String toString() {
+        return "entity.EveTypeEventEntity[ idtypeevent=" + idtypeevent + " ]";
     }
+
 }

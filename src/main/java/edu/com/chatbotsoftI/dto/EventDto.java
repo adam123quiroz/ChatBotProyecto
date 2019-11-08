@@ -1,7 +1,5 @@
 package edu.com.chatbotsoftI.dto;
-
 import edu.com.chatbotsoftI.entity.EveEventEntity;
-
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -25,8 +23,10 @@ public class EventDto {
         this.date = event.getDate();
         this.starttime = event.getStarttime();
         this.status = event.getStatus();
-        this.category = event.getEvecategoryByIdcategory().getCategory();
-        this.address = event.getEveaddressByIdaddress().getAddress();
+       // this.category = event.getEvecategoryByIdcategory().getCategory();
+        this.category = event.getIdcategory().getCategory();
+        this.address = event.getIdaddress().getAddress();
+        //this.address = event.getEveaddressByIdaddress().getAddress();
     }
 
     public Integer getIdevent() {
