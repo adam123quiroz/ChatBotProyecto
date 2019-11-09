@@ -77,8 +77,8 @@ public class SequenceDeleteEvent extends Sequence {
         sendMessageRequest.setText(text);
         return sendMessageRequest;
     }
-
-    }
+    public  SendMessage getSendMessage(){return sendMessage;}
+}
 
 
 

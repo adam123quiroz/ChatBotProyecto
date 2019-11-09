@@ -1,9 +1,6 @@
 package edu.com.chatbotsoftI.bl;
 
-import edu.com.chatbotsoftI.auxiliar.Sequence;
-import edu.com.chatbotsoftI.auxiliar.SequenceAddEvent;
-import edu.com.chatbotsoftI.auxiliar.SequenceAddLeasePlace;
-import edu.com.chatbotsoftI.auxiliar.SequenceLogInAdmin;
+import edu.com.chatbotsoftI.auxiliar.*;
 import edu.com.chatbotsoftI.bot.BoltonBot;
 import edu.com.chatbotsoftI.bot.commands.Option;
 import edu.com.chatbotsoftI.bot.special.keyboard.KbOptionsBot;
@@ -188,6 +185,13 @@ public class BotBl {
                 break;
 
             case Option.OP_DELETE:
+                SequenceDeleteEvent sequenceDeleteEvent;
+                sequenceDeleteEvent = new SequenceDeleteEvent(eveEventRepository, eveLeasePlaceRepository);
+                sequenceDeleteEvent.setRunning(true);
+                sequenceDeleteEvent.setNumberSteps(2);
+                sequenceDeleteEvent.runSequence(update, boltonBot);
+                boltonBot.execute(sequenceDeleteEvent.getSendMessage());
+                this.sequence = sequenceDeleteEvent;
                 break;
 
             case Option.OP_LEASEPLACE:
