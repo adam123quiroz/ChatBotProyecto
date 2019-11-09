@@ -2,7 +2,9 @@ package edu.com.chatbotsoftI.auxiliar;
 
 import edu.com.chatbotsoftI.bot.BoltonBot;
 import edu.com.chatbotsoftI.dao.EveEventRepository;
+import edu.com.chatbotsoftI.dao.EveLeasePlaceRepository;
 import edu.com.chatbotsoftI.entity.EveEventEntity;
+import edu.com.chatbotsoftI.entity.EveLeasePlaceEntity;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -14,12 +16,17 @@ import java.util.List;
 
 public class SequenceDeleteEvent extends Sequence {
     private EveEventRepository eveEventRepository;
+
+    private EveLeasePlaceRepository eveLeasePlaceRepository;
+
     private SendMessage sendMessage;
 
 
-    public SequenceDeleteEvent(EveEventRepository eveEventRepository) {
+    public SequenceDeleteEvent(EveEventRepository eveEventRepository, EveLeasePlaceRepository eveLeasePlaceRepository) {
         super(true, 2, 0);
         this.eveEventRepository = eveEventRepository;
+
+        this.eveLeasePlaceRepository = eveLeasePlaceRepository;
     }
     private static final String REQUEST_DELETE = " Seleccione que evento desea eliminar";
     private static final String CONFIRM_DELETE = "Esta seguro que desea eliminar este evento? Si / No";
@@ -32,6 +39,8 @@ public class SequenceDeleteEvent extends Sequence {
 
             List<EveEventEntity> usereventlist = eveEventRepository.findAllByEveuserByIduser_Nameuser("admin");
         //List<EveEventEntity> usereventlist = eveEventRepository.findAllByIduser_Nameuser("admin");
+
+            List<EveLeasePlaceEntity> userleaseplacelist = eveLeasePlaceRepository.findAllByEveuserByIduser_Nameuser("admin"); //por ahora igual admin
 
             if(getStepNow() < getNumberSteps()){
                 switch (getStepNow()){
