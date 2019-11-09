@@ -15,6 +15,7 @@ public class EvePersonEntity {
     private List<EveUserEntity> eveusersByIdperson;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idperson", nullable = false)
     public Integer getIdperson() {
         return idperson;

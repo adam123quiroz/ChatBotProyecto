@@ -36,7 +36,7 @@ public class BotBl {
     private static List<String> optionListII = new ArrayList<>(List.of(
             Option.OP_MOVIE, Option.OP_MUSIC, Option.OP_MUSEUM));
 
-    static final String PROVIDER_TOKEN = "284685063:TEST:ZjhmMDU1MTM2MjVi";
+    private static final String PROVIDER_TOKEN = "284685063:TEST:ZjhmMDU1MTM2MjVi";
 
     private EventBl eventBl;
     private EvePersonRepository userRepository;
@@ -53,13 +53,16 @@ public class BotBl {
     private static BoltonBot boltonBot;
 
     @Autowired
-    public BotBl(EvePersonRepository userRepository, EventBl eventBl,
-                 EveUserRepository eveUserEntity, EveEventRepository eveEventRepository,
-                 EveCategoryRepository eveCategoryRepository,
-                 EveTypeEventRepository eveTypeEventRepository,
-                 EveAddressRepository eveAddressRepository,
-                 EveStatusRepository eveStatusRepository,
-                 EveCityRepository eveCityRepository) {
+    public BotBl(
+                EventBl eventBl,
+                EvePersonRepository userRepository,
+                EveUserRepository eveUserEntity,
+                EveEventRepository eveEventRepository,
+                EveCategoryRepository eveCategoryRepository,
+                EveTypeEventRepository eveTypeEventRepository,
+                EveAddressRepository eveAddressRepository,
+                EveStatusRepository eveStatusRepository,
+                EveCityRepository eveCityRepository) {
         this.userRepository = userRepository;
         this.eventBl = eventBl;
         this.eveUserRepository = eveUserEntity;
@@ -69,18 +72,18 @@ public class BotBl {
         this.eveAddressRepository = eveAddressRepository;
         this.eveStatusRepository = eveStatusRepository;
         this.eveCityRepository = eveCityRepository;
-
     }
 
     public List<String> processUpdate(Update update, BoltonBot boltonBot) throws TelegramApiException, ParseException {
-        this.boltonBot = boltonBot;
+        BotBl.boltonBot = boltonBot;
         List<String> result = new ArrayList<>();
 
         if (initUser(update.getMessage().getFrom())) {
-            result.add("Por favor ingrese una imagen para su foto de perfil");
+            result.add("Esta Registrado");
+            handleIncomingMessage(update.getMessage(), update);
         } else {
             // Mostrar el menu de opciones
-            if (this.sequence == null) {
+            if (sequence == null) {
                 result.add("Bienvenido al Bot");
                 handleIncomingMessage(update.getMessage(), update);
             }
@@ -170,7 +173,7 @@ public class BotBl {
                 sequenceAddEvent = new SequenceAddEvent(eveEventRepository, eveCategoryRepository,
                         eveAddressRepository, eveTypeEventRepository, eveStatusRepository, eveCityRepository);
                 sequenceAddEvent.setRunning(true);
-                sequenceAddEvent.setNumberSteps(7);
+                sequenceAddEvent.setNumberSteps(6);
                 sequenceAddEvent.runSequence(update, boltonBot);
                 boltonBot.execute(sequenceAddEvent.getSendMessage());
                 this.sequence = sequenceAddEvent;

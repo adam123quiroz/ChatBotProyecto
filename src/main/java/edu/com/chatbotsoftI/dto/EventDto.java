@@ -26,7 +26,6 @@ public class EventDto {
         this.starttime = event.getStarttime();
         this.status = event.getStatus();
         this.category = event.getEvecategoryByIdcategory().getCategory();
-        this.address = event.getEveaddressByIdaddress().getAddress();
     }
 
     public Integer getIdevent() {
@@ -103,7 +102,6 @@ public class EventDto {
                 ", starttime=" + starttime +
                 ", status=" + status +
                 ", category='" + category + '\'' +
-                ", address='" + address + '\'' +
                 '}';
     }
 }

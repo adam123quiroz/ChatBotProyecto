@@ -11,6 +11,7 @@ public class EveStateEntity {
     private List<EveCityEntity> evecitiesByIdstate;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idstate", nullable = false)
     public Integer getIdstate() {
         return idstate;

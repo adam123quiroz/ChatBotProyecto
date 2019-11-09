@@ -27,6 +27,7 @@ public class EveEventEntity {
     private List<EveEventFileEntity> eveeventfilesByIdevent;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idevent", nullable = false)
     public Integer getIdevent() {
         return idevent;
