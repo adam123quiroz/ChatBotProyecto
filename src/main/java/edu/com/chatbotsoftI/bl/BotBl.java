@@ -2,12 +2,14 @@ package edu.com.chatbotsoftI.bl;
 
 import edu.com.chatbotsoftI.auxiliar.Sequence;
 import edu.com.chatbotsoftI.auxiliar.SequenceAddEvent;
+import edu.com.chatbotsoftI.auxiliar.SequenceAddLeasePlace;
 import edu.com.chatbotsoftI.auxiliar.SequenceLogInAdmin;
 import edu.com.chatbotsoftI.bot.BoltonBot;
 import edu.com.chatbotsoftI.bot.commands.Option;
 import edu.com.chatbotsoftI.bot.special.keyboard.KbOptionsBot;
 import edu.com.chatbotsoftI.dao.*;
 import edu.com.chatbotsoftI.dto.EventDto;
+import edu.com.chatbotsoftI.dto.LeasePlaceDto;
 import edu.com.chatbotsoftI.entity.EvePersonEntity;
 import edu.com.chatbotsoftI.enums.TypeEvent;
 import org.slf4j.Logger;
@@ -48,6 +50,7 @@ public class BotBl {
     private EveStatusRepository eveStatusRepository;
     private EveCityRepository eveCityRepository;
 
+    private EveLeasePlaceRepository eveLeasePlaceRepository;
 
     private static Sequence sequence;
     private static BoltonBot boltonBot;
@@ -59,7 +62,9 @@ public class BotBl {
                  EveTypeEventRepository eveTypeEventRepository,
                  EveAddressRepository eveAddressRepository,
                  EveStatusRepository eveStatusRepository,
-                 EveCityRepository eveCityRepository) {
+                 EveCityRepository eveCityRepository,
+                 EveLeasePlaceRepository eveLeasePlaceRepository) {
+
         this.userRepository = userRepository;
         this.eventBl = eventBl;
         this.eveUserRepository = eveUserEntity;
@@ -69,6 +74,8 @@ public class BotBl {
         this.eveAddressRepository = eveAddressRepository;
         this.eveStatusRepository = eveStatusRepository;
         this.eveCityRepository = eveCityRepository;
+
+        this.eveLeasePlaceRepository = eveLeasePlaceRepository;
 
     }
 
@@ -120,6 +127,7 @@ public class BotBl {
 
         List<String> options;
         List<EventDto> eventDtos;
+        List<LeasePlaceDto> leasePlaceDtos;
         KbOptionsBot kbOptionsBot;
 
         switch(message.getText()) {
@@ -181,6 +189,18 @@ public class BotBl {
 
             case Option.OP_DELETE:
                 break;
+
+            case Option.OP_LEASEPLACE:
+                SequenceAddLeasePlace sequenceAddLeasePlace;
+                sequenceAddLeasePlace = new SequenceAddLeasePlace(eveLeasePlaceRepository,eveAddressRepository,
+                        eveStatusRepository,eveCityRepository);
+                sequenceAddLeasePlace.setRunning(true);
+                sequenceAddLeasePlace.setNumberSteps(4);
+                sequenceAddLeasePlace.runSequence(update, boltonBot);
+                boltonBot.execute(sequenceAddLeasePlace.getSendMessage());
+                this.sequence = sequenceAddLeasePlace;
+                break;
+
 
             default:
                 throw new IllegalStateException("Unexpected value: " + message.getText());
