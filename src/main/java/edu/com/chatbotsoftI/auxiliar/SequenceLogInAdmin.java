@@ -20,7 +20,7 @@ import java.util.List;
 public class SequenceLogInAdmin extends Sequence {
 
     private static List<String> optionEdit = new ArrayList<>(List.of(
-            Option.OP_ADD, Option.OP_MODIFY, Option.OP_DELETE));
+            Option.OP_ADD, Option.OP_MODIFY, Option.OP_DELETE, Option.OP_LEASEPLACE));
 
     private static final String REQUEST_USERNAME = "A continuación coloca tu nombre de usuario";
     private static final String REQUEST_PASSWORD = "Ahora Ingresa tu password";

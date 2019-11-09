@@ -1,7 +1,6 @@
 package edu.com.chatbotsoftI.auxiliar;
 
 import edu.com.chatbotsoftI.bot.BoltonBot;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 

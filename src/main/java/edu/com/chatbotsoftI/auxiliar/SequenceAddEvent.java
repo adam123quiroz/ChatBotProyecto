@@ -87,7 +87,9 @@ public class SequenceAddEvent extends Sequence {
                     LOGGER.info("dasd213 {}", data);
 
                     eveTypeEventEntity = eveTypeEventRepository.findByTypeevent(data);//dao TypeEvent
-                    event.setEvetypeeventByIdtypeevent(eveTypeEventEntity);
+                       event.setEvetypeeventByIdtypeevent(eveTypeEventEntity);
+                   // event.setIdtypeevent(eveTypeEventEntity);
+
                     // siguiente pregunta
                     sendMessage = sendMessage(message, REQUEST_NAME_EVENT);
                     bot.execute(sendMessage);
@@ -106,6 +108,8 @@ public class SequenceAddEvent extends Sequence {
                     eveCategoryEntity.setCategory(data);
                     eveCategoryRepository.save(eveCategoryEntity); //daoCategory
                     event.setEvecategoryByIdcategory(eveCategoryEntity);
+                  //  event.setIdcategory(eveCategoryEntity);
+
                     // siguiente pregunta
                     sendMessage = sendMessage(message, REQUEST_PRICE_EVENT);
                     bot.execute(sendMessage);
@@ -125,37 +129,37 @@ public class SequenceAddEvent extends Sequence {
                     sendMessage = sendMessage(message, REQUEST_TIME_START_EVENT);
                     bot.execute(sendMessage);
                     break;
-//                case 6: // graba primera pregunta y segunda pregunta
-//                    data = message.getText();
-//                    DateFormat formatter = new SimpleDateFormat("HH:mm");
-//                    java.sql.Time timeValue = new java.sql.Time(formatter.parse(data).getTime());
-//                    event.setStarttime(timeValue);
-//                    sendMessage = sendMessage(message, REQUEST_ADDRESS_EVENT);
-//                    bot.execute(sendMessage);
-//                    break;
+                case 6: // graba primera pregunta y segunda pregunta
+                    data = message.getText();
+                    DateFormat formatter = new SimpleDateFormat("HH:mm");
+                    java.sql.Time timeValue = new java.sql.Time(formatter.parse(data).getTime());
+                    event.setStarttime(timeValue);
+                    sendMessage = sendMessage(message, REQUEST_ADDRESS_EVENT);
+                    bot.execute(sendMessage);
+                    break;
             }
             setStepNow(getStepNow() + 1);
 //            LOGGER.info("numero de pasos actualizados {}", getStepNow());
         } else {
             //graba ultima pregunta y termina
             data = message.getText();
-//            List<String> addressPart = Arrays.asList(data.split(","));
-//            eveStateEntity = eveStatusRepository.findByState(addressPart.get(0));
-//            eveCityEntity = eveCityRepository.findByCity(addressPart.get(1));
-//            eveCityEntity.setEvestateByIdstate(eveStateEntity);
-//            eveAddressEntity.setEvecityByIdcity(eveCityEntity);
-//            eveAddressEntity.setAddress(addressPart.get(2));
-            DateFormat formatter = new SimpleDateFormat("HH:mm");
-            java.sql.Time timeValue = new java.sql.Time(formatter.parse(data).getTime());
-            event.setStarttime(timeValue);
+            List<String> addressPart = Arrays.asList(data.split(","));
+            eveStateEntity = eveStatusRepository.findByState(addressPart.get(0));
+            eveCityEntity = eveCityRepository.findByCity(addressPart.get(1));
 
+            eveCityEntity.setEvestateByIdstate(eveStateEntity);
+          //  eveCityEntity.setIdstate(eveStateEntity);
+
+            eveAddressEntity.setEvecityByIdcity(eveCityEntity);
+          //  eveAddressEntity.setIdcity(eveCityEntity);
+
+            eveAddressEntity.setAddress(addressPart.get(2));
+
+            event.setEveaddressByIdaddress(eveAddressEntity);
+           // event.setIdaddress(eveAddressEntity);
 
             //Analisis de la Informacion
             setRunning(false);
-            event.setStatus(1);
-            event.setTxdate(new Date(new java.util.Date().getTime()));
-            event.setTxhost("localhost");
-            event.setTxuser("admin");
             eveEventRepository.save(event);
         }
     }

@@ -1,13 +1,12 @@
 package edu.com.chatbotsoftI.bl;
 
-import edu.com.chatbotsoftI.auxiliar.Sequence;
-import edu.com.chatbotsoftI.auxiliar.SequenceAddEvent;
-import edu.com.chatbotsoftI.auxiliar.SequenceLogInAdmin;
+import edu.com.chatbotsoftI.auxiliar.*;
 import edu.com.chatbotsoftI.bot.BoltonBot;
 import edu.com.chatbotsoftI.bot.commands.Option;
 import edu.com.chatbotsoftI.bot.special.keyboard.KbOptionsBot;
 import edu.com.chatbotsoftI.dao.*;
 import edu.com.chatbotsoftI.dto.EventDto;
+import edu.com.chatbotsoftI.dto.LeasePlaceDto;
 import edu.com.chatbotsoftI.entity.EvePersonEntity;
 import edu.com.chatbotsoftI.enums.TypeEvent;
 import org.slf4j.Logger;
@@ -36,7 +35,7 @@ public class BotBl {
     private static List<String> optionListII = new ArrayList<>(List.of(
             Option.OP_MOVIE, Option.OP_MUSIC, Option.OP_MUSEUM));
 
-    private static final String PROVIDER_TOKEN = "284685063:TEST:ZjhmMDU1MTM2MjVi";
+    static final String PROVIDER_TOKEN = "284685063:TEST:ZjhmMDU1MTM2MjVi";
 
     private EventBl eventBl;
     private EvePersonRepository userRepository;
@@ -48,21 +47,21 @@ public class BotBl {
     private EveStatusRepository eveStatusRepository;
     private EveCityRepository eveCityRepository;
 
+    private EveLeasePlaceRepository eveLeasePlaceRepository;
 
     private static Sequence sequence;
     private static BoltonBot boltonBot;
 
     @Autowired
-    public BotBl(
-                EventBl eventBl,
-                EvePersonRepository userRepository,
-                EveUserRepository eveUserEntity,
-                EveEventRepository eveEventRepository,
-                EveCategoryRepository eveCategoryRepository,
-                EveTypeEventRepository eveTypeEventRepository,
-                EveAddressRepository eveAddressRepository,
-                EveStatusRepository eveStatusRepository,
-                EveCityRepository eveCityRepository) {
+    public BotBl(EvePersonRepository userRepository, EventBl eventBl,
+                 EveUserRepository eveUserEntity, EveEventRepository eveEventRepository,
+                 EveCategoryRepository eveCategoryRepository,
+                 EveTypeEventRepository eveTypeEventRepository,
+                 EveAddressRepository eveAddressRepository,
+                 EveStatusRepository eveStatusRepository,
+                 EveCityRepository eveCityRepository,
+                 EveLeasePlaceRepository eveLeasePlaceRepository) {
+
         this.userRepository = userRepository;
         this.eventBl = eventBl;
         this.eveUserRepository = eveUserEntity;
@@ -72,18 +71,20 @@ public class BotBl {
         this.eveAddressRepository = eveAddressRepository;
         this.eveStatusRepository = eveStatusRepository;
         this.eveCityRepository = eveCityRepository;
+
+        this.eveLeasePlaceRepository = eveLeasePlaceRepository;
+
     }
 
     public List<String> processUpdate(Update update, BoltonBot boltonBot) throws TelegramApiException, ParseException {
-        BotBl.boltonBot = boltonBot;
+        this.boltonBot = boltonBot;
         List<String> result = new ArrayList<>();
 
         if (initUser(update.getMessage().getFrom())) {
-            result.add("Esta Registrado");
-            handleIncomingMessage(update.getMessage(), update);
+            result.add("Por favor ingrese una imagen para su foto de perfil");
         } else {
             // Mostrar el menu de opciones
-            if (sequence == null) {
+            if (this.sequence == null) {
                 result.add("Bienvenido al Bot");
                 handleIncomingMessage(update.getMessage(), update);
             }
@@ -123,6 +124,7 @@ public class BotBl {
 
         List<String> options;
         List<EventDto> eventDtos;
+        List<LeasePlaceDto> leasePlaceDtos;
         KbOptionsBot kbOptionsBot;
 
         switch(message.getText()) {
@@ -173,7 +175,7 @@ public class BotBl {
                 sequenceAddEvent = new SequenceAddEvent(eveEventRepository, eveCategoryRepository,
                         eveAddressRepository, eveTypeEventRepository, eveStatusRepository, eveCityRepository);
                 sequenceAddEvent.setRunning(true);
-                sequenceAddEvent.setNumberSteps(6);
+                sequenceAddEvent.setNumberSteps(7);
                 sequenceAddEvent.runSequence(update, boltonBot);
                 boltonBot.execute(sequenceAddEvent.getSendMessage());
                 this.sequence = sequenceAddEvent;
@@ -183,7 +185,26 @@ public class BotBl {
                 break;
 
             case Option.OP_DELETE:
+                SequenceDeleteEvent sequenceDeleteEvent;
+                sequenceDeleteEvent = new SequenceDeleteEvent(eveEventRepository, eveLeasePlaceRepository);
+                sequenceDeleteEvent.setRunning(true);
+                sequenceDeleteEvent.setNumberSteps(2);
+                sequenceDeleteEvent.runSequence(update, boltonBot);
+                boltonBot.execute(sequenceDeleteEvent.getSendMessage());
+                this.sequence = sequenceDeleteEvent;
                 break;
+
+            case Option.OP_LEASEPLACE:
+                SequenceAddLeasePlace sequenceAddLeasePlace;
+                sequenceAddLeasePlace = new SequenceAddLeasePlace(eveLeasePlaceRepository,eveAddressRepository,
+                        eveStatusRepository,eveCityRepository);
+                sequenceAddLeasePlace.setRunning(true);
+                sequenceAddLeasePlace.setNumberSteps(4);
+                sequenceAddLeasePlace.runSequence(update, boltonBot);
+                boltonBot.execute(sequenceAddLeasePlace.getSendMessage());
+                this.sequence = sequenceAddLeasePlace;
+                break;
+
 
             default:
                 throw new IllegalStateException("Unexpected value: " + message.getText());
