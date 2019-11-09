@@ -87,8 +87,8 @@ public class SequenceAddEvent extends Sequence {
                     LOGGER.info("dasd213 {}", data);
 
                     eveTypeEventEntity = eveTypeEventRepository.findByTypeevent(data);//dao TypeEvent
-                    //   event.setEvetypeeventByIdtypeevent(eveTypeEventEntity);
-                    event.setIdtypeevent(eveTypeEventEntity);
+                       event.setEvetypeeventByIdtypeevent(eveTypeEventEntity);
+                   // event.setIdtypeevent(eveTypeEventEntity);
 
                     // siguiente pregunta
                     sendMessage = sendMessage(message, REQUEST_NAME_EVENT);
@@ -107,8 +107,8 @@ public class SequenceAddEvent extends Sequence {
                     eveCategoryEntity = new EveCategoryEntity();
                     eveCategoryEntity.setCategory(data);
                     eveCategoryRepository.save(eveCategoryEntity); //daoCategory
-                  //  event.setEvecategoryByIdcategory(eveCategoryEntity);
-                    event.setIdcategory(eveCategoryEntity);
+                    event.setEvecategoryByIdcategory(eveCategoryEntity);
+                  //  event.setIdcategory(eveCategoryEntity);
 
                     // siguiente pregunta
                     sendMessage = sendMessage(message, REQUEST_PRICE_EVENT);
@@ -146,15 +146,17 @@ public class SequenceAddEvent extends Sequence {
             List<String> addressPart = Arrays.asList(data.split(","));
             eveStateEntity = eveStatusRepository.findByState(addressPart.get(0));
             eveCityEntity = eveCityRepository.findByCity(addressPart.get(1));
-           // eveCityEntity.setEvestateByIdstate(eveStateEntity);
-            eveCityEntity.setIdstate(eveStateEntity);
-            //eveAddressEntity.setEvecityByIdcity(eveCityEntity);
-            eveAddressEntity.setIdcity(eveCityEntity);
+
+            eveCityEntity.setEvestateByIdstate(eveStateEntity);
+          //  eveCityEntity.setIdstate(eveStateEntity);
+
+            eveAddressEntity.setEvecityByIdcity(eveCityEntity);
+          //  eveAddressEntity.setIdcity(eveCityEntity);
 
             eveAddressEntity.setAddress(addressPart.get(2));
 
-            //event.setEveaddressByIdaddress(eveAddressEntity);
-            event.setIdaddress(eveAddressEntity);
+            event.setEveaddressByIdaddress(eveAddressEntity);
+           // event.setIdaddress(eveAddressEntity);
 
             //Analisis de la Informacion
             setRunning(false);

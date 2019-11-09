@@ -29,8 +29,9 @@ public class SequenceDeleteEvent extends Sequence {
     public void runSequence(Update update, BoltonBot bot) throws TelegramApiException, ParseException {
             Message mesagge = update.getMessage();
             String Data;
-            //List<EveEventEntity> usereventlist = eveEventRepository.findAllByEveuserByIduser_Nameuser("admin");
-        List<EveEventEntity> usereventlist = eveEventRepository.findAllByIduser_Nameuser("admin");
+
+            List<EveEventEntity> usereventlist = eveEventRepository.findAllByEveuserByIduser_Nameuser("admin");
+        //List<EveEventEntity> usereventlist = eveEventRepository.findAllByIduser_Nameuser("admin");
 
             if(getStepNow() < getNumberSteps()){
                 switch (getStepNow()){

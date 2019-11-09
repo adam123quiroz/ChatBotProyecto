@@ -93,7 +93,7 @@ public class SequenceAddLeasePlace extends Sequence {
                 DateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd");
                 java.util.Date date;
                 date = dateFormat.parse(data);
-                LeasePlace.setDate(new Date(date.getTime()));
+                LeasePlace.setDate(new java.sql.Date(date.getTime()));
                 //tercera pregunta
                 sendMessage = sendMessage (message, REQUEST_PRICE_PLACE);
                 bot.execute(sendMessage);
@@ -111,22 +111,35 @@ public class SequenceAddLeasePlace extends Sequence {
                break;
             }
             setStepNow(getStepNow() + 1);
+        LOGGER.info("numero de pasos actualizados {}", getStepNow());
         }
         else{
         data = message.getText();
-       List<String> address = Arrays.asList(data.split(","));
+        LOGGER.info("Dato {}",data);
+
+      //  eveAddressEntity=new EveAddressEntity();
+       // eveAddressEntity.setAddress(data);
+
+        List<String> address = Arrays.asList(data.split(","));
        eveStateEntity = stateRepository.findByState(address.get(0));
        eveCityEntity = cityRepository.findByCity(address.get(1));
 
-       eveCityEntity.setIdstate(eveStateEntity);
-       eveAddressEntity.setIdcity(eveCityEntity);
+       LOGGER.info("LLEGAS ACA? {}", address);
+
+      // eveCityEntity.setIdstate(eveStateEntity);
+      eveCityEntity.setEvestateByIdstate(eveStateEntity);
+
+      // eveAddressEntity.setIdcity(eveCityEntity);
+       eveAddressEntity.setEvecityByIdcity(eveCityEntity);
 
        eveAddressEntity.setAddress(address.get(2));
 
-       LeasePlace.setIdaddress(eveAddressEntity);
+       //LeasePlace.setIdaddress(eveAddressEntity);
+        LeasePlace.setEveaddressByIdaddress(eveAddressEntity);
 
         setRunning(false);
         leasePlaceRepository.save(LeasePlace);
+        LOGGER.info("Y BUE GUARDAS O NO QUIERO DORMIR {}",leasePlaceRepository);
         }
     }
     private SendMessage sendMessage (Message message,String text){

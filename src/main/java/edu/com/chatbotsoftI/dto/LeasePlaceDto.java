@@ -23,8 +23,9 @@ public class LeasePlaceDto {
         this.nameplace = leaseplace.getNameplace();
         this.date = leaseplace.getDate();
         this.price = leaseplace.getPrice();
-      //  this.address = leaseplace.getEveaddressByIdaddress().getAddress();
-        this.address = leaseplace.getIdaddress().getAddress();
+
+          this.address = leaseplace.getEveaddressByIdaddress().getAddress();
+     //   this.address = leaseplace.getIdaddress().getAddress();
     }
 
     public Integer getIdleaseplace() {
