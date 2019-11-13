@@ -21,7 +21,7 @@ public class SequenceDeleteEvent extends Sequence {
     private EveLeasePlaceRepository eveLeasePlaceRepository;
 
     public SequenceDeleteEvent(EveEventRepository eveEventRepository, EveLeasePlaceRepository eveLeasePlaceRepository) {
-        super(true, 2, 0, null);
+        super(true, 2, 0);
         this.eveEventRepository = eveEventRepository;
 
         this.eveLeasePlaceRepository = eveLeasePlaceRepository;

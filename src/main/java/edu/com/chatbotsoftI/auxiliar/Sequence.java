@@ -1,7 +1,7 @@
 package edu.com.chatbotsoftI.auxiliar;
 
 import edu.com.chatbotsoftI.bot.BoltonBot;
-import edu.com.chatbotsoftI.entity.EvePersonEntity;
+import edu.com.chatbotsoftI.entity.EveUserEntity;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -13,14 +13,14 @@ public abstract class Sequence {
     private boolean running;
     private int numberSteps;
     private int stepNow;
-    private EvePersonEntity  personEntity;
+    private static EveUserEntity user;
     private static SendMessage sendMessageRequest;
 
-    public Sequence(boolean running, int numberSteps, int stepNow, EvePersonEntity personEntity) {
+    public Sequence(boolean running, int numberSteps, int stepNow) {
         this.running = running;
         this.numberSteps = numberSteps;
         this.stepNow = stepNow;
-        this.personEntity = personEntity;
+        this.user = new EveUserEntity();
         sendMessageRequest = new SendMessage();
     }
 
@@ -44,16 +44,16 @@ public abstract class Sequence {
         return stepNow;
     }
 
+    public static EveUserEntity getUser() {
+        return user;
+    }
+
+    public static void setUser(EveUserEntity user) {
+        Sequence.user = user;
+    }
+
     public void setStepNow(int stepNow) {
         this.stepNow = stepNow;
-    }
-
-    public EvePersonEntity getPersonEntity() {
-        return personEntity;
-    }
-
-    public void setPersonEntity(EvePersonEntity personEntity) {
-        this.personEntity = personEntity;
     }
 
     public static SendMessage getSendMessageRequest() {

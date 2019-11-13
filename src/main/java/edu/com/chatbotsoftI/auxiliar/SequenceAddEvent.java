@@ -1,5 +1,6 @@
 package edu.com.chatbotsoftI.auxiliar;
 
+import edu.com.chatbotsoftI.bl.BotBl;
 import edu.com.chatbotsoftI.bot.BoltonBot;
 import edu.com.chatbotsoftI.bot.message.ErrorMessage;
 import edu.com.chatbotsoftI.bot.message.RequestMessageAddEvent;
@@ -42,7 +43,7 @@ public class SequenceAddEvent extends Sequence {
                             EveTypeEventRepository eveTypeEventRepository,
                             EveStatusRepository eveStatusRepository,
                             EveCityRepository eveCityRepository) {
-        super(true, 7, 0, null);
+        super(true, 7, 0);
         this.eveEventRepository = eveEventRepository;
         this.eveCategoryRepository =eveCategoryRepository;
         this.eveAddressRepository = eveAddressRepository;
@@ -204,6 +205,12 @@ public class SequenceAddEvent extends Sequence {
 
             //Analisis de la Informacion
             event.setStatus(Status.ACTIVE.getStatus());
+            event.setEveuserByIduser(BotBl.getUserEntity());
+            event.setTxuser(BotBl.getUserEntity().getNameuser());
+            event.setTxhost("localhost");
+            java.util.Date dateCreate = new java.util.Date();
+            event.setTxdate(new Date(dateCreate.getTime()));
+
             eveEventRepository.save(event);
             setRunning(false);
         }

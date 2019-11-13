@@ -8,6 +8,7 @@ import edu.com.chatbotsoftI.bot.special.keyboard.KbOptionsBot;
 import edu.com.chatbotsoftI.dao.*;
 import edu.com.chatbotsoftI.dto.EventDto;
 import edu.com.chatbotsoftI.entity.EvePersonEntity;
+import edu.com.chatbotsoftI.entity.EveUserEntity;
 import edu.com.chatbotsoftI.enums.TypeEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +50,7 @@ public class BotBl {
     private EveLeasePlaceRepository eveLeasePlaceRepository;
 
     private static Sequence sequence;
+    private static EveUserEntity userEntity;
     private static BoltonBot boltonBot;
 
     @Autowired
@@ -247,4 +249,12 @@ public class BotBl {
 //            LOGGER.error("gg");
 //        }
 //    }
+
+    public static EveUserEntity getUserEntity() {
+        return userEntity;
+    }
+
+    public static void setUserEntity(EveUserEntity userEntity) {
+        BotBl.userEntity = userEntity;
+    }
 }
