@@ -120,6 +120,7 @@ public class EveCityEntity {
     private EveStateEntity evestateByIdstate;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idcity", nullable = false)
     public Integer getIdcity() {
         return idcity;

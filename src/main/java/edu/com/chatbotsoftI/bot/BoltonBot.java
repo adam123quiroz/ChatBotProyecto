@@ -31,9 +31,10 @@ public class BoltonBot extends TelegramLongPollingBot {
                 List<String> messages = null;
                 try {
                     messages = botBl.processUpdate(update, this);
-                } catch (TelegramApiException | ParseException e) {
+                } catch (TelegramApiException e) {
                     e.printStackTrace();
                 }
+
                 for( String messageText :
                         messages ) {
                     SendMessage sendMessage = new SendMessage() // Create a SendMessage object with mandatory fields

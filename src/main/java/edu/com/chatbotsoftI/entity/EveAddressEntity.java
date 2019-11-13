@@ -133,6 +133,7 @@ public class EveAddressEntity {
     private List<EveLeasePlaceEntity> eveleaseplacesByIdaddress;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idaddress", nullable = false)
     public Integer getIdaddress() {
         return idaddress;

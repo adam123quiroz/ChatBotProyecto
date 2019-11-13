@@ -8,9 +8,9 @@ public class Option {
     public static final String OP_MOVIE = "Pelicula";
     public static final String OP_MUSEUM = "Museo";
 
-    public static final String OP_ADD= "Agregar";
-    public static final String OP_MODIFY = "Modificar";
-    public static final String OP_DELETE= "Eliminar";
+    public static final String OP_ADD_EVENT = "Agregar";
+    public static final String OP_MODIFY_EVENT = "Modificar";
+    public static final String OP_DELETE_EVENT = "Eliminar";
 
     public static final String OP_LEASEPLACE ="Rentar Lugar";
 //    public static final String OP_LEASEPLACEYES= "Si";

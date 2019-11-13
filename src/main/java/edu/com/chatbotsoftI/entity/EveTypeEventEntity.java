@@ -106,6 +106,7 @@ public class EveTypeEventEntity {
     private List<EveEventEntity> eveeventsByIdtypeevent;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idtypeevent", nullable = false)
     public Integer getIdtypeevent() {
         return idtypeevent;

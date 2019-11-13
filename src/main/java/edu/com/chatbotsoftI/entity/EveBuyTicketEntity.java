@@ -191,6 +191,7 @@ public class EveBuyTicketEntity {
     private EvePaymentMethodEntity evepaymentmethodByIdpaymentmethod;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idbuy", nullable = false)
     public Integer getIdbuy() {
         return idbuy;

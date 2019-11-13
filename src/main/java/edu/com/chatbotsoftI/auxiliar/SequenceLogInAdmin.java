@@ -20,7 +20,7 @@ import java.util.List;
 public class SequenceLogInAdmin extends Sequence {
 
     private static List<String> optionEdit = new ArrayList<>(List.of(
-            Option.OP_ADD, Option.OP_MODIFY, Option.OP_DELETE, Option.OP_LEASEPLACE));
+            Option.OP_ADD_EVENT, Option.OP_MODIFY_EVENT, Option.OP_DELETE_EVENT, Option.OP_LEASEPLACE));
 
     private static final String REQUEST_USERNAME = "A continuación coloca tu nombre de usuario";
     private static final String REQUEST_PASSWORD = "Ahora Ingresa tu password";
@@ -28,11 +28,10 @@ public class SequenceLogInAdmin extends Sequence {
     private static final Logger LOGGER = LoggerFactory.getLogger(SequenceLogInAdmin.class);
 
     private EveUserEntity user;
-    private SendMessage sendMessage;
     private EveUserRepository eveUserRepository;
 
     public SequenceLogInAdmin(EveUserRepository eveUserEntity) {
-        super(true, 4, 0);
+        super(true, 4, 0, null);
         this.eveUserRepository = eveUserEntity;
         this.user = new EveUserEntity();
     }
@@ -47,7 +46,7 @@ public class SequenceLogInAdmin extends Sequence {
         if (getStepNow() < getNumberSteps()) {
             switch (getStepNow()) {
                 case 0: // primera pregunta al usuario
-                    sendMessage = sendMessage(message, REQUEST_USERNAME);
+                    setSendMessageRequest(sendMessage(message, REQUEST_USERNAME));
                     break;
 
                 case 1: // graba primera pregunta
@@ -55,8 +54,8 @@ public class SequenceLogInAdmin extends Sequence {
                     user.setNameuser(username);
 
                     //siguiente pregunta
-                    sendMessage = sendMessage(message, REQUEST_PASSWORD);
-                    bot.execute(sendMessage);
+                    setSendMessageRequest(sendMessage(message, REQUEST_PASSWORD));
+                    bot.execute(getSendMessageRequest());
                     break;
             }
             setStepNow(getStepNow() + 1);
@@ -84,21 +83,6 @@ public class SequenceLogInAdmin extends Sequence {
                     message.getChat().getFirstName() ),
                     update));
         }
-    }
-
-    private SendMessage sendMessage(Message message, String text){
-        SendMessage sendMessageRequest = new SendMessage();
-        sendMessageRequest.setChatId(message.getChatId());
-        sendMessageRequest.setReplyToMessageId(message.getMessageId());
-        ForceReplyKeyboard forceReplyKeyboard = new ForceReplyKeyboard();
-        forceReplyKeyboard.setSelective(true);
-        sendMessageRequest.setReplyMarkup(forceReplyKeyboard);
-        sendMessageRequest.setText(text);
-        return sendMessageRequest;
-    }
-
-    public SendMessage getSendMessage() {
-        return sendMessage;
     }
 
     public EveUserEntity getUser() {

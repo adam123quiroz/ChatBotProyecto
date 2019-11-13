@@ -1,21 +1,27 @@
 package edu.com.chatbotsoftI.auxiliar;
 
 import edu.com.chatbotsoftI.bot.BoltonBot;
+import edu.com.chatbotsoftI.entity.EvePersonEntity;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ForceReplyKeyboard;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
-import java.text.ParseException;
 
 public abstract class Sequence {
 
     private boolean running;
     private int numberSteps;
     private int stepNow;
+    private EvePersonEntity  personEntity;
+    private static SendMessage sendMessageRequest;
 
-    public Sequence(boolean running, int numberSteps, int stepNow) {
+    public Sequence(boolean running, int numberSteps, int stepNow, EvePersonEntity personEntity) {
         this.running = running;
         this.numberSteps = numberSteps;
-        this.numberSteps = stepNow;
+        this.stepNow = stepNow;
+        this.personEntity = personEntity;
+        sendMessageRequest = new SendMessage();
     }
 
     public boolean isRunning() {
@@ -42,5 +48,31 @@ public abstract class Sequence {
         this.stepNow = stepNow;
     }
 
-    public abstract void runSequence(Update update, BoltonBot bot) throws TelegramApiException, ParseException;
+    public EvePersonEntity getPersonEntity() {
+        return personEntity;
+    }
+
+    public void setPersonEntity(EvePersonEntity personEntity) {
+        this.personEntity = personEntity;
+    }
+
+    public static SendMessage getSendMessageRequest() {
+        return sendMessageRequest;
+    }
+
+    public static void setSendMessageRequest(SendMessage sendMessageRequest) {
+        Sequence.sendMessageRequest = sendMessageRequest;
+    }
+
+    public abstract void runSequence(Update update, BoltonBot bot) throws TelegramApiException;
+
+    public static SendMessage sendMessage(Message message, String text) {
+        sendMessageRequest.setChatId(message.getChatId());
+        sendMessageRequest.setReplyToMessageId(message.getMessageId());
+        ForceReplyKeyboard forceReplyKeyboard = new ForceReplyKeyboard();
+        forceReplyKeyboard.setSelective(true);
+        sendMessageRequest.setReplyMarkup(forceReplyKeyboard);
+        sendMessageRequest.setText(text);
+        return sendMessageRequest;
+    }
 }

@@ -119,6 +119,7 @@ public class EvePaymentMethodEntity {
     private List<EvePaymentEntity> evepaymentsByIdpaymentmethod;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idpaymentmethod", nullable = false)
     public Integer getIdpaymentmethod() {
         return idpaymentmethod;

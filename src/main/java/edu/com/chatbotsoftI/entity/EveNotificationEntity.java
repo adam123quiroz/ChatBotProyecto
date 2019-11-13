@@ -120,6 +120,7 @@ public class EveNotificationEntity {
     private List<EveNotificationUserEntity> evenotificationusersByIdnotification;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idnotification", nullable = false)
     public Integer getIdnotification() {
         return idnotification;
