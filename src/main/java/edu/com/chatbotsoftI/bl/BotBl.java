@@ -1,26 +1,27 @@
 package edu.com.chatbotsoftI.bl;
 
-import edu.com.chatbotsoftI.auxiliar.*;
+import  edu.com.chatbotsoftI.auxiliar.*;
 import edu.com.chatbotsoftI.bot.BoltonBot;
+import edu.com.chatbotsoftI.bot.commands.Command;
 import edu.com.chatbotsoftI.bot.commands.Option;
 import edu.com.chatbotsoftI.bot.special.keyboard.KbOptionsBot;
 import edu.com.chatbotsoftI.dao.*;
 import edu.com.chatbotsoftI.dto.EventDto;
-import edu.com.chatbotsoftI.dto.LeasePlaceDto;
 import edu.com.chatbotsoftI.entity.EvePersonEntity;
+import edu.com.chatbotsoftI.entity.EveUserEntity;
 import edu.com.chatbotsoftI.enums.TypeEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendInvoice;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.payments.LabeledPrice;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,7 +36,7 @@ public class BotBl {
     private static List<String> optionListII = new ArrayList<>(List.of(
             Option.OP_MOVIE, Option.OP_MUSIC, Option.OP_MUSEUM));
 
-    static final String PROVIDER_TOKEN = "284685063:TEST:ZjhmMDU1MTM2MjVi";
+    private static final String PROVIDER_TOKEN = "284685063:TEST:ZjhmMDU1MTM2MjVi";
 
     private EventBl eventBl;
     private EvePersonRepository userRepository;
@@ -50,11 +51,14 @@ public class BotBl {
     private EveLeasePlaceRepository eveLeasePlaceRepository;
 
     private static Sequence sequence;
+    private static EveUserEntity userEntity;
     private static BoltonBot boltonBot;
 
     @Autowired
-    public BotBl(EvePersonRepository userRepository, EventBl eventBl,
-                 EveUserRepository eveUserEntity, EveEventRepository eveEventRepository,
+    public BotBl(EvePersonRepository userRepository,
+                 EventBl eventBl,
+                 EveUserRepository eveUserEntity,
+                 EveEventRepository eveEventRepository,
                  EveCategoryRepository eveCategoryRepository,
                  EveTypeEventRepository eveTypeEventRepository,
                  EveAddressRepository eveAddressRepository,
@@ -76,27 +80,23 @@ public class BotBl {
 
     }
 
-    public List<String> processUpdate(Update update, BoltonBot boltonBot) throws TelegramApiException, ParseException {
-        this.boltonBot = boltonBot;
+    public List<String> processUpdate(Update update, BoltonBot boltonBot) throws TelegramApiException {
+        BotBl.boltonBot = boltonBot;
         List<String> result = new ArrayList<>();
 
         if (initUser(update.getMessage().getFrom())) {
             result.add("Por favor ingrese una imagen para su foto de perfil");
         } else {
             // Mostrar el menu de opciones
-            if (this.sequence == null) {
+            if (sequence == null) {
                 result.add("Bienvenido al Bot");
                 handleIncomingMessage(update.getMessage(), update);
             }
-            else if (!this.sequence.isRunning()) {
-                LOGGER.info( "isRunning {}, stepNow {}, step {}",
-                        this.sequence.isRunning(),
-                        this.sequence.getStepNow(),
-                        this.sequence.getNumberSteps() );
+            else if (!sequence.isRunning()) {
                 result.add("Bienvenido al Bot");
                 handleIncomingMessage(update.getMessage(), update);
             } else {
-                this.sequence.runSequence(update, boltonBot);
+                sequence.runSequence(update, boltonBot);
             }
         }
         //continueChatWihtUser(CpUser, CpChat)
@@ -118,16 +118,16 @@ public class BotBl {
         return result;
     }
 
-    private void handleIncomingMessage( Message message, Update update ) throws TelegramApiException, ParseException {
+    private void handleIncomingMessage( Message message, Update update ) throws TelegramApiException {
 
-        Integer idChat = Integer.parseInt(message.getChatId().toString());
+        int idChat = Integer.parseInt(message.getChatId().toString());
 
-        List<String> options;
         List<EventDto> eventDtos;
-        List<LeasePlaceDto> leasePlaceDtos;
         KbOptionsBot kbOptionsBot;
 
         switch(message.getText()) {
+            case Command.startCommand:
+            case "hola":
             case "Hola":
                 kbOptionsBot = new KbOptionsBot(optionListI);
                 boltonBot.execute(kbOptionsBot.showMenu(String.format("" +
@@ -149,8 +149,8 @@ public class BotBl {
                 sequenceLogInAdmin.setRunning(true);
                 sequenceLogInAdmin.setNumberSteps(2);
                 sequenceLogInAdmin.runSequence(update, boltonBot);
-                boltonBot.execute(sequenceLogInAdmin.getSendMessage());
-                this.sequence = sequenceLogInAdmin;
+                boltonBot.execute(sequenceLogInAdmin.getSendMessageRequest());
+                sequence = sequenceLogInAdmin;
                 break;
 
             case Option.OP_MOVIE:
@@ -169,61 +169,59 @@ public class BotBl {
                 showEventsInformation(eventDtos, idChat,
                         "https://ep00.epimg.net/elviajero/imagenes/2016/11/23/album/1479923555_950451_1479926380_album_normal.jpg");
                 break;
+        }
 
-            case Option.OP_ADD:
-                SequenceAddEvent sequenceAddEvent;
-                sequenceAddEvent = new SequenceAddEvent(eveEventRepository, eveCategoryRepository,
-                        eveAddressRepository, eveTypeEventRepository, eveStatusRepository, eveCityRepository);
-                sequenceAddEvent.setRunning(true);
-                sequenceAddEvent.setNumberSteps(7);
-                sequenceAddEvent.runSequence(update, boltonBot);
-                boltonBot.execute(sequenceAddEvent.getSendMessage());
-                this.sequence = sequenceAddEvent;
-                break;
+        if (! (BotBl.getUserEntity() == null)) {
+            switch (message.getText()) {
+                case Option.OP_ADD_EVENT:
+                    SequenceAddEvent sequenceAddEvent;
+                    sequenceAddEvent = new SequenceAddEvent(eveEventRepository, eveCategoryRepository,
+                            eveAddressRepository, eveTypeEventRepository, eveStatusRepository, eveCityRepository);
+                    sequenceAddEvent.setRunning(true);
+                    sequenceAddEvent.setNumberSteps(7);
+                    sequenceAddEvent.runSequence(update, boltonBot);
+                    boltonBot.execute(sequenceAddEvent.getSendMessageRequest());
+                    sequence = sequenceAddEvent;
+                    break;
 
-            case Option.OP_MODIFY:
-                break;
+                case Option.OP_MODIFY_EVENT:
+                    SequenceUpdateEvent sequenceUpdateEvent;
+                    sequenceUpdateEvent = new SequenceUpdateEvent(eveEventRepository, eveCategoryRepository,
+                            eveAddressRepository, eveTypeEventRepository, eveStatusRepository, eveCityRepository);
+                    sequenceUpdateEvent.setRunning(true);
+                    sequenceUpdateEvent.setNumberSteps(3);
+                    sequenceUpdateEvent.runSequence(update, boltonBot);
+                    boltonBot.execute(sequenceUpdateEvent.getSendMessageRequest());
+                    sequence = sequenceUpdateEvent;
+                    break;
 
-            case Option.OP_DELETE:
-                SequenceDeleteEvent sequenceDeleteEvent;
-                sequenceDeleteEvent = new SequenceDeleteEvent(eveEventRepository, eveLeasePlaceRepository);
-                sequenceDeleteEvent.setRunning(true);
-                sequenceDeleteEvent.setNumberSteps(2);
-                sequenceDeleteEvent.runSequence(update, boltonBot);
-                boltonBot.execute(sequenceDeleteEvent.getSendMessage());
-                this.sequence = sequenceDeleteEvent;
-                break;
-
-            case Option.OP_LEASEPLACE:
-                SequenceAddLeasePlace sequenceAddLeasePlace;
-                sequenceAddLeasePlace = new SequenceAddLeasePlace(eveLeasePlaceRepository,eveAddressRepository,
-                        eveStatusRepository,eveCityRepository);
-                sequenceAddLeasePlace.setRunning(true);
-                sequenceAddLeasePlace.setNumberSteps(4);
-                sequenceAddLeasePlace.runSequence(update, boltonBot);
-                boltonBot.execute(sequenceAddLeasePlace.getSendMessage());
-                this.sequence = sequenceAddLeasePlace;
-                break;
-
-
-            default:
-                throw new IllegalStateException("Unexpected value: " + message.getText());
+                case Option.OP_DELETE_EVENT:
+                    SequenceDeleteEvent sequenceDeleteEvent;
+                    sequenceDeleteEvent = new SequenceDeleteEvent(eveEventRepository, eveLeasePlaceRepository);
+                    sequenceDeleteEvent.setRunning(true);
+                    sequenceDeleteEvent.setNumberSteps(2);
+                    sequenceDeleteEvent.runSequence(update, boltonBot);
+                    boltonBot.execute(sequenceDeleteEvent.getSendMessageRequest());
+                    sequence = sequenceDeleteEvent;
+                    break;
+            }
+        } else {
+            SendMessage sendMessageGreeting = new SendMessage().setChatId(update.getMessage().getChatId());
+            sendMessageGreeting.setText("Tienes que iniciar sesion para poder entrar al modo Administrativo");
+            boltonBot.execute(sendMessageGreeting);
         }
     }
 
-
-
-    public void showEventsInformation(List<EventDto> eventDtos, int idChat, String url) throws TelegramApiException {
+    private void showEventsInformation(List<EventDto> eventDtos, int idChat, String url) throws TelegramApiException {
         LOGGER.info(String.valueOf(eventDtos));
         SendInvoice inv;
         for (EventDto event:
                 eventDtos) {
-            String description = String.format("" +
+            String description = "" +
                             "Fecha: " + event.getDate() + "\n" +
                             "Hora: " + event.getStarttime() + "\n"+
                             "Categoria: " + event.getCategory() + "\n"+
-                            "Direccion: " + event.getAddress()
-            );
+                            "Direccion: " + event.getAddress();
             inv = new SendInvoice(
                     idChat,
                     event.getNameevent(),
@@ -251,4 +249,12 @@ public class BotBl {
 //            LOGGER.error("gg");
 //        }
 //    }
+
+    public static EveUserEntity getUserEntity() {
+        return userEntity;
+    }
+
+    public static void setUserEntity(EveUserEntity userEntity) {
+        BotBl.userEntity = userEntity;
+    }
 }

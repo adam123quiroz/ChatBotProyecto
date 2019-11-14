@@ -167,6 +167,7 @@ public class EvePaymentEntity {
     private EveBookingEntity evebookingByIdbooking;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idpayment", nullable = false)
     public Integer getIdpayment() {
         return idpayment;

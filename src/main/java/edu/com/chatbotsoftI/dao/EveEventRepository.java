@@ -1,6 +1,7 @@
 package edu.com.chatbotsoftI.dao;
 
 import edu.com.chatbotsoftI.entity.EveEventEntity;
+import edu.com.chatbotsoftI.entity.EveUserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -13,5 +14,10 @@ public interface EveEventRepository extends JpaRepository<EveEventEntity, Intege
 
     List<EveEventEntity> findAllByEveuserByIduser_Nameuser(String userName);
    // List<EveEventEntity> findAllByIduser_Nameuser(String userName);
+
+    List<EveEventEntity> findAllByEveuserByIduser(EveUserEntity userEntity);
+
+    EveEventEntity findByIdeventAndStatus(Integer id, Integer status);
+
 }
 

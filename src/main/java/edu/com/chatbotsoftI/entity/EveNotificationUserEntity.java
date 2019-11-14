@@ -102,6 +102,7 @@ public class EveNotificationUserEntity {
     private EveUserEntity eveuserByIduser;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idnotificationuser", nullable = false)
     public Integer getIdnotificationuser() {
         return idnotificationuser;

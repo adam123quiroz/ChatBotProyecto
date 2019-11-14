@@ -142,6 +142,7 @@ public class EvePersonChatEntity {
     private EvePersonEntity evepersonByIdperson;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idevuserchat", nullable = false)
     public Integer getIdevuserchat() {
         return idevuserchat;

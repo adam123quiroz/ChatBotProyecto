@@ -27,7 +27,7 @@ public class EventDto {
          this.category = event.getEvecategoryByIdcategory().getCategory();
        // this.category = event.getIdcategory().getCategory();
        // this.address = event.getIdaddress().getAddress();
-        this.address = event.getEveaddressByIdaddress().getAddress();
+//        this.address = event.getEveaddressByIdaddress().getAddress();
     }
 
     public Integer getIdevent() {

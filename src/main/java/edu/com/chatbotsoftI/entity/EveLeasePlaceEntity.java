@@ -209,6 +209,7 @@ public class EveLeasePlaceEntity {
     private List<EveNotificationEntity> evenotificationsByIdleaseplace;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idleaseplace", nullable = false)
     public Integer getIdleaseplace() {
         return idleaseplace;

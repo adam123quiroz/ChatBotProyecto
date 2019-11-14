@@ -107,6 +107,7 @@ public class EveCategoryEntity {
     private List<EveEventEntity> eveeventsByIdcategory;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idcategory", nullable = false)
     public Integer getIdcategory() {
         return idcategory;

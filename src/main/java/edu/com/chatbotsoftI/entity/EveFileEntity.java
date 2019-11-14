@@ -181,6 +181,7 @@ public class EveFileEntity {
     private List<EveEventFileEntity> eveeventfilesByIdfile;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idfile", nullable = false)
     public Integer getIdfile() {
         return idfile;

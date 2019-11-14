@@ -266,6 +266,7 @@ public class EveUserEntity {
     private EvePersonEntity evepersonByIdperson;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "iduser", nullable = false)
     public Integer getIduser() {
         return iduser;

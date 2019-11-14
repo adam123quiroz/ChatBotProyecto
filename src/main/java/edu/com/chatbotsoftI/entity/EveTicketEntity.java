@@ -156,6 +156,7 @@ public class EveTicketEntity {
     private List<EveBuyTicketEntity> evebuyticketsByIdticket;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idticket", nullable = false)
     public Integer getIdticket() {
         return idticket;
