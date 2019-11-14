@@ -1,5 +1,8 @@
 package edu.com.chatbotsoftI.bot.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Option {
     public static final String OP_CONTINUE = "Continuar";
     public static final String OP_LOG_IN_ADM = "Iniciar Sesion Administrador";
@@ -15,5 +18,23 @@ public class Option {
     public static final String OP_LEASEPLACE ="Rentar Lugar";
 //    public static final String OP_LEASEPLACEYES= "Si";
  //   public static final String OP_LEASEPLACENO= "NO";
+
+    public static final String OP_ATTRIBUTE_NAME = "Nombre";
+    public static final String OP_ATTRIBUTE_PRICE = "Precio";
+    public static final String OP_ATTRIBUTE_DATE = "Fecha";
+    public static final String OP_ATTRIBUTE_CATEGORY = "Categoria";
+    public static final String OP_ATTRIBUTE_TYPE_EVENT = "Tipo de Evento";
+    public static final String OP_ATTRIBUTE_ADDRESS = "Direccion";
+    public static final String OP_ATTRIBUTE_START_TIME = "Hora de Empiezo";
+
+    public static final List<String> ATTRIBUTES_LIST = new ArrayList<>(List.of(
+            OP_ATTRIBUTE_NAME,
+            OP_ATTRIBUTE_PRICE,
+            OP_ATTRIBUTE_CATEGORY,
+            OP_ATTRIBUTE_TYPE_EVENT,
+            OP_ATTRIBUTE_DATE,
+            OP_ATTRIBUTE_START_TIME,
+            OP_ATTRIBUTE_ADDRESS));
+
 
 }

@@ -2,6 +2,7 @@ package edu.com.chatbotsoftI.auxiliar;
 
 import edu.com.chatbotsoftI.bl.BotBl;
 import edu.com.chatbotsoftI.bot.BoltonBot;
+import edu.com.chatbotsoftI.bot.commands.Command;
 import edu.com.chatbotsoftI.bot.message.ErrorMessage;
 import edu.com.chatbotsoftI.bot.message.RequestMessageAddEvent;
 import edu.com.chatbotsoftI.dao.*;
@@ -58,161 +59,165 @@ public class SequenceAddEvent extends Sequence {
         Message message = update.getMessage();
         String data;
 
-        if (getStepNow() < getNumberSteps()) {
-            EveCategoryEntity eveCategoryEntity;
-            switch (getStepNow()) {
-                case 0: // primera pregunta al usuario
-                    setSendMessageRequest( sendMessage(message, RequestMessageAddEvent.REQUEST_TYPE_EVENT) );
-                    break;
+        if (! update.getMessage().getText().equalsIgnoreCase(Command.RESTART_COMMAND)) {
+            if (getStepNow() < getNumberSteps()) {
+                EveCategoryEntity eveCategoryEntity;
+                switch (getStepNow()) {
+                    case 0: // primera pregunta al usuario
+                        setSendMessageRequest( sendMessage(message, RequestMessageAddEvent.REQUEST_TYPE_EVENT) );
+                        break;
 
-                case 1: // graba primera pregunta
-                    data = message.getText();
-                    if (eveTypeEventRepository.existsByTypeevent(data)){
-                        EveTypeEventEntity eveTypeEventEntity = eveTypeEventRepository.findByTypeevent(data);//dao TypeEvent
-                        event.setEvetypeeventByIdtypeevent(eveTypeEventEntity);
+                    case 1: // graba primera pregunta
+                        data = message.getText();
+                        if (eveTypeEventRepository.existsByTypeevent(data)){
+                            EveTypeEventEntity eveTypeEventEntity = eveTypeEventRepository.findByTypeevent(data);//dao TypeEvent
+                            event.setEvetypeeventByIdtypeevent(eveTypeEventEntity);
+
+                            // siguiente pregunta
+                            setSendMessageRequest( sendMessage(message, RequestMessageAddEvent.REQUEST_NAME_EVENT) );
+                        } else {
+                            setSendMessageRequest( sendMessage(message, ErrorMessage.ERROR_TYPE_CATEGORY) );
+                            setStepNow(3);
+                        }
+                        bot.execute(getSendMessageRequest());
+                        break;
+
+                    case 2: // graba primera pregunta
+                        data = message.getText();
+                        event.setNameevent(data);
 
                         // siguiente pregunta
-                        setSendMessageRequest( sendMessage(message, RequestMessageAddEvent.REQUEST_NAME_EVENT) );
-                    } else {
-                        setSendMessageRequest( sendMessage(message, ErrorMessage.ERROR_TYPE_CATEGORY) );
-                        setStepNow(3);
-                    }
-                    bot.execute(getSendMessageRequest());
-                    break;
+                        setSendMessageRequest(sendMessage(message, RequestMessageAddEvent.REQUEST_CATEGORY_EVENT));
+                        bot.execute(getSendMessageRequest());
+                        break;
 
-                case 2: // graba primera pregunta
-                    data = message.getText();
-                    event.setNameevent(data);
-
-                    // siguiente pregunta
-                    setSendMessageRequest(sendMessage(message, RequestMessageAddEvent.REQUEST_CATEGORY_EVENT));
-                    bot.execute(getSendMessageRequest());
-                    break;
-
-                case 3: // graba primera pregunta
-                    data = message.getText();
-                    if (eveCategoryRepository.existsByCategory(data)){
-                        eveCategoryEntity = eveCategoryRepository.findByCategory(data);//dao TypeEvent
-                    } else {
-                        EveCategoryEntity newEveCategoryEntity= new EveCategoryEntity();
-                        newEveCategoryEntity.setCategory(data);
-                        eveCategoryRepository.save(newEveCategoryEntity);
-                        eveCategoryEntity = newEveCategoryEntity;
-                    }
-                    event.setEvecategoryByIdcategory(eveCategoryEntity);
-
-                    // siguiente pregunta
-                    setSendMessageRequest(sendMessage(message, RequestMessageAddEvent.REQUEST_PRICE_EVENT));
-                    bot.execute(getSendMessageRequest());
-                    break;
-
-                case 4:
-                    data = message.getText();
-                    if (NumberUtils.isNumber(data)) {
-                        // graba primera pregunta
+                    case 3: // graba primera pregunta
                         data = message.getText();
-                        event.setPrice(new BigDecimal(data));
+                        if (eveCategoryRepository.existsByCategory(data)){
+                            eveCategoryEntity = eveCategoryRepository.findByCategory(data);//dao TypeEvent
+                        } else {
+                            EveCategoryEntity newEveCategoryEntity= new EveCategoryEntity();
+                            newEveCategoryEntity.setCategory(data);
+                            eveCategoryRepository.save(newEveCategoryEntity);
+                            eveCategoryEntity = newEveCategoryEntity;
+                        }
+                        event.setEvecategoryByIdcategory(eveCategoryEntity);
 
-                        //segunda pregunta
-                        setSendMessageRequest(sendMessage(message, RequestMessageAddEvent.REQUEST_DATE_EVENT));
+                        // siguiente pregunta
+                        setSendMessageRequest(sendMessage(message, RequestMessageAddEvent.REQUEST_PRICE_EVENT));
+                        bot.execute(getSendMessageRequest());
+                        break;
 
-                    } else {
-                        setSendMessageRequest(sendMessage(message, ErrorMessage.ERROR_NUMBER_FORMAT));
-                        setStepNow(3);
-                    }
-                    bot.execute(getSendMessageRequest());
-                    break;
+                    case 4:
+                        data = message.getText();
+                        if (NumberUtils.isNumber(data)) {
+                            // graba primera pregunta
+                            data = message.getText();
+                            event.setPrice(new BigDecimal(data));
 
-                case 5: // graba primera pregunta
-                    data = message.getText();
-                    try {
-                        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                        java.util.Date date;
-                        date = dateFormat.parse(data);
-                        event.setDate(new Date(date.getTime()));
+                            //segunda pregunta
+                            setSendMessageRequest(sendMessage(message, RequestMessageAddEvent.REQUEST_DATE_EVENT));
 
-                        //segunda pregunta
-                        setSendMessageRequest(sendMessage(message, RequestMessageAddEvent.REQUEST_TIME_START_EVENT));
+                        } else {
+                            setSendMessageRequest(sendMessage(message, ErrorMessage.ERROR_NUMBER_FORMAT));
+                            setStepNow(3);
+                        }
+                        bot.execute(getSendMessageRequest());
+                        break;
 
-                    } catch (ParseException e) {
-                        setSendMessageRequest(sendMessage(message, ErrorMessage.ERROR_DATE_EVENT));
-                        setStepNow(4);
-                    }
-                    bot.execute(getSendMessageRequest());
-                    break;
+                    case 5: // graba primera pregunta
+                        data = message.getText();
+                        try {
+                            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                            java.util.Date date;
+                            date = dateFormat.parse(data);
+                            event.setDate(new Date(date.getTime()));
 
-                case 6: // graba primera pregunta y segunda pregunta
-                    data = message.getText();
-                    try {
-                        DateFormat formatter = new SimpleDateFormat("HH:mm");
-                        Time timeValue = new Time(formatter.parse(data).getTime());
-                        event.setStarttime(timeValue);
+                            //segunda pregunta
+                            setSendMessageRequest(sendMessage(message, RequestMessageAddEvent.REQUEST_TIME_START_EVENT));
 
-                        //segunda pregunta
-                        setSendMessageRequest(sendMessage(message, RequestMessageAddEvent.REQUEST_ADDRESS_EVENT));
+                        } catch (ParseException e) {
+                            setSendMessageRequest(sendMessage(message, ErrorMessage.ERROR_DATE_EVENT));
+                            setStepNow(4);
+                        }
+                        bot.execute(getSendMessageRequest());
+                        break;
 
-                    } catch (ParseException e) {
-                        setSendMessageRequest(sendMessage(message, ErrorMessage.ERROR_TIME_START_EVENT));
-                        setStepNow(5);
-                    }
-                    bot.execute(getSendMessageRequest());
-                    break;
+                    case 6: // graba primera pregunta y segunda pregunta
+                        data = message.getText();
+                        try {
+                            DateFormat formatter = new SimpleDateFormat("HH:mm");
+                            Time timeValue = new Time(formatter.parse(data).getTime());
+                            event.setStarttime(timeValue);
 
-                default:
-                    throw new IllegalStateException("Unexpected value: " + getStepNow());
-            }
-            setStepNow(getStepNow() + 1);
-            LOGGER.info("numero de pasos actualizados {}", getStepNow());
+                            //segunda pregunta
+                            setSendMessageRequest(sendMessage(message, RequestMessageAddEvent.REQUEST_ADDRESS_EVENT));
+
+                        } catch (ParseException e) {
+                            setSendMessageRequest(sendMessage(message, ErrorMessage.ERROR_TIME_START_EVENT));
+                            setStepNow(5);
+                        }
+                        bot.execute(getSendMessageRequest());
+                        break;
+
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + getStepNow());
+                }
+                setStepNow(getStepNow() + 1);
+                LOGGER.info("numero de pasos actualizados {}", getStepNow());
+            } else {
+                //graba ultima pregunta y termina
+                data = message.getText();
+                List<String> addressPart = Arrays.asList(data.split(","));
+
+                //state
+                String state = addressPart.get(0).trim();
+                EveStateEntity eveStateEntity;
+                if (eveStatusRepository.existsByState(state)){
+                    eveStateEntity = eveStatusRepository.findByState(state);//dao TypeEvent
+                } else {
+                    EveStateEntity newEveStateEntity= new EveStateEntity();
+                    newEveStateEntity.setState(state);
+                    eveStatusRepository.save(newEveStateEntity);
+                    eveStateEntity = newEveStateEntity;
+                }
+
+                //country
+                String city = addressPart.get(1).trim();
+                EveCityEntity eveCityEntity;
+                if (eveCityRepository.existsByCity(city)){
+                    eveCityEntity = eveCityRepository.findByCity(city);//dao TypeEvent
+                } else {
+                    EveCityEntity newEveCityEntity= new EveCityEntity();
+                    newEveCityEntity.setCity(city);
+                    newEveCityEntity.setEvestateByIdstate(eveStateEntity);
+                    eveCityRepository.save(newEveCityEntity);
+                    eveCityEntity = newEveCityEntity;
+                }
+
+                //address
+                String address = addressPart.get(2).trim();
+                EveAddressEntity eveAddressEntity = new EveAddressEntity();
+                eveAddressEntity.setAddress(address);
+                eveAddressEntity.setEvecityByIdcity(eveCityEntity);
+                eveAddressRepository.save(eveAddressEntity);
+                event.setEveaddressByIdaddress(eveAddressEntity);
+
+                //Analisis de la Informacion
+                event.setStatus(Status.ACTIVE.getStatus());
+                event.setEveuserByIduser(BotBl.getUserEntity());
+                event.setTxuser(BotBl.getUserEntity().getNameuser());
+                event.setTxhost("localhost");
+                java.util.Date dateCreate = new java.util.Date();
+                event.setTxdate(new Date(dateCreate.getTime()));
+
+                eveEventRepository.save(event);
+                setRunning(false);
+            } //end if else
         } else {
-
-            //graba ultima pregunta y termina
-            data = message.getText();
-            List<String> addressPart = Arrays.asList(data.split(","));
-
-            //state
-            String state = addressPart.get(0).trim();
-            EveStateEntity eveStateEntity;
-            if (eveStatusRepository.existsByState(state)){
-                eveStateEntity = eveStatusRepository.findByState(state);//dao TypeEvent
-            } else {
-                EveStateEntity newEveStateEntity= new EveStateEntity();
-                newEveStateEntity.setState(state);
-                eveStatusRepository.save(newEveStateEntity);
-                eveStateEntity = newEveStateEntity;
-            }
-
-
-            //country
-            String city = addressPart.get(1).trim();
-            EveCityEntity eveCityEntity;
-            if (eveCityRepository.existsByCity(city)){
-                eveCityEntity = eveCityRepository.findByCity(city);//dao TypeEvent
-            } else {
-                EveCityEntity newEveCityEntity= new EveCityEntity();
-                newEveCityEntity.setCity(city);
-                newEveCityEntity.setEvestateByIdstate(eveStateEntity);
-                eveCityRepository.save(newEveCityEntity);
-                eveCityEntity = newEveCityEntity;
-            }
-
-            //address
-            String address = addressPart.get(2).trim();
-            EveAddressEntity eveAddressEntity = new EveAddressEntity();
-            eveAddressEntity.setAddress(address);
-            eveAddressEntity.setEvecityByIdcity(eveCityEntity);
-            eveAddressRepository.save(eveAddressEntity);
-            event.setEveaddressByIdaddress(eveAddressEntity);
-
-            //Analisis de la Informacion
-            event.setStatus(Status.ACTIVE.getStatus());
-            event.setEveuserByIduser(BotBl.getUserEntity());
-            event.setTxuser(BotBl.getUserEntity().getNameuser());
-            event.setTxhost("localhost");
-            java.util.Date dateCreate = new java.util.Date();
-            event.setTxdate(new Date(dateCreate.getTime()));
-
-            eveEventRepository.save(event);
-            setRunning(false);
-        }
-    }
+            setSendMessageRequest(sendMessage(message, RequestMessageAddEvent.REQUEST_RESTART_EVENT));
+            bot.execute(getSendMessageRequest());
+            setStepNow(1);
+        }// ends if else command restart
+    }//end runSequence method
 }

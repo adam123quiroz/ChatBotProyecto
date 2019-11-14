@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendInvoice;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -168,49 +169,48 @@ public class BotBl {
                 showEventsInformation(eventDtos, idChat,
                         "https://ep00.epimg.net/elviajero/imagenes/2016/11/23/album/1479923555_950451_1479926380_album_normal.jpg");
                 break;
+        }
 
-            case Option.OP_ADD_EVENT:
-                SequenceAddEvent sequenceAddEvent;
-                sequenceAddEvent = new SequenceAddEvent(eveEventRepository, eveCategoryRepository,
-                        eveAddressRepository, eveTypeEventRepository, eveStatusRepository, eveCityRepository);
-                sequenceAddEvent.setRunning(true);
-                sequenceAddEvent.setNumberSteps(7);
-                sequenceAddEvent.runSequence(update, boltonBot);
-                boltonBot.execute(sequenceAddEvent.getSendMessageRequest());
-                sequence = sequenceAddEvent;
-                break;
+        if (! (BotBl.getUserEntity() == null)) {
+            switch (message.getText()) {
+                case Option.OP_ADD_EVENT:
+                    SequenceAddEvent sequenceAddEvent;
+                    sequenceAddEvent = new SequenceAddEvent(eveEventRepository, eveCategoryRepository,
+                            eveAddressRepository, eveTypeEventRepository, eveStatusRepository, eveCityRepository);
+                    sequenceAddEvent.setRunning(true);
+                    sequenceAddEvent.setNumberSteps(7);
+                    sequenceAddEvent.runSequence(update, boltonBot);
+                    boltonBot.execute(sequenceAddEvent.getSendMessageRequest());
+                    sequence = sequenceAddEvent;
+                    break;
 
-            case Option.OP_MODIFY_EVENT:
-                break;
+                case Option.OP_MODIFY_EVENT:
+                    SequenceUpdateEvent sequenceUpdateEvent;
+                    sequenceUpdateEvent = new SequenceUpdateEvent(eveEventRepository, eveCategoryRepository,
+                            eveAddressRepository, eveTypeEventRepository, eveStatusRepository, eveCityRepository);
+                    sequenceUpdateEvent.setRunning(true);
+                    sequenceUpdateEvent.setNumberSteps(3);
+                    sequenceUpdateEvent.runSequence(update, boltonBot);
+                    boltonBot.execute(sequenceUpdateEvent.getSendMessageRequest());
+                    sequence = sequenceUpdateEvent;
+                    break;
 
-            case Option.OP_DELETE_EVENT:
-                SequenceDeleteEvent sequenceDeleteEvent;
-                sequenceDeleteEvent = new SequenceDeleteEvent(eveEventRepository, eveLeasePlaceRepository);
-                sequenceDeleteEvent.setRunning(true);
-                sequenceDeleteEvent.setNumberSteps(2);
-                sequenceDeleteEvent.runSequence(update, boltonBot);
-                boltonBot.execute(sequenceDeleteEvent.getSendMessageRequest());
-                sequence = sequenceDeleteEvent;
-                break;
-
-            case Option.OP_LEASEPLACE:
-//                SequenceAddLeasePlace sequenceAddLeasePlace;
-//                sequenceAddLeasePlace = new SequenceAddLeasePlace(eveLeasePlaceRepository,eveAddressRepository,
-//                        eveStatusRepository,eveCityRepository);
-//                sequenceAddLeasePlace.setRunning(true);
-//                sequenceAddLeasePlace.setNumberSteps(4);
-//                sequenceAddLeasePlace.runSequence(update, boltonBot);
-//                boltonBot.execute(sequenceAddLeasePlace.getSendMessage());
-//                sequence = sequenceAddLeasePlace;
-                break;
-
-
-            default:
-                throw new IllegalStateException("Unexpected value: " + message.getText());
+                case Option.OP_DELETE_EVENT:
+                    SequenceDeleteEvent sequenceDeleteEvent;
+                    sequenceDeleteEvent = new SequenceDeleteEvent(eveEventRepository, eveLeasePlaceRepository);
+                    sequenceDeleteEvent.setRunning(true);
+                    sequenceDeleteEvent.setNumberSteps(2);
+                    sequenceDeleteEvent.runSequence(update, boltonBot);
+                    boltonBot.execute(sequenceDeleteEvent.getSendMessageRequest());
+                    sequence = sequenceDeleteEvent;
+                    break;
+            }
+        } else {
+            SendMessage sendMessageGreeting = new SendMessage().setChatId(update.getMessage().getChatId());
+            sendMessageGreeting.setText("Tienes que iniciar sesion para poder entrar al modo Administrativo");
+            boltonBot.execute(sendMessageGreeting);
         }
     }
-
-
 
     private void showEventsInformation(List<EventDto> eventDtos, int idChat, String url) throws TelegramApiException {
         LOGGER.info(String.valueOf(eventDtos));

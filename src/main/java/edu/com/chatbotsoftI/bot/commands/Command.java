@@ -12,4 +12,6 @@ public class Command {
     public static final String deleteCommand = commandInitChar + "delete";
 
     public static final String STOP_COMMAND = commandInitChar + "stop";
+
+    public static final String RESTART_COMMAND = commandInitChar + "restart";
 }

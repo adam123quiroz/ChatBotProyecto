@@ -9,7 +9,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ForceReplyKeyboa
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public abstract class Sequence {
-
     private boolean running;
     private int numberSteps;
     private int stepNow;
