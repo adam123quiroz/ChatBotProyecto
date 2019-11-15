@@ -168,7 +168,11 @@ public class SequenceAddEvent extends Sequence {
             } else {
                 //graba ultima pregunta y termina
                 data = message.getText();
+                LOGGER.info(" DATAAAAAA {}",data);
                 List<String> addressPart = Arrays.asList(data.split(","));
+                if(addressPart.size()!= 3){
+                    LOGGER.info(" ERROR EN EL TAMANIO DE LA LISTA {}", addressPart);
+                }
 
                 //state
                 String state = addressPart.get(0).trim();
