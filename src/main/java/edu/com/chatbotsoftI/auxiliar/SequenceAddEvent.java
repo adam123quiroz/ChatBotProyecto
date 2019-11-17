@@ -8,6 +8,8 @@ import edu.com.chatbotsoftI.bot.message.RequestMessageAddEvent;
 import edu.com.chatbotsoftI.dao.*;
 import edu.com.chatbotsoftI.entity.*;
 import edu.com.chatbotsoftI.enums.Status;
+import edu.com.chatbotsoftI.exception.CategoryException;
+import edu.com.chatbotsoftI.exception.PriceNumberException;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +27,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SequenceAddEvent extends Sequence {
-
     private EveEventRepository eveEventRepository;
     private EveCategoryRepository eveCategoryRepository;
     private EveAddressRepository eveAddressRepository;
@@ -36,7 +37,6 @@ public class SequenceAddEvent extends Sequence {
     private EveEventEntity event;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SequenceLogInAdmin.class);
-
 
     public SequenceAddEvent(EveEventRepository eveEventRepository,
                             EveCategoryRepository eveCategoryRepository,
@@ -72,12 +72,10 @@ public class SequenceAddEvent extends Sequence {
                         if (eveTypeEventRepository.existsByTypeevent(data)){
                             EveTypeEventEntity eveTypeEventEntity = eveTypeEventRepository.findByTypeevent(data);//dao TypeEvent
                             event.setEvetypeeventByIdtypeevent(eveTypeEventEntity);
-
                             // siguiente pregunta
                             setSendMessageRequest( sendMessage(message, RequestMessageAddEvent.REQUEST_NAME_EVENT) );
                         } else {
-                            setSendMessageRequest( sendMessage(message, ErrorMessage.ERROR_TYPE_CATEGORY) );
-                            setStepNow(3);
+                            throw new CategoryException(bot, this, message, 0);
                         }
                         bot.execute(getSendMessageRequest());
                         break;
@@ -102,7 +100,6 @@ public class SequenceAddEvent extends Sequence {
                             eveCategoryEntity = newEveCategoryEntity;
                         }
                         event.setEvecategoryByIdcategory(eveCategoryEntity);
-
                         // siguiente pregunta
                         setSendMessageRequest(sendMessage(message, RequestMessageAddEvent.REQUEST_PRICE_EVENT));
                         bot.execute(getSendMessageRequest());
@@ -119,8 +116,7 @@ public class SequenceAddEvent extends Sequence {
                             setSendMessageRequest(sendMessage(message, RequestMessageAddEvent.REQUEST_DATE_EVENT));
 
                         } else {
-                            setSendMessageRequest(sendMessage(message, ErrorMessage.ERROR_NUMBER_FORMAT));
-                            setStepNow(3);
+                            throw new PriceNumberException(this, message);
                         }
                         bot.execute(getSendMessageRequest());
                         break;
@@ -164,12 +160,10 @@ public class SequenceAddEvent extends Sequence {
                         throw new IllegalStateException("Unexpected value: " + getStepNow());
                 }
                 setStepNow(getStepNow() + 1);
-                LOGGER.info("numero de pasos actualizados {}", getStepNow());
             } else {
                 //graba ultima pregunta y termina
                 data = message.getText();
                 List<String> addressPart = Arrays.asList(data.split(","));
-
                 //state
                 String state = addressPart.get(0).trim();
                 EveStateEntity eveStateEntity;
@@ -181,7 +175,6 @@ public class SequenceAddEvent extends Sequence {
                     eveStatusRepository.save(newEveStateEntity);
                     eveStateEntity = newEveStateEntity;
                 }
-
                 //country
                 String city = addressPart.get(1).trim();
                 EveCityEntity eveCityEntity;

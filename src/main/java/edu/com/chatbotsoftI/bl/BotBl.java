@@ -189,7 +189,7 @@ public class BotBl {
                     sequenceUpdateEvent = new SequenceUpdateEvent(eveEventRepository, eveCategoryRepository,
                             eveAddressRepository, eveTypeEventRepository, eveStatusRepository, eveCityRepository);
                     sequenceUpdateEvent.setRunning(true);
-                    sequenceUpdateEvent.setNumberSteps(3);
+                    sequenceUpdateEvent.setNumberSteps(4);
                     sequenceUpdateEvent.runSequence(update, boltonBot);
                     boltonBot.execute(sequenceUpdateEvent.getSendMessageRequest());
                     sequence = sequenceUpdateEvent;

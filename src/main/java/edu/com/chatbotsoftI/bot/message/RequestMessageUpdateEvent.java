@@ -9,7 +9,7 @@ public class RequestMessageUpdateEvent {
             Option.OP_MOVIE, Option.OP_MUSIC, Option.OP_MUSEUM
     );
     public static final String REQUEST_LIST_EVENT = "Selecciona el ID de un Evento, para poder actualizarlo";
-    public static final String REQUEST_CATEGORY_EVENT = "Cual sera la Categoria?";
+    public static final String REQUEST_NEW_VALUE = "Ingrese el nuevo valor para el nuevo atributo";
     public static final String REQUEST_PRICE_EVENT = "Cual sera el precio del Evento?";
     public static final String REQUEST_DATE_EVENT = "Cuando sera la fecha del Evento?\n Ej: 2019-06-18";
     public static final String REQUEST_TIME_START_EVENT = "Cuando sera la hora de empiezo del Evento?\n Ej: 18:00";

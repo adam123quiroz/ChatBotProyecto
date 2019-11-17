@@ -12,6 +12,10 @@ import edu.com.chatbotsoftI.dao.*;
 import edu.com.chatbotsoftI.dto.EventDto;
 import edu.com.chatbotsoftI.entity.*;
 import edu.com.chatbotsoftI.enums.Status;
+import edu.com.chatbotsoftI.exception.CategoryException;
+import edu.com.chatbotsoftI.exception.PriceNumberException;
+import edu.com.chatbotsoftI.exception.PriceNumberUpdateException;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -33,6 +37,7 @@ public class SequenceUpdateEvent extends Sequence {
 
     private EveEventEntity event;
     private EveEventEntity eventEntity;
+    private String attribute;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SequenceUpdateEvent.class);
 
@@ -62,7 +67,7 @@ public class SequenceUpdateEvent extends Sequence {
                 EveCategoryEntity eveCategoryEntity;
                 List<EveEventEntity> listEvent;
                 switch (getStepNow()) {
-                    case 0: // primera pregunta al usuario
+                    case 0 : // primera pregunta al usuario
                         StringBuilder text = new StringBuilder(RequestMessageUpdateEvent.REQUEST_LIST_EVENT);
                         listEvent = eveEventRepository.findAllByEveuserByIduser(BotBl.getUserEntity());
                         text.append("\n\n");
@@ -70,7 +75,7 @@ public class SequenceUpdateEvent extends Sequence {
                         setSendMessageRequest(sendMessage(message, text.toString()));
                         break;
 
-                    case 1: // graba primera pregunta
+                    case 1 : // graba primera pregunta
                         data = message.getText();
                         eventEntity = eveEventRepository.findByIdeventAndStatus(
                                 Integer.parseInt(data),
@@ -84,9 +89,15 @@ public class SequenceUpdateEvent extends Sequence {
                             bot.execute(kbOptionsBot.showMenu("Elige el atributo que quieres cambiar", update));
                         }
                         break;
-                    case 2: // graba primera pregunta
-                        data = message.getText();
-                        chanceAttributeEvent(data, message, bot);
+                    case 2 : // graba primera pregunta
+                        attribute = message.getText();
+
+                        // siguiente pregunta
+                        setSendMessageRequest(sendMessage(message, RequestMessageUpdateEvent.REQUEST_NEW_VALUE));
+                        bot.execute(getSendMessageRequest());
+                        break;
+                    case 3 : // graba primera pregunta
+                        chanceAttributeEvent(message, bot);
                         break;
                 }
                 setStepNow(getStepNow() + 1);
@@ -113,32 +124,35 @@ public class SequenceUpdateEvent extends Sequence {
         }// ends if else command restart
     }
 
-    private void chanceAttributeEvent(String data, Message message, BoltonBot bot) {
-        try {
-            switch (data) {
-                case Option.OP_ATTRIBUTE_NAME :
-                    eventEntity.setNameevent(data);
-                    break;
-                case Option.OP_ATTRIBUTE_PRICE :
+    private void chanceAttributeEvent(Message message, BoltonBot bot) throws TelegramApiException {
+        String data = message.getText();
+        LOGGER.info("Attribute {}", attribute);
+        switch (attribute) {
+            case Option.OP_ATTRIBUTE_NAME :
+                eventEntity.setNameevent(data);
+                break;
+            case Option.OP_ATTRIBUTE_PRICE :
+                if (NumberUtils.isNumber(data)) {
+                    // graba primera pregunta
+                    data = message.getText();
                     eventEntity.setPrice(new BigDecimal(data));
-                    break;
-                case Option.OP_ATTRIBUTE_CATEGORY :
-                    if (eveTypeEventRepository.existsByTypeevent(data)) {
-                        EveTypeEventEntity eveTypeEventEntity = eveTypeEventRepository.findByTypeevent(data);//dao TypeEvent
-                        eventEntity.setEvetypeeventByIdtypeevent(eveTypeEventEntity);
-                        // siguiente pregunta
-                        setSendMessageRequest( sendMessage(message, RequestMessageAddEvent.REQUEST_NAME_EVENT) );
-                    } else {
-                        setSendMessageRequest(sendMessage(message, ErrorMessage.ERROR_TYPE_CATEGORY));
-                        bot.execute(getSendMessageRequest());
-                    }
-                    break;
-                case Option.OP_ATTRIBUTE_ADDRESS :
-                    eventEntity.setEveaddressByIdaddress(null);
-                    break;
-            }
-        } catch (Exception e) {
+                } else
+                    throw new PriceNumberUpdateException(bot, this, message);
+                break;
 
+            case Option.OP_ATTRIBUTE_CATEGORY :
+                if (eveTypeEventRepository.existsByTypeevent(data)) {
+                    EveTypeEventEntity eveTypeEventEntity = eveTypeEventRepository.findByTypeevent(data);//dao TypeEvent
+                    eventEntity.setEvetypeeventByIdtypeevent(eveTypeEventEntity);
+                    // siguiente pregunta
+                    setSendMessageRequest( sendMessage(message, RequestMessageAddEvent.REQUEST_NAME_EVENT) );
+                } else
+                    throw new CategoryException(bot, this, message, 2);
+                break;
+
+            case Option.OP_ATTRIBUTE_ADDRESS :
+                eventEntity.setEveaddressByIdaddress(null);
+                break;
         }
     }
 
