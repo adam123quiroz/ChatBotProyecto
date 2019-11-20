@@ -6,7 +6,7 @@ import edu.com.chatbotsoftI.bot.commands.Command;
 import edu.com.chatbotsoftI.bot.commands.Option;
 import edu.com.chatbotsoftI.bot.special.keyboard.KbOptionsBot;
 import edu.com.chatbotsoftI.dao.*;
-import edu.com.chatbotsoftI.dto.EventDto;
+import edu.com.chatbotsoftI.dto.*;
 import edu.com.chatbotsoftI.entity.EvePersonEntity;
 import edu.com.chatbotsoftI.entity.EveUserEntity;
 import edu.com.chatbotsoftI.enums.TypeEvent;
@@ -204,6 +204,16 @@ public class BotBl {
                     boltonBot.execute(sequenceDeleteEvent.getSendMessageRequest());
                     sequence = sequenceDeleteEvent;
                     break;
+                case Option.OP_LEASEPLACE:
+                    SequenceAddLeasePlace sequenceAddLeasePlace;
+                    sequenceAddLeasePlace = new SequenceAddLeasePlace(eveLeasePlaceRepository,eveAddressRepository,
+                            eveStatusRepository,eveCityRepository);
+                    sequenceAddLeasePlace.setRunning(true);
+                    sequenceAddLeasePlace.setNumberSteps(4);
+                    sequenceAddLeasePlace.runSequence(update, boltonBot);
+                    boltonBot.execute(sequenceAddLeasePlace.getSendMessage());
+                    sequence = sequenceAddLeasePlace;
+
             }
         } else {
             SendMessage sendMessageGreeting = new SendMessage().setChatId(update.getMessage().getChatId());
