@@ -23,6 +23,7 @@ import org.telegram.telegrambots.meta.api.objects.payments.LabeledPrice;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class BotBl {
     private static List<String> optionListI = new ArrayList<>(List.of(
             Option.OP_CONTINUE, Option.OP_LOG_IN_ADM));
     private static List<String> optionListII = new ArrayList<>(List.of(
-            Option.OP_MOVIE, Option.OP_MUSIC, Option.OP_MUSEUM));
+            Option.OP_MOVIE, Option.OP_MUSIC, Option.OP_MUSEUM, Option.OP_PLACE));
 
     private static final String PROVIDER_TOKEN = "284685063:TEST:ZjhmMDU1MTM2MjVi";
 
@@ -49,6 +50,7 @@ public class BotBl {
     private EveCityRepository eveCityRepository;
 
     private EveLeasePlaceRepository eveLeasePlaceRepository;
+    private LeaseplaceBl leaseplaceBl;
 
     private static Sequence sequence;
     private static EveUserEntity userEntity;
@@ -64,7 +66,8 @@ public class BotBl {
                  EveAddressRepository eveAddressRepository,
                  EveStatusRepository eveStatusRepository,
                  EveCityRepository eveCityRepository,
-                 EveLeasePlaceRepository eveLeasePlaceRepository) {
+                 EveLeasePlaceRepository eveLeasePlaceRepository,
+                 LeaseplaceBl leaseplaceBl) {
 
         this.userRepository = userRepository;
         this.eventBl = eventBl;
@@ -77,7 +80,7 @@ public class BotBl {
         this.eveCityRepository = eveCityRepository;
 
         this.eveLeasePlaceRepository = eveLeasePlaceRepository;
-
+        this.leaseplaceBl = leaseplaceBl;
     }
 
     public List<String> processUpdate(Update update, BoltonBot boltonBot) throws TelegramApiException {
@@ -125,6 +128,8 @@ public class BotBl {
         List<EventDto> eventDtos;
         KbOptionsBot kbOptionsBot;
 
+        List<LeasePlaceDto> leaseplaceDtos;
+
         switch(message.getText()) {
             case Command.startCommand:
             case "hola":
@@ -169,6 +174,11 @@ public class BotBl {
                 showEventsInformation(eventDtos, idChat,
                         "https://ep00.epimg.net/elviajero/imagenes/2016/11/23/album/1479923555_950451_1479926380_album_normal.jpg");
                 break;
+            case Option.OP_PLACE:
+                leaseplaceDtos = leaseplaceBl.findAllLeaseplaceDto();
+                showLeasePlacesInformation(leaseplaceDtos,idChat);
+                break;
+
         }
 
         if (! (BotBl.getUserEntity() == null)) {
@@ -228,10 +238,10 @@ public class BotBl {
         for (EventDto event:
                 eventDtos) {
             String description = "" +
-                            "Fecha: " + event.getDate() + "\n" +
-                            "Hora: " + event.getStarttime() + "\n"+
-                            "Categoria: " + event.getCategory() + "\n"+
-                            "Direccion: " + event.getAddress();
+                    "Fecha: " + event.getDate() + "\n" +
+                    "Hora: " + event.getStarttime() + "\n"+
+                    "Categoria: " + event.getCategory() + "\n"+
+                    "Direccion: " + event.getAddress();
             inv = new SendInvoice(
                     idChat,
                     event.getNameevent(),
@@ -245,6 +255,34 @@ public class BotBl {
             boltonBot.execute(inv);
         }
     }
+
+        //Despliega los Lugares que se encuentren para rentar y esten activos
+        //Renta de lugar mas factura de prueba en Dolares
+        private void showLeasePlacesInformation(List<LeasePlaceDto> leasePlaceDtos, int idChat) throws TelegramApiException {
+        LOGGER.info(String.valueOf(leasePlaceDtos));
+        SendInvoice invocate;
+        for (LeasePlaceDto leaseplace:
+                leasePlaceDtos) {
+            String description = "" +
+                    "Fecha: " + leaseplace.getDate() + "\n" +
+                    "Precio " + leaseplace.getPrice() + "\n" +
+                    "Direccion: " + leaseplace.getAddress();      //+ "\n" +
+                LOGGER.info("datos de leaseplace a mostrar  {}",description);
+                    //"Nombre del lugar" + leaseplace.getNameplace();
+            invocate = new SendInvoice(
+                    idChat,
+                    //Nombre del lugar resalta en Color azul
+                    leaseplace.getNameplace(),
+                    description,
+                    "Visa", PROVIDER_TOKEN,
+                    "StartParam", "USD", Collections.singletonList(new LabeledPrice("label",
+                    100))
+             );
+            boltonBot.execute(invocate);
+        }
+
+    }
+
 
 //    private void sendHelpMessage(Message message, String language) throws InvalidObjectException {
 //        org.telegram.telegrambots.meta.api.methods.send.SendMessage sendMessageRequest = new SendMessage();

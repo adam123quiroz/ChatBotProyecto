@@ -156,17 +156,28 @@ public class SequenceAddLeasePlace extends Sequence {
                 addressRepository.save(eveAddressEntity);
                 LeasePlace.setEveaddressByIdaddress(eveAddressEntity);
 
-
+         //datos complementarios a la tabla leaseplcae
+        //se almacena el estado de la publicacion
         LeasePlace.setStatus(Status.ACTIVE.getStatus());
+        //se almacena el id del usuario que publica
         LeasePlace.setEveuserByIduser(BotBl.getUserEntity());
+        //se almacena el usuario para registros de auditoria
         LeasePlace.setTxuser(BotBl.getUserEntity().getNameuser());
         LeasePlace.setTxhost("localhost");
         Date datenew= new java.util.Date();
         LeasePlace.setTxdate(new java.sql.Date(datenew.getTime()));
 
-//       setRunning(false);
+
         leasePlaceRepository.save(LeasePlace);
-        LOGGER.info("Y BUE GUARDAS O NO QUIERO DORMIR {}",leasePlaceRepository);
+        LOGGER.info("Datos almacenados {}",leasePlaceRepository);
+        setRunning(false);
+            sendMessage= sendMessage(message,"Publicacion completada" + " "+ message.getChat().getFirstName());
+            bot.execute(sendMessage);
+          /*  if (sendMessage != null)
+            {
+
+            }
+            */
         }
     }
     public static SendMessage sendMessage (Message message,String text){
