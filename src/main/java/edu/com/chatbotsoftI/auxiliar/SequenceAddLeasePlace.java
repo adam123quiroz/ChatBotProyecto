@@ -2,6 +2,7 @@ package edu.com.chatbotsoftI.auxiliar;
 
 
 //import com.pengrad.telegrambot.request.SendMessage;
+import edu.com.chatbotsoftI.bl.BotBl;
 import edu.com.chatbotsoftI.bot.BoltonBot;
 import edu.com.chatbotsoftI.bot.commands.Option;
 import edu.com.chatbotsoftI.dao.EveAddressRepository;
@@ -12,6 +13,7 @@ import edu.com.chatbotsoftI.entity.EveAddressEntity;
 import edu.com.chatbotsoftI.entity.EveCityEntity;
 import edu.com.chatbotsoftI.entity.EveLeasePlaceEntity;
 import edu.com.chatbotsoftI.entity.EveStateEntity;
+import edu.com.chatbotsoftI.enums.Status;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -110,10 +112,7 @@ public class SequenceAddLeasePlace extends Sequence {
                 //cuarta pregunta
                 sendMessage = sendMessage (message, REQUEST_ADDRESS_PLACE);
                 bot.execute(sendMessage);
-//               /* data = message.getText();
-//                eveAddressEntity =new EveAddressEntity();
-//                eveAddressEntity.setAddress(data);
-//                addressRepository.save(eveAddressEntity);*/
+
                break;
             }
             setStepNow(getStepNow() + 1);
@@ -123,27 +122,49 @@ public class SequenceAddLeasePlace extends Sequence {
         data = message.getText();
         LOGGER.info("Dato {}",data);
 
-//      //  eveAddressEntity=new EveAddressEntity();
-//       // eveAddressEntity.setAddress(data);
 
-        List<String> address = Arrays.asList(data.split(","));
-       eveStateEntity = stateRepository.findByState(address.get(0));
-       eveCityEntity = cityRepository.findByCity(address.get(1));
+         List<String> addressPart = Arrays.asList(data.split(","));
+                //state guarda
+                String state = addressPart.get(0).trim();
+                EveStateEntity eveStateEntity;
+                if (stateRepository.existsByState(state)){
+                    eveStateEntity = stateRepository.findByState(state);//dao TypeEvent
+                } else {
+                    EveStateEntity newEveStateEntity= new EveStateEntity();
+                    newEveStateEntity.setState(state);
+                    stateRepository.save(newEveStateEntity);
+                    eveStateEntity = newEveStateEntity;
+                }
+                //country guarda
+                String city = addressPart.get(1).trim();
+                EveCityEntity eveCityEntity;
+                if (cityRepository.existsByCity(city)){
+                    eveCityEntity = cityRepository.findByCity(city);//dao TypeEvent
+                } else {
+                    EveCityEntity newEveCityEntity= new EveCityEntity();
+                    newEveCityEntity.setCity(city);
+                    newEveCityEntity.setEvestateByIdstate(eveStateEntity);
+                    cityRepository.save(newEveCityEntity);
+                    eveCityEntity = newEveCityEntity;
+                }
 
-       LOGGER.info("LLEGAS ACA? {}", address);
+                //address guarda
+                String address = addressPart.get(2).trim();
+                EveAddressEntity eveAddressEntity = new EveAddressEntity();
+                eveAddressEntity.setAddress(address);
+                eveAddressEntity.setEvecityByIdcity(eveCityEntity);
+                addressRepository.save(eveAddressEntity);
+                LeasePlace.setEveaddressByIdaddress(eveAddressEntity);
 
-//      // eveCityEntity.setIdstate(eveStateEntity);
-      eveCityEntity.setEvestateByIdstate(eveStateEntity);
 
-//      // eveAddressEntity.setIdcity(eveCityEntity);
-       eveAddressEntity.setEvecityByIdcity(eveCityEntity);
+        LeasePlace.setStatus(Status.ACTIVE.getStatus());
+        LeasePlace.setEveuserByIduser(BotBl.getUserEntity());
+        LeasePlace.setTxuser(BotBl.getUserEntity().getNameuser());
+        LeasePlace.setTxhost("localhost");
+        Date datenew= new java.util.Date();
+        LeasePlace.setTxdate(new java.sql.Date(datenew.getTime()));
 
-       eveAddressEntity.setAddress(address.get(2));
-
-//       //LeasePlace.setIdaddress(eveAddressEntity);
-        LeasePlace.setEveaddressByIdaddress(eveAddressEntity);
-
-        setRunning(false);
+//       setRunning(false);
         leasePlaceRepository.save(LeasePlace);
         LOGGER.info("Y BUE GUARDAS O NO QUIERO DORMIR {}",leasePlaceRepository);
         }

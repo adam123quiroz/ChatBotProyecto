@@ -212,7 +212,7 @@ public class BotBl {
                     sequenceAddLeasePlace.setNumberSteps(4);
                     sequenceAddLeasePlace.runSequence(update, boltonBot);
                     boltonBot.execute(sequenceAddLeasePlace.getSendMessage());
-                    sequence = sequenceAddLeasePlace;
+                    this.sequence = sequenceAddLeasePlace;
 
             }
         } else {
