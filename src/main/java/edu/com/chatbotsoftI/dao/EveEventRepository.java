@@ -19,5 +19,6 @@ public interface EveEventRepository extends JpaRepository<EveEventEntity, Intege
 
     EveEventEntity findByIdeventAndStatus(Integer id, Integer status);
 
+    EveEventEntity findByIdevent(Integer id);
 }
 

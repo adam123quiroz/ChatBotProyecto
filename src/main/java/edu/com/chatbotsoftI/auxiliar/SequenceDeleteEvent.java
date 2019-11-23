@@ -37,31 +37,35 @@ public class SequenceDeleteEvent extends Sequence {
             Message mesagge = update.getMessage();
             String Data;
 
-            List<EveEventEntity> usereventlist = eveEventRepository.findAllByEveuserByIduser_Nameuser("admin");
+            List<EveEventEntity> usereventlist = eveEventRepository.findAllByEveuserByIduser_Nameuser(getUser().getNameuser());
         //List<EveEventEntity> usereventlist = eveEventRepository.findAllByIduser_Nameuser("admin");
 
             List<EveLeasePlaceEntity> userleaseplacelist = eveLeasePlaceRepository.findAllByEveuserByIduser_Nameuser("admin"); //por ahora igual admin
             String opcion;
+            EveEventEntity eveEventEntity = null;
             if(getStepNow() < getNumberSteps()){
                 switch (getStepNow()){
                     case 0:
                         if(usereventlist!=null){
                             concatListEvent(usereventlist);
                             setSendMessageRequest(sendMessage(mesagge, REQUEST_DELETE));
-                            setStepNow(getStepNow()+1);
+
                         }
                         else{
                             setSendMessageRequest(sendMessage(mesagge, "Usted no tiene ningun evento para eliminar"));
-                            setStepNow(getStepNow()+2);
+                            setStepNow(getStepNow()+3);
                         }
                         break;
                     case 1:
                         opcion = mesagge.getText();
+
+                        eveEventEntity = eveEventRepository.findByIdevent(Integer.parseInt(opcion));
                         setSendMessageRequest(sendMessage(mesagge,CONFIRM_DELETE));
                         break;
                     case 2 :
                         opcion = mesagge.getText();
                         if(opcion == "1"){
+                            eveEventEntity.setStatus(0);
                             setSendMessageRequest(sendMessage(mesagge,DELETED_MESSAGE));
                         }
                         else{
