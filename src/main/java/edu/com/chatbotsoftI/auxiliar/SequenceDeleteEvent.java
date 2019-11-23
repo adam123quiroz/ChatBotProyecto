@@ -31,7 +31,7 @@ public class SequenceDeleteEvent extends Sequence {
     private static final String CONFIRM_DELETE = "Esta seguro que desea eliminar este evento? 1.Si / 2.No";
     private static final String DELETED_MESSAGE = "Evento eliminado satisfactoriamente";
     private static final String CANCELED_DELETE = "Se cancelo la eliminacion del evento";
-
+    private static final String REDIRECT_MESSAGE = "Usted no tiene ningun evento para eliminar. Presione . Se volvera al menu principal";
     @Override
     public void runSequence(Update update, BoltonBot bot) throws TelegramApiException {
             Message mesagge = update.getMessage();
@@ -52,7 +52,7 @@ public class SequenceDeleteEvent extends Sequence {
 
                         }
                         else{
-                            setSendMessageRequest(sendMessage(mesagge, "Usted no tiene ningun evento para eliminar"));
+                            setSendMessageRequest(sendMessage(mesagge, REDIRECT_MESSAGE));
                             setStepNow(getStepNow()+3);
                         }
                         break;

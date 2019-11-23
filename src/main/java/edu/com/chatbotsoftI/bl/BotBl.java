@@ -192,6 +192,7 @@ public class BotBl {
                     sequenceAddEvent.runSequence(update, boltonBot);
                     boltonBot.execute(sequenceAddEvent.getSendMessageRequest());
                     sequence = sequenceAddEvent;
+
                     break;
 
                 case Option.OP_MODIFY_EVENT:
