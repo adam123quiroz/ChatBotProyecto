@@ -209,7 +209,7 @@ public class BotBl {
                     SequenceDeleteEvent sequenceDeleteEvent;
                     sequenceDeleteEvent = new SequenceDeleteEvent(eveEventRepository, eveLeasePlaceRepository);
                     sequenceDeleteEvent.setRunning(true);
-                    sequenceDeleteEvent.setNumberSteps(2);
+                    sequenceDeleteEvent.setNumberSteps(3);
                     sequenceDeleteEvent.runSequence(update, boltonBot);
                     boltonBot.execute(sequenceDeleteEvent.getSendMessageRequest());
                     sequence = sequenceDeleteEvent;
