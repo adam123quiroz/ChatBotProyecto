@@ -7,6 +7,8 @@ import edu.com.chatbotsoftI.dto.EventDto;
 import edu.com.chatbotsoftI.entity.EveEventEntity;
 import edu.com.chatbotsoftI.entity.EveLeasePlaceEntity;
 import edu.com.chatbotsoftI.entity.EveUserEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -20,35 +22,40 @@ public class SequenceDeleteEvent extends Sequence {
     private EveEventRepository eveEventRepository;
 
     private EveLeasePlaceRepository eveLeasePlaceRepository;
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(SequenceDeleteEvent.class);
     public SequenceDeleteEvent(EveEventRepository eveEventRepository, EveLeasePlaceRepository eveLeasePlaceRepository) {
         super(true, 3 , 0);
         this.eveEventRepository = eveEventRepository;
 
         this.eveLeasePlaceRepository = eveLeasePlaceRepository;
     }
+    // Todas estas variables son los mensajes que se mostrara en pantalla por el bot para que al momento de cambiar algo en el codigo solo se requiera modificar la variable
+    // Correspondiente
+
     private static final String REQUEST_DELETE = " Escriba el id del evento que desea eliminar";
     private static final String CONFIRM_DELETE = "Esta seguro que desea eliminar este evento? 1.Si / 2.No";
     private static final String DELETED_MESSAGE = "Evento eliminado satisfactoriamente";
     private static final String CANCELED_DELETE = "Se cancelo la eliminacion del evento";
     private static final String REDIRECT_MESSAGE = "Usted no tiene ningun evento para eliminar. Presione . Se volvera al menu principal";
+    // este metodo se utiliza para comenzar la secuencia de eliminacion, para poder recibir y responder los mensajes del usuario
+
+    private static List<String> optionListI;
     @Override
     public void runSequence(Update update, BoltonBot bot) throws TelegramApiException {
             Message mesagge = update.getMessage();
             String Data;
 
-            List<EveEventEntity> usereventlist = eveEventRepository.findAllByEveuserByIduser_Nameuser(getUser().getNameuser());
-        //List<EveEventEntity> usereventlist = eveEventRepository.findAllByIduser_Nameuser("admin");
-
-            List<EveLeasePlaceEntity> userleaseplacelist = eveLeasePlaceRepository.findAllByEveuserByIduser_Nameuser("admin"); //por ahora igual admin
+            //List<EveEventEntity> usereventlist = eveEventRepository.findAllByEveuserByIduser_Nameuser(getUser().getNameuser());
+        LOGGER.info("Viendo si funciona {}",getUser().getNameuser());
+        List<EveEventEntity> usereventlist = eveEventRepository.findAllByEveuserByIduser_Nameuser("admin");
             String opcion;
             EveEventEntity eveEventEntity = null;
             if(getStepNow() < getNumberSteps()){
                 switch (getStepNow()){
                     case 0:
                         if(usereventlist!=null){
-                            concatListEvent(usereventlist);
-                            setSendMessageRequest(sendMessage(mesagge, REQUEST_DELETE));
+
+                            setSendMessageRequest(sendMessage(mesagge, REQUEST_DELETE +concatListEvent(usereventlist) ));
 
                         }
                         else{
