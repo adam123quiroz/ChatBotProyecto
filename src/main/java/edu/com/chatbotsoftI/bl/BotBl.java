@@ -208,9 +208,9 @@ public class BotBl {
 
                 case Option.OP_DELETE_EVENT:
                     SequenceDeleteEvent sequenceDeleteEvent;
-                    sequenceDeleteEvent = new SequenceDeleteEvent(eveEventRepository, eveLeasePlaceRepository);
+                    sequenceDeleteEvent = new SequenceDeleteEvent(eveEventRepository);
                     sequenceDeleteEvent.setRunning(true);
-                    sequenceDeleteEvent.setNumberSteps(3);
+                    sequenceDeleteEvent.setNumberSteps(2);
                     sequenceDeleteEvent.runSequence(update, boltonBot);
                     boltonBot.execute(sequenceDeleteEvent.getSendMessageRequest());
                     sequence = sequenceDeleteEvent;
