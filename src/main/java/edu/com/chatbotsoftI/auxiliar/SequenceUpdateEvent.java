@@ -12,8 +12,9 @@ import edu.com.chatbotsoftI.dao.*;
 import edu.com.chatbotsoftI.dto.EventDto;
 import edu.com.chatbotsoftI.entity.*;
 import edu.com.chatbotsoftI.enums.Status;
-import edu.com.chatbotsoftI.exception.CategoryException;
-import edu.com.chatbotsoftI.exception.PriceNumberException;
+import edu.com.chatbotsoftI.exception.AddressEventException;
+import edu.com.chatbotsoftI.exception.AddressEventUpdateException;
+import edu.com.chatbotsoftI.exception.TypeEventException;
 import edu.com.chatbotsoftI.exception.PriceNumberUpdateException;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -24,6 +25,10 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,7 +40,6 @@ public class SequenceUpdateEvent extends Sequence {
     private EveStatusRepository eveStatusRepository;
     private EveCityRepository eveCityRepository;
 
-    private EveEventEntity event;
     private EveEventEntity eventEntity;
     private String attribute;
 
@@ -47,14 +51,13 @@ public class SequenceUpdateEvent extends Sequence {
                             EveTypeEventRepository eveTypeEventRepository,
                             EveStatusRepository eveStatusRepository,
                             EveCityRepository eveCityRepository) {
-        super(true, 7, 0);
+        super(true, 4, 0);
         this.eveEventRepository = eveEventRepository;
         this.eveCategoryRepository =eveCategoryRepository;
         this.eveAddressRepository = eveAddressRepository;
         this.eveTypeEventRepository = eveTypeEventRepository;
         this.eveStatusRepository = eveStatusRepository;
         this.eveCityRepository = eveCityRepository;
-        event = new EveEventEntity();
     }
 
     @Override
@@ -64,7 +67,6 @@ public class SequenceUpdateEvent extends Sequence {
 
         if (! update.getMessage().getText().equalsIgnoreCase(Command.RESTART_COMMAND)) {
             if (getStepNow() < getNumberSteps()) {
-                EveCategoryEntity eveCategoryEntity;
                 List<EveEventEntity> listEvent;
                 switch (getStepNow()) {
                     case 0 : // primera pregunta al usuario
@@ -98,23 +100,18 @@ public class SequenceUpdateEvent extends Sequence {
                         break;
                     case 3 : // graba primera pregunta
                         chanceAttributeEvent(message, bot);
+
+                        KbOptionsBot kbOptionsBot = new KbOptionsBot(Option.CONFIRMATION_LIST);
+                        bot.execute(kbOptionsBot.showMenu(RequestMessageUpdateEvent.REQUEST_CONFIRMATION_EVENT, update));
                         break;
                 }
+                LOGGER.info("Numero de pasos {}", getStepNow());
                 setStepNow(getStepNow() + 1);
             } else {
-                //graba ultima pregunta y termina
-                data = message.getText();
-                List<String> addressPart = Arrays.asList(data.split(","));
 
                 //Analisis de la Informacion
-                event.setStatus(Status.ACTIVE.getStatus());
-                event.setEveuserByIduser(BotBl.getUserEntity());
-                event.setTxuser(BotBl.getUserEntity().getNameuser());
-                event.setTxhost("localhost");
-                java.util.Date dateCreate = new java.util.Date();
-                event.setTxdate(new Date(dateCreate.getTime()));
-
-                eveEventRepository.save(event);
+                eveEventRepository.save(eventEntity);
+                LOGGER.info("llego aca");
                 setRunning(false);
             } //end if else
         } else {
@@ -123,6 +120,7 @@ public class SequenceUpdateEvent extends Sequence {
             setStepNow(1);
         }// ends if else command restart
     }
+
 
     private void chanceAttributeEvent(Message message, BoltonBot bot) throws TelegramApiException {
         String data = message.getText();
@@ -140,21 +138,89 @@ public class SequenceUpdateEvent extends Sequence {
                     throw new PriceNumberUpdateException(bot, this, message);
                 break;
 
-            case Option.OP_ATTRIBUTE_CATEGORY :
+            case Option.OP_ATTRIBUTE_TYPE_EVENT :
                 if (eveTypeEventRepository.existsByTypeevent(data)) {
                     EveTypeEventEntity eveTypeEventEntity = eveTypeEventRepository.findByTypeevent(data);//dao TypeEvent
                     eventEntity.setEvetypeeventByIdtypeevent(eveTypeEventEntity);
-                    // siguiente pregunta
-                    setSendMessageRequest( sendMessage(message, RequestMessageAddEvent.REQUEST_NAME_EVENT) );
                 } else
-                    throw new CategoryException(bot, this, message, 2);
+                    throw new TypeEventException(bot, this, message, 2);
                 break;
 
             case Option.OP_ATTRIBUTE_ADDRESS :
-                eventEntity.setEveaddressByIdaddress(null);
+                data = message.getText();
+                List<String> addressPart = Arrays.asList(data.split(","));
+                if (addressPart.size() == 3) {
+                    //state
+                    String state = addressPart.get(0).trim();
+                    EveStateEntity eveStateEntity;
+                    if (eveStatusRepository.existsByState(state)) {
+                        eveStateEntity = eveStatusRepository.findByState(state);//dao TypeEvent
+                    } else {
+                        EveStateEntity newEveStateEntity= new EveStateEntity();
+                        newEveStateEntity.setState(state);
+                        eveStatusRepository.save(newEveStateEntity);
+                        eveStateEntity = newEveStateEntity;
+                    }
+                    //country
+                    String city = addressPart.get(1).trim();
+                    EveCityEntity eveCityEntity;
+                    if (eveCityRepository.existsByCity(city)) {
+                        eveCityEntity = eveCityRepository.findByCity(city);//dao TypeEvent
+                    } else {
+                        EveCityEntity newEveCityEntity= new EveCityEntity();
+                        newEveCityEntity.setCity(city);
+                        newEveCityEntity.setEvestateByIdstate(eveStateEntity);
+                        eveCityRepository.save(newEveCityEntity);
+                        eveCityEntity = newEveCityEntity;
+                    }
+                    //address
+                    String address = addressPart.get(2).trim();
+                    EveAddressEntity eveAddressEntity = new EveAddressEntity();
+                    eveAddressEntity.setAddress(address);
+                    eveAddressEntity.setEvecityByIdcity(eveCityEntity);
+                    eveAddressRepository.save(eveAddressEntity);
+                    eventEntity.setEveaddressByIdaddress(eveAddressEntity);
+                } else {
+                    throw new AddressEventUpdateException(bot, this, message);
+                }
                 break;
-        }
-    }
+            case Option.OP_ATTRIBUTE_START_TIME :
+                try {
+                    DateFormat formatter = new SimpleDateFormat("HH:mm");
+                    Time timeValue = new Time(formatter.parse(data).getTime());
+                    eventEntity.setStarttime(timeValue);
+                } catch (ParseException e) {
+                    setSendMessageRequest(sendMessage(message, ErrorMessage.ERROR_TIME_START_EVENT));
+                    setStepNow(2);
+                }
+                break;
+            case Option.OP_ATTRIBUTE_CATEGORY :
+                EveCategoryEntity eveCategoryEntity;
+                data = message.getText();
+                if (eveCategoryRepository.existsByCategory(data)){
+                    eveCategoryEntity = eveCategoryRepository.findByCategory(data);//dao TypeEvent
+                } else {
+                    EveCategoryEntity newEveCategoryEntity= new EveCategoryEntity();
+                    newEveCategoryEntity.setCategory(data);
+                    eveCategoryRepository.save(newEveCategoryEntity);
+                    eveCategoryEntity = newEveCategoryEntity;
+                }
+                eventEntity.setEvecategoryByIdcategory(eveCategoryEntity);
+                break;
+            case Option.OP_ATTRIBUTE_DATE :
+                data = message.getText();
+                try {
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    java.util.Date date;
+                    date = dateFormat.parse(data);
+                    eventEntity.setDate(new Date(date.getTime()));
+                } catch (ParseException e) {
+                    setSendMessageRequest(sendMessage(message, ErrorMessage.ERROR_DATE_EVENT));
+                    setStepNow(2);
+                }
+                break;
+        }// end switch case
+    }// end method run sequence()
 
     private String concatListEvent(List<EveEventEntity> events) {
         StringBuilder stringBuilder = new StringBuilder();

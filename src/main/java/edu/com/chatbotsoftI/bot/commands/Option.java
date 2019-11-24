@@ -27,6 +27,7 @@ public class Option {
     public static final String OP_ATTRIBUTE_ADDRESS = "Direccion";
     public static final String OP_ATTRIBUTE_START_TIME = "Hora de Empiezo";
 
+
     public static final List<String> ATTRIBUTES_LIST = new ArrayList<>(List.of(
             OP_ATTRIBUTE_NAME,
             OP_ATTRIBUTE_PRICE,
@@ -36,5 +37,11 @@ public class Option {
             OP_ATTRIBUTE_START_TIME,
             OP_ATTRIBUTE_ADDRESS));
 
+    public static final String OP_UPDATE_CONFIRMATION = "Confirmar";
+    public static final String OP_UPDATE_NO_CONFIRMATION = "Rechazar";
+
+    public static final List<String> CONFIRMATION_LIST = new ArrayList<>(List.of(
+            OP_UPDATE_CONFIRMATION,
+            OP_UPDATE_NO_CONFIRMATION));
 
 }

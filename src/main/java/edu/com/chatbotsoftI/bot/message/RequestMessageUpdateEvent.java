@@ -17,4 +17,5 @@ public class RequestMessageUpdateEvent {
             "Ej: La Paz, El Alto, Av. America #123";
 
     public static final String REQUEST_RESTART_EVENT = "REINICIANDO FUNCION \n" + REQUEST_TYPE_EVENT;
+    public static final String REQUEST_CONFIRMATION_EVENT = "Confirma los cambios \n" + REQUEST_TYPE_EVENT;
 }

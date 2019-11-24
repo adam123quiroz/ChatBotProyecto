@@ -1,7 +1,6 @@
 package edu.com.chatbotsoftI.bl;
 
-import edu.com.chatbotsoftI.dao.EveCategoryRepository;
-import edu.com.chatbotsoftI.dao.EveEventRepository;
+import edu.com.chatbotsoftI.dao.*;
 import edu.com.chatbotsoftI.dto.EventDto;
 import edu.com.chatbotsoftI.entity.EveEventEntity;
 import edu.com.chatbotsoftI.enums.Status;
@@ -18,38 +17,50 @@ public class EventBl {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventBl.class);
 
-    private EveEventRepository eventRepository;
+    private EveEventRepository eveEventRepository;
     private EveCategoryRepository eveCategoryRepository;
+    private EveAddressRepository eveAddressRepository;
+    private EveTypeEventRepository eveTypeEventRepository;
+    private EveStatusRepository eveStatusRepository;
+    private EveCityRepository eveCityRepository;
 
     @Autowired
-    public EventBl(EveEventRepository eventRepository,EveCategoryRepository eveCategoryRepository) {
-        this.eventRepository = eventRepository;
+    public EventBl(EveEventRepository eveEventRepository,
+                   EveCategoryRepository eveCategoryRepository,
+                   EveAddressRepository eveAddressRepository,
+                   EveTypeEventRepository eveTypeEventRepository,
+                   EveStatusRepository eveStatusRepository,
+                   EveCityRepository eveCityRepository) {
+        this.eveEventRepository = eveEventRepository;
         this.eveCategoryRepository = eveCategoryRepository;
+        this.eveAddressRepository = eveAddressRepository;
+        this.eveTypeEventRepository = eveTypeEventRepository;
+        this.eveStatusRepository = eveStatusRepository;
+        this.eveCityRepository = eveCityRepository;
     }
 
     public List<EventDto> findAllEventDto(){
         List<EventDto> eventDtos = new ArrayList<>();
         for (EveEventEntity event :
-                eventRepository.findAllByStatus(Status.ACTIVE.getStatus())) {
+                eveEventRepository.findAllByStatus(Status.ACTIVE.getStatus())) {
             eventDtos.add(new EventDto(event));
         }
         return eventDtos;
     }
 
     public List<EveEventEntity> findAllEvent(){
-        return eventRepository.findAllByStatus(Status.ACTIVE.getStatus());
+        return eveEventRepository.findAllByStatus(Status.ACTIVE.getStatus());
     }
 
     public List<EventDto> findAllEventByTypeEvent(String typeEvent) {
         List<EventDto> eventDtos = new ArrayList<>();
         for (EveEventEntity eventEntity :
 
-                eventRepository.findAllByEvetypeeventByIdtypeevent_TypeeventAndStatus(typeEvent, Status.ACTIVE.getStatus())) {
+                eveEventRepository.findAllByEvetypeeventByIdtypeevent_TypeeventAndStatus(typeEvent, Status.ACTIVE.getStatus())) {
                // eventRepository.findAllByIdtypeevent_TypeeventAndStatus(typeEvent, Status.ACTIVE.getStatus())) {
 
             eventDtos.add(new EventDto(eventEntity));
         }
         return eventDtos;
     }
-
 }

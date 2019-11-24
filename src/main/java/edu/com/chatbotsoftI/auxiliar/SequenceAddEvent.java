@@ -8,7 +8,8 @@ import edu.com.chatbotsoftI.bot.message.RequestMessageAddEvent;
 import edu.com.chatbotsoftI.dao.*;
 import edu.com.chatbotsoftI.entity.*;
 import edu.com.chatbotsoftI.enums.Status;
-import edu.com.chatbotsoftI.exception.CategoryException;
+import edu.com.chatbotsoftI.exception.AddressEventException;
+import edu.com.chatbotsoftI.exception.TypeEventException;
 import edu.com.chatbotsoftI.exception.PriceNumberException;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -75,7 +76,7 @@ public class SequenceAddEvent extends Sequence {
                             // siguiente pregunta
                             setSendMessageRequest( sendMessage(message, RequestMessageAddEvent.REQUEST_NAME_EVENT) );
                         } else {
-                            throw new CategoryException(bot, this, message, 0);
+                            throw new TypeEventException(bot, this, message, 0);
                         }
                         bot.execute(getSendMessageRequest());
                         break;
@@ -114,7 +115,6 @@ public class SequenceAddEvent extends Sequence {
 
                             //segunda pregunta
                             setSendMessageRequest(sendMessage(message, RequestMessageAddEvent.REQUEST_DATE_EVENT));
-
                         } else {
                             throw new PriceNumberException(this, message);
                         }
@@ -131,7 +131,6 @@ public class SequenceAddEvent extends Sequence {
 
                             //segunda pregunta
                             setSendMessageRequest(sendMessage(message, RequestMessageAddEvent.REQUEST_TIME_START_EVENT));
-
                         } catch (ParseException e) {
                             setSendMessageRequest(sendMessage(message, ErrorMessage.ERROR_DATE_EVENT));
                             setStepNow(4);
@@ -148,53 +147,52 @@ public class SequenceAddEvent extends Sequence {
 
                             //segunda pregunta
                             setSendMessageRequest(sendMessage(message, RequestMessageAddEvent.REQUEST_ADDRESS_EVENT));
-
                         } catch (ParseException e) {
                             setSendMessageRequest(sendMessage(message, ErrorMessage.ERROR_TIME_START_EVENT));
                             setStepNow(5);
                         }
                         bot.execute(getSendMessageRequest());
                         break;
-
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + getStepNow());
                 }
                 setStepNow(getStepNow() + 1);
             } else {
                 //graba ultima pregunta y termina
                 data = message.getText();
                 List<String> addressPart = Arrays.asList(data.split(","));
-                //state
-                String state = addressPart.get(0).trim();
-                EveStateEntity eveStateEntity;
-                if (eveStatusRepository.existsByState(state)){
-                    eveStateEntity = eveStatusRepository.findByState(state);//dao TypeEvent
+                if (addressPart.size() == 3) {
+                    //state
+                    String state = addressPart.get(0).trim();
+                    EveStateEntity eveStateEntity;
+                    if (eveStatusRepository.existsByState(state)){
+                        eveStateEntity = eveStatusRepository.findByState(state);//dao TypeEvent
+                    } else {
+                        EveStateEntity newEveStateEntity= new EveStateEntity();
+                        newEveStateEntity.setState(state);
+                        eveStatusRepository.save(newEveStateEntity);
+                        eveStateEntity = newEveStateEntity;
+                    }
+                    //country
+                    String city = addressPart.get(1).trim();
+                    EveCityEntity eveCityEntity;
+                    if (eveCityRepository.existsByCity(city)){
+                        eveCityEntity = eveCityRepository.findByCity(city);//dao TypeEvent
+                    } else {
+                        EveCityEntity newEveCityEntity= new EveCityEntity();
+                        newEveCityEntity.setCity(city);
+                        newEveCityEntity.setEvestateByIdstate(eveStateEntity);
+                        eveCityRepository.save(newEveCityEntity);
+                        eveCityEntity = newEveCityEntity;
+                    }
+                    //address
+                    String address = addressPart.get(2).trim();
+                    EveAddressEntity eveAddressEntity = new EveAddressEntity();
+                    eveAddressEntity.setAddress(address);
+                    eveAddressEntity.setEvecityByIdcity(eveCityEntity);
+                    eveAddressRepository.save(eveAddressEntity);
+                    event.setEveaddressByIdaddress(eveAddressEntity);
                 } else {
-                    EveStateEntity newEveStateEntity= new EveStateEntity();
-                    newEveStateEntity.setState(state);
-                    eveStatusRepository.save(newEveStateEntity);
-                    eveStateEntity = newEveStateEntity;
+                    throw new AddressEventException(bot, this, message, 5);
                 }
-                //country
-                String city = addressPart.get(1).trim();
-                EveCityEntity eveCityEntity;
-                if (eveCityRepository.existsByCity(city)){
-                    eveCityEntity = eveCityRepository.findByCity(city);//dao TypeEvent
-                } else {
-                    EveCityEntity newEveCityEntity= new EveCityEntity();
-                    newEveCityEntity.setCity(city);
-                    newEveCityEntity.setEvestateByIdstate(eveStateEntity);
-                    eveCityRepository.save(newEveCityEntity);
-                    eveCityEntity = newEveCityEntity;
-                }
-
-                //address
-                String address = addressPart.get(2).trim();
-                EveAddressEntity eveAddressEntity = new EveAddressEntity();
-                eveAddressEntity.setAddress(address);
-                eveAddressEntity.setEvecityByIdcity(eveCityEntity);
-                eveAddressRepository.save(eveAddressEntity);
-                event.setEveaddressByIdaddress(eveAddressEntity);
 
                 //Analisis de la Informacion
                 event.setStatus(Status.ACTIVE.getStatus());

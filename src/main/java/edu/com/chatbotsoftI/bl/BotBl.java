@@ -28,7 +28,6 @@ import java.util.List;
 
 @Service
 public class BotBl {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(BotBl.class);
 
     private static List<String> optionListI = new ArrayList<>(List.of(
@@ -82,29 +81,20 @@ public class BotBl {
 
     public List<String> processUpdate(Update update, BoltonBot boltonBot) throws TelegramApiException {
         BotBl.boltonBot = boltonBot;
-        List<String> result = new ArrayList<>();
-
-        if (initUser(update.getMessage().getFrom())) {
-            result.add("Por favor ingrese una imagen para su foto de perfil");
+        List<String> sendMessages = new ArrayList<>();
+        EvePersonEntity personEntity = initUser(update.getMessage().getFrom());
+        // Mostrar el menu de opciones
+        if (sequence == null) {
+            continueChatWithUser(update, personEntity);
+        } else if (!sequence.isRunning()) {
+            continueChatWithUser(update, personEntity);
         } else {
-            // Mostrar el menu de opciones
-            if (sequence == null) {
-                result.add("Bienvenido al Bot");
-                handleIncomingMessage(update.getMessage(), update);
-            }
-            else if (!sequence.isRunning()) {
-                result.add("Bienvenido al Bot");
-                handleIncomingMessage(update.getMessage(), update);
-            } else {
-                sequence.runSequence(update, boltonBot);
-            }
+            sequence.runSequence(update, boltonBot);
         }
-        //continueChatWihtUser(CpUser, CpChat)
-
-        return result;
+        return sendMessages;
     }
 
-    private boolean initUser(User user) {
+    private EvePersonEntity initUser(User user) {
         boolean result = false;
         EvePersonEntity userEntity = userRepository.findByBotUserId(user.getId().toString());
         if (userEntity == null) {
@@ -113,15 +103,13 @@ public class BotBl {
             evePerson.setLastname(user.getLastName());
             evePerson.setBotUserId(user.getId().toString());
             userRepository.save(evePerson);
-            result = true;
         }
-        return result;
+        return userEntity;
     }
 
-    private void handleIncomingMessage( Message message, Update update ) throws TelegramApiException {
-
+    private void continueChatWithUser( Update update, EvePersonEntity personEntity ) throws TelegramApiException {
+        Message message = update.getMessage();
         int idChat = Integer.parseInt(message.getChatId().toString());
-
         List<EventDto> eventDtos;
         KbOptionsBot kbOptionsBot;
 
