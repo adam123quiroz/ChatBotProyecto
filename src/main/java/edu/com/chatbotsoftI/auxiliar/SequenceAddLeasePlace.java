@@ -194,4 +194,9 @@ public class SequenceAddLeasePlace extends Sequence {
     public SendMessage getSendMessage() {
         return sendMessage;
     }
+
+    @Override
+    public void restartOperation(BoltonBot bot, Update update) throws TelegramApiException {
+        //TODO: Ray completa la logica porfavor
+    }
 }

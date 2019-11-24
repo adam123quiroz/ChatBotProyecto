@@ -128,6 +128,11 @@ public class SequenceDeleteEvent extends Sequence {
         }
         return stringBuilder.toString();
     }
+
+    @Override
+    public void restartOperation(BoltonBot bot, Update update) throws TelegramApiException {
+        //TODO: need to complete code and logic
+    }
 }
 
 

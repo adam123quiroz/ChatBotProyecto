@@ -86,4 +86,9 @@ public class SequenceLogInAdmin extends Sequence {
 
         }
     }
+
+    @Override
+    public void restartOperation(BoltonBot bot, Update update) throws TelegramApiException {
+        // TODO: need to do something
+    }
 }

@@ -42,6 +42,7 @@ public class SequenceUpdateEvent extends Sequence {
 
     private EveEventEntity eventEntity;
     private String attribute;
+    private EventManager eventManager;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SequenceUpdateEvent.class);
 
@@ -64,6 +65,13 @@ public class SequenceUpdateEvent extends Sequence {
     public void runSequence(Update update, BoltonBot bot) throws TelegramApiException {
         Message message = update.getMessage();
         String data;
+        eventManager = new EventManager(eventEntity,
+                eveCategoryRepository,
+                eveAddressRepository,
+                eveTypeEventRepository,
+                eveStatusRepository,
+                eveCityRepository,
+                update);
 
         if (! update.getMessage().getText().equalsIgnoreCase(Command.RESTART_COMMAND)) {
             if (getStepNow() < getNumberSteps()) {
@@ -82,6 +90,7 @@ public class SequenceUpdateEvent extends Sequence {
                         eventEntity = eveEventRepository.findByIdeventAndStatus(
                                 Integer.parseInt(data),
                                 Status.ACTIVE.getStatus());
+                        eventManager.setEventEntity(eventEntity); // agregamos el evento que necesitamos actualizar
                         if (eventEntity == null) {
                             setSendMessageRequest( sendMessage(message, ErrorMessage.ERROR_TYPE_CATEGORY) );
                             setStepNow(0);
@@ -108,16 +117,12 @@ public class SequenceUpdateEvent extends Sequence {
                 LOGGER.info("Numero de pasos {}", getStepNow());
                 setStepNow(getStepNow() + 1);
             } else {
-
                 //Analisis de la Informacion
                 eveEventRepository.save(eventEntity);
-                LOGGER.info("llego aca");
                 setRunning(false);
             } //end if else
         } else {
-            setSendMessageRequest(sendMessage(message, RequestMessageAddEvent.REQUEST_RESTART_EVENT));
-            bot.execute(getSendMessageRequest());
-            setStepNow(1);
+            restartOperation(bot, update);
         }// ends if else command restart
     }
 
@@ -127,94 +132,39 @@ public class SequenceUpdateEvent extends Sequence {
         LOGGER.info("Attribute {}", attribute);
         switch (attribute) {
             case Option.OP_ATTRIBUTE_NAME :
-                eventEntity.setNameevent(data);
+                eventManager.setName(data);
                 break;
             case Option.OP_ATTRIBUTE_PRICE :
-                if (NumberUtils.isNumber(data)) {
-                    // graba primera pregunta
-                    data = message.getText();
-                    eventEntity.setPrice(new BigDecimal(data));
-                } else
+                if (! eventManager.setPrice(data)) {
                     throw new PriceNumberUpdateException(bot, this, message);
+                }
                 break;
 
             case Option.OP_ATTRIBUTE_TYPE_EVENT :
-                if (eveTypeEventRepository.existsByTypeevent(data)) {
-                    EveTypeEventEntity eveTypeEventEntity = eveTypeEventRepository.findByTypeevent(data);//dao TypeEvent
-                    eventEntity.setEvetypeeventByIdtypeevent(eveTypeEventEntity);
-                } else
+                if (! eventManager.setTypeEvent(data)) {
                     throw new TypeEventException(bot, this, message, 2);
+                }
                 break;
 
             case Option.OP_ATTRIBUTE_ADDRESS :
                 data = message.getText();
-                List<String> addressPart = Arrays.asList(data.split(","));
-                if (addressPart.size() == 3) {
-                    //state
-                    String state = addressPart.get(0).trim();
-                    EveStateEntity eveStateEntity;
-                    if (eveStatusRepository.existsByState(state)) {
-                        eveStateEntity = eveStatusRepository.findByState(state);//dao TypeEvent
-                    } else {
-                        EveStateEntity newEveStateEntity= new EveStateEntity();
-                        newEveStateEntity.setState(state);
-                        eveStatusRepository.save(newEveStateEntity);
-                        eveStateEntity = newEveStateEntity;
-                    }
-                    //country
-                    String city = addressPart.get(1).trim();
-                    EveCityEntity eveCityEntity;
-                    if (eveCityRepository.existsByCity(city)) {
-                        eveCityEntity = eveCityRepository.findByCity(city);//dao TypeEvent
-                    } else {
-                        EveCityEntity newEveCityEntity= new EveCityEntity();
-                        newEveCityEntity.setCity(city);
-                        newEveCityEntity.setEvestateByIdstate(eveStateEntity);
-                        eveCityRepository.save(newEveCityEntity);
-                        eveCityEntity = newEveCityEntity;
-                    }
-                    //address
-                    String address = addressPart.get(2).trim();
-                    EveAddressEntity eveAddressEntity = new EveAddressEntity();
-                    eveAddressEntity.setAddress(address);
-                    eveAddressEntity.setEvecityByIdcity(eveCityEntity);
-                    eveAddressRepository.save(eveAddressEntity);
-                    eventEntity.setEveaddressByIdaddress(eveAddressEntity);
-                } else {
+                if (! eventManager.setAddress(data)) {
                     throw new AddressEventUpdateException(bot, this, message);
                 }
                 break;
             case Option.OP_ATTRIBUTE_START_TIME :
-                try {
-                    DateFormat formatter = new SimpleDateFormat("HH:mm");
-                    Time timeValue = new Time(formatter.parse(data).getTime());
-                    eventEntity.setStarttime(timeValue);
-                } catch (ParseException e) {
+                if (! eventManager.setTimeStart(data)) {
                     setSendMessageRequest(sendMessage(message, ErrorMessage.ERROR_TIME_START_EVENT));
                     setStepNow(2);
                 }
                 break;
             case Option.OP_ATTRIBUTE_CATEGORY :
-                EveCategoryEntity eveCategoryEntity;
                 data = message.getText();
-                if (eveCategoryRepository.existsByCategory(data)){
-                    eveCategoryEntity = eveCategoryRepository.findByCategory(data);//dao TypeEvent
-                } else {
-                    EveCategoryEntity newEveCategoryEntity= new EveCategoryEntity();
-                    newEveCategoryEntity.setCategory(data);
-                    eveCategoryRepository.save(newEveCategoryEntity);
-                    eveCategoryEntity = newEveCategoryEntity;
-                }
-                eventEntity.setEvecategoryByIdcategory(eveCategoryEntity);
+                eventManager.setCategory(data);
                 break;
             case Option.OP_ATTRIBUTE_DATE :
                 data = message.getText();
-                try {
-                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                    java.util.Date date;
-                    date = dateFormat.parse(data);
-                    eventEntity.setDate(new Date(date.getTime()));
-                } catch (ParseException e) {
+                if (! eventManager.setDate(data)){
                     setSendMessageRequest(sendMessage(message, ErrorMessage.ERROR_DATE_EVENT));
                     setStepNow(2);
                 }
@@ -236,5 +186,13 @@ public class SequenceUpdateEvent extends Sequence {
             stringBuilder.append("\n");
         }
         return stringBuilder.toString();
+    }
+
+    @Override
+    public void restartOperation(BoltonBot bot, Update update) throws TelegramApiException {
+        Message message = update.getMessage();
+        setSendMessageRequest(sendMessage(message, RequestMessageAddEvent.REQUEST_RESTART_EVENT));
+        bot.execute(getSendMessageRequest());
+        setStepNow(1);
     }
 }

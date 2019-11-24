@@ -35,8 +35,6 @@ public class SequenceAddEvent extends Sequence {
     private EveStatusRepository eveStatusRepository;
     private EveCityRepository eveCityRepository;
 
-    private EveEventEntity event;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(SequenceLogInAdmin.class);
 
     public SequenceAddEvent(EveEventRepository eveEventRepository,
@@ -52,17 +50,22 @@ public class SequenceAddEvent extends Sequence {
         this.eveTypeEventRepository = eveTypeEventRepository;
         this.eveStatusRepository = eveStatusRepository;
         this.eveCityRepository = eveCityRepository;
-        event = new EveEventEntity();
     }
 
     @Override
     public void runSequence(Update update, BoltonBot bot) throws TelegramApiException {
         Message message = update.getMessage();
         String data;
+        EventManager eventManager = new EventManager(new EveEventEntity(),
+                eveCategoryRepository,
+                eveAddressRepository,
+                eveTypeEventRepository,
+                eveStatusRepository,
+                eveCityRepository,
+                update);
 
         if (! update.getMessage().getText().equalsIgnoreCase(Command.RESTART_COMMAND)) {
             if (getStepNow() < getNumberSteps()) {
-                EveCategoryEntity eveCategoryEntity;
                 switch (getStepNow()) {
                     case 0: // primera pregunta al usuario
                         setSendMessageRequest( sendMessage(message, RequestMessageAddEvent.REQUEST_TYPE_EVENT) );
@@ -70,9 +73,7 @@ public class SequenceAddEvent extends Sequence {
 
                     case 1: // graba primera pregunta
                         data = message.getText();
-                        if (eveTypeEventRepository.existsByTypeevent(data)){
-                            EveTypeEventEntity eveTypeEventEntity = eveTypeEventRepository.findByTypeevent(data);//dao TypeEvent
-                            event.setEvetypeeventByIdtypeevent(eveTypeEventEntity);
+                        if (eventManager.setTypeEvent(data)){
                             // siguiente pregunta
                             setSendMessageRequest( sendMessage(message, RequestMessageAddEvent.REQUEST_NAME_EVENT) );
                         } else {
@@ -83,8 +84,7 @@ public class SequenceAddEvent extends Sequence {
 
                     case 2: // graba primera pregunta
                         data = message.getText();
-                        event.setNameevent(data);
-
+                        eventManager.setName(data);
                         // siguiente pregunta
                         setSendMessageRequest(sendMessage(message, RequestMessageAddEvent.REQUEST_CATEGORY_EVENT));
                         bot.execute(getSendMessageRequest());
@@ -92,15 +92,7 @@ public class SequenceAddEvent extends Sequence {
 
                     case 3: // graba primera pregunta
                         data = message.getText();
-                        if (eveCategoryRepository.existsByCategory(data)){
-                            eveCategoryEntity = eveCategoryRepository.findByCategory(data);//dao TypeEvent
-                        } else {
-                            EveCategoryEntity newEveCategoryEntity= new EveCategoryEntity();
-                            newEveCategoryEntity.setCategory(data);
-                            eveCategoryRepository.save(newEveCategoryEntity);
-                            eveCategoryEntity = newEveCategoryEntity;
-                        }
-                        event.setEvecategoryByIdcategory(eveCategoryEntity);
+                        eventManager.setCategory(data);
                         // siguiente pregunta
                         setSendMessageRequest(sendMessage(message, RequestMessageAddEvent.REQUEST_PRICE_EVENT));
                         bot.execute(getSendMessageRequest());
@@ -108,11 +100,7 @@ public class SequenceAddEvent extends Sequence {
 
                     case 4:
                         data = message.getText();
-                        if (NumberUtils.isNumber(data)) {
-                            // graba primera pregunta
-                            data = message.getText();
-                            event.setPrice(new BigDecimal(data));
-
+                        if (eventManager.setPrice(data)) {
                             //segunda pregunta
                             setSendMessageRequest(sendMessage(message, RequestMessageAddEvent.REQUEST_DATE_EVENT));
                         } else {
@@ -123,15 +111,10 @@ public class SequenceAddEvent extends Sequence {
 
                     case 5: // graba primera pregunta
                         data = message.getText();
-                        try {
-                            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                            java.util.Date date;
-                            date = dateFormat.parse(data);
-                            event.setDate(new Date(date.getTime()));
-
+                        if (eventManager.setDate(data)) {
                             //segunda pregunta
                             setSendMessageRequest(sendMessage(message, RequestMessageAddEvent.REQUEST_TIME_START_EVENT));
-                        } catch (ParseException e) {
+                        } else {
                             setSendMessageRequest(sendMessage(message, ErrorMessage.ERROR_DATE_EVENT));
                             setStepNow(4);
                         }
@@ -140,14 +123,10 @@ public class SequenceAddEvent extends Sequence {
 
                     case 6: // graba primera pregunta y segunda pregunta
                         data = message.getText();
-                        try {
-                            DateFormat formatter = new SimpleDateFormat("HH:mm");
-                            Time timeValue = new Time(formatter.parse(data).getTime());
-                            event.setStarttime(timeValue);
-
+                        if (eventManager.setTimeStart(data)) {
                             //segunda pregunta
                             setSendMessageRequest(sendMessage(message, RequestMessageAddEvent.REQUEST_ADDRESS_EVENT));
-                        } catch (ParseException e) {
+                        } else {
                             setSendMessageRequest(sendMessage(message, ErrorMessage.ERROR_TIME_START_EVENT));
                             setStepNow(5);
                         }
@@ -158,57 +137,25 @@ public class SequenceAddEvent extends Sequence {
             } else {
                 //graba ultima pregunta y termina
                 data = message.getText();
-                List<String> addressPart = Arrays.asList(data.split(","));
-                if (addressPart.size() == 3) {
-                    //state
-                    String state = addressPart.get(0).trim();
-                    EveStateEntity eveStateEntity;
-                    if (eveStatusRepository.existsByState(state)){
-                        eveStateEntity = eveStatusRepository.findByState(state);//dao TypeEvent
-                    } else {
-                        EveStateEntity newEveStateEntity= new EveStateEntity();
-                        newEveStateEntity.setState(state);
-                        eveStatusRepository.save(newEveStateEntity);
-                        eveStateEntity = newEveStateEntity;
-                    }
-                    //country
-                    String city = addressPart.get(1).trim();
-                    EveCityEntity eveCityEntity;
-                    if (eveCityRepository.existsByCity(city)){
-                        eveCityEntity = eveCityRepository.findByCity(city);//dao TypeEvent
-                    } else {
-                        EveCityEntity newEveCityEntity= new EveCityEntity();
-                        newEveCityEntity.setCity(city);
-                        newEveCityEntity.setEvestateByIdstate(eveStateEntity);
-                        eveCityRepository.save(newEveCityEntity);
-                        eveCityEntity = newEveCityEntity;
-                    }
-                    //address
-                    String address = addressPart.get(2).trim();
-                    EveAddressEntity eveAddressEntity = new EveAddressEntity();
-                    eveAddressEntity.setAddress(address);
-                    eveAddressEntity.setEvecityByIdcity(eveCityEntity);
-                    eveAddressRepository.save(eveAddressEntity);
-                    event.setEveaddressByIdaddress(eveAddressEntity);
-                } else {
+                if (! eventManager.setAddress(data)) {
                     throw new AddressEventException(bot, this, message, 5);
                 }
+                eventManager.setAuditoryCells();
 
                 //Analisis de la Informacion
-                event.setStatus(Status.ACTIVE.getStatus());
-                event.setEveuserByIduser(BotBl.getUserEntity());
-                event.setTxuser(BotBl.getUserEntity().getNameuser());
-                event.setTxhost("localhost");
-                java.util.Date dateCreate = new java.util.Date();
-                event.setTxdate(new Date(dateCreate.getTime()));
-
-                eveEventRepository.save(event);
+                eveEventRepository.save(eventManager.getEventEntity());
                 setRunning(false);
             } //end if else
         } else {
-            setSendMessageRequest(sendMessage(message, RequestMessageAddEvent.REQUEST_RESTART_EVENT));
-            bot.execute(getSendMessageRequest());
-            setStepNow(1);
+            restartOperation(bot, update);
         }// ends if else command restart
     }//end runSequence method
+
+    @Override
+    public void restartOperation(BoltonBot bot, Update update) throws TelegramApiException {
+        Message message = update.getMessage();
+        setSendMessageRequest(sendMessage(message, RequestMessageAddEvent.REQUEST_RESTART_EVENT));
+        bot.execute(getSendMessageRequest());
+        setStepNow(1);
+    }
 }
