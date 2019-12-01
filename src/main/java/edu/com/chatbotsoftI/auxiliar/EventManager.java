@@ -66,6 +66,7 @@ public class EventManager {
     public boolean setPrice(String data) {
         boolean flag = false;
         Message message = update.getMessage();
+        System.out.println("?''''''''''''' " + data);
         if (NumberUtils.isNumber(data)) {
             data = message.getText();
             eventEntity.setPrice(new BigDecimal(data));

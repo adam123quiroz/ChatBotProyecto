@@ -169,50 +169,31 @@ public class BotBl {
 
         }
 
-        if (! (BotBl.getUserEntity() == null)) {
+        if ( !(BotBl.getUserEntity() == null) ) {
             switch (message.getText()) {
                 case Option.OP_ADD_EVENT:
                     SequenceAddEvent sequenceAddEvent;
                     sequenceAddEvent = new SequenceAddEvent(eveEventRepository, eveCategoryRepository,
                             eveAddressRepository, eveTypeEventRepository, eveStatusRepository, eveCityRepository);
-                    sequenceAddEvent.setRunning(true);
-                    sequenceAddEvent.setNumberSteps(7);
-                    sequenceAddEvent.runSequence(update, boltonBot);
-                    boltonBot.execute(sequenceAddEvent.getSendMessageRequest());
-                    sequence = sequenceAddEvent;
-
+                    startSequence(7, update, sequenceAddEvent);
                     break;
 
                 case Option.OP_MODIFY_EVENT:
                     SequenceUpdateEvent sequenceUpdateEvent;
                     sequenceUpdateEvent = new SequenceUpdateEvent(eveEventRepository, eveCategoryRepository,
                             eveAddressRepository, eveTypeEventRepository, eveStatusRepository, eveCityRepository);
-                    sequenceUpdateEvent.setRunning(true);
-                    sequenceUpdateEvent.setNumberSteps(4);
-                    sequenceUpdateEvent.runSequence(update, boltonBot);
-                    boltonBot.execute(sequenceUpdateEvent.getSendMessageRequest());
-                    sequence = sequenceUpdateEvent;
+                    startSequence(4, update, sequenceUpdateEvent);
                     break;
 
                 case Option.OP_DELETE_EVENT:
                     SequenceDeleteEvent sequenceDeleteEvent;
                     sequenceDeleteEvent = new SequenceDeleteEvent(eveEventRepository);
-                    sequenceDeleteEvent.setRunning(true);
-                    sequenceDeleteEvent.setNumberSteps(2);
-                    sequenceDeleteEvent.runSequence(update, boltonBot);
-                    boltonBot.execute(sequenceDeleteEvent.getSendMessageRequest());
-                    sequence = sequenceDeleteEvent;
+                    startSequence(2, update, sequenceDeleteEvent);
                     break;
                 case Option.OP_LEASEPLACE:
-                    SequenceAddLeasePlace sequenceAddLeasePlace;
-                    sequenceAddLeasePlace = new SequenceAddLeasePlace(eveLeasePlaceRepository,eveAddressRepository,
+                    SequenceAddLeasePlace sequenceAddLeasePlace = new SequenceAddLeasePlace(eveLeasePlaceRepository,eveAddressRepository,
                             eveStatusRepository,eveCityRepository);
-                    sequenceAddLeasePlace.setRunning(true);
-                    sequenceAddLeasePlace.setNumberSteps(4);
-                    sequenceAddLeasePlace.runSequence(update, boltonBot);
-                    boltonBot.execute(sequenceAddLeasePlace.getSendMessage());
-                    this.sequence = sequenceAddLeasePlace;
-
+                    startSequence(4, update, sequenceAddLeasePlace);
             }
         } else {
             SendMessage sendMessageGreeting = new SendMessage().setChatId(update.getMessage().getChatId());
@@ -272,6 +253,13 @@ public class BotBl {
 
     }
 
+    private void startSequence(int step, Update update, Sequence sequenceMethod) throws TelegramApiException {
+        sequenceMethod.setRunning(true);
+        sequenceMethod.setNumberSteps(step);
+        sequenceMethod.runSequence(update, boltonBot);
+        boltonBot.execute(sequenceMethod.getSendMessageRequest());
+        this.sequence = sequenceMethod;
+    }
 
 //    private void sendHelpMessage(Message message, String language) throws InvalidObjectException {
 //        org.telegram.telegrambots.meta.api.methods.send.SendMessage sendMessageRequest = new SendMessage();

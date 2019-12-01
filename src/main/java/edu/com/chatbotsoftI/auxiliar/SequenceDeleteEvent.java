@@ -3,6 +3,7 @@ package edu.com.chatbotsoftI.auxiliar;
 import edu.com.chatbotsoftI.bl.BotBl;
 import edu.com.chatbotsoftI.bot.BoltonBot;
 import edu.com.chatbotsoftI.bot.commands.Option;
+import edu.com.chatbotsoftI.bot.special.keyboard.ConcatListEvent;
 import edu.com.chatbotsoftI.bot.special.keyboard.KbOptionsBot;
 import edu.com.chatbotsoftI.dao.EveEventRepository;
 import edu.com.chatbotsoftI.dao.EveLeasePlaceRepository;
@@ -51,14 +52,12 @@ public class SequenceDeleteEvent extends Sequence {
     @Override
     public void runSequence(Update update, BoltonBot bot) throws TelegramApiException {
 
-            Message mesagge = update.getMessage();
-            String Data;
-
+        Message mesagge = update.getMessage();
             //en esta lista sacamos todos los eventos que tenga el usuario
         List<EveEventEntity> usereventlist = eveEventRepository.findAllByEveuserByIduser_IduserAndStatus(BotBl.getUserEntity().getIduser(),
                 Status.ACTIVE.getStatus());
-
-            String opcion;// Esta variable sera la id del evento que deseamos eliminar
+        String opcion;// Esta variable sera la id del evento que deseamos eliminar
+        ConcatListEvent concatListEvent = new ConcatListEvent(usereventlist);
 
             if(getStepNow() < getNumberSteps()){
                 switch (getStepNow()){
@@ -66,7 +65,7 @@ public class SequenceDeleteEvent extends Sequence {
                             // que desea eliminar
                         if(usereventlist!=null){
 
-                            setSendMessageRequest(sendMessage(mesagge, REQUEST_DELETE +concatListEvent(usereventlist) ));
+                            setSendMessageRequest(sendMessage(mesagge, REQUEST_DELETE +concatListEvent.getStringListEvent()));
                         }
                         else{ // Este caso es por si no hubiese ningun evento creado por este usuario
                             setSendMessageRequest(sendMessage(mesagge, REDIRECT_MESSAGE));
@@ -84,7 +83,7 @@ public class SequenceDeleteEvent extends Sequence {
 
                         }
                         else{ // Este es el caso si el id seleccionado no se encontro o no se escribio correctamente
-                            setSendMessageRequest(sendMessage(mesagge,NOT_FOUND_MESSAGE +concatListEvent(usereventlist))); // Vuelve a mostrar la lista de eventos
+                            setSendMessageRequest(sendMessage(mesagge,NOT_FOUND_MESSAGE +concatListEvent.getStringListEvent())); // Vuelve a mostrar la lista de eventos
                             setStepNow(0);
                         }
                         bot.execute(getSendMessageRequest());
@@ -117,21 +116,6 @@ public class SequenceDeleteEvent extends Sequence {
                 flag = true;
         }
         return  flag;
-    }
-    private String concatListEvent(List<EveEventEntity> events) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(String.format("\t%1$-10s %2$10s\n",
-                "ID",
-                "Nombre Evento"));
-        for (EveEventEntity event :
-                events) {
-            EventDto eventDto = new EventDto(event);
-            stringBuilder.append(String.format("\t%1$-10s %2$10s",
-                    eventDto.getIdevent().toString(),
-                    eventDto.getNameevent()));
-            stringBuilder.append("\n");
-        }
-        return stringBuilder.toString();
     }
 
     @Override

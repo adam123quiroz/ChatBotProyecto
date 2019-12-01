@@ -2,9 +2,7 @@ package edu.com.chatbotsoftI.auxiliar;
 
 
 //import com.pengrad.telegrambot.request.SendMessage;
-import edu.com.chatbotsoftI.bl.BotBl;
 import edu.com.chatbotsoftI.bot.BoltonBot;
-import edu.com.chatbotsoftI.bot.commands.Option;
 import edu.com.chatbotsoftI.dao.EveAddressRepository;
 import edu.com.chatbotsoftI.dao.EveCityRepository;
 import edu.com.chatbotsoftI.dao.EveLeasePlaceRepository;
@@ -13,24 +11,19 @@ import edu.com.chatbotsoftI.entity.EveAddressEntity;
 import edu.com.chatbotsoftI.entity.EveCityEntity;
 import edu.com.chatbotsoftI.entity.EveLeasePlaceEntity;
 import edu.com.chatbotsoftI.entity.EveStateEntity;
-import edu.com.chatbotsoftI.enums.Status;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ForceReplyKeyboard;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.*;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 public class SequenceAddLeasePlace extends Sequence {
 
@@ -121,52 +114,6 @@ public class SequenceAddLeasePlace extends Sequence {
         else{
         data = message.getText();
         LOGGER.info("Dato {}",data);
-
-
-         List<String> addressPart = Arrays.asList(data.split(","));
-                //state guarda
-                String state = addressPart.get(0).trim();
-                EveStateEntity eveStateEntity;
-                if (stateRepository.existsByState(state)){
-                    eveStateEntity = stateRepository.findByState(state);//dao TypeEvent
-                } else {
-                    EveStateEntity newEveStateEntity= new EveStateEntity();
-                    newEveStateEntity.setState(state);
-                    stateRepository.save(newEveStateEntity);
-                    eveStateEntity = newEveStateEntity;
-                }
-                //country guarda
-                String city = addressPart.get(1).trim();
-                EveCityEntity eveCityEntity;
-                if (cityRepository.existsByCity(city)){
-                    eveCityEntity = cityRepository.findByCity(city);//dao TypeEvent
-                } else {
-                    EveCityEntity newEveCityEntity= new EveCityEntity();
-                    newEveCityEntity.setCity(city);
-                    newEveCityEntity.setEvestateByIdstate(eveStateEntity);
-                    cityRepository.save(newEveCityEntity);
-                    eveCityEntity = newEveCityEntity;
-                }
-
-                //address guarda
-                String address = addressPart.get(2).trim();
-                EveAddressEntity eveAddressEntity = new EveAddressEntity();
-                eveAddressEntity.setAddress(address);
-                eveAddressEntity.setEvecityByIdcity(eveCityEntity);
-                addressRepository.save(eveAddressEntity);
-                LeasePlace.setEveaddressByIdaddress(eveAddressEntity);
-
-         //datos complementarios a la tabla leaseplcae
-        //se almacena el estado de la publicacion
-        LeasePlace.setStatus(Status.ACTIVE.getStatus());
-        //se almacena el id del usuario que publica
-        LeasePlace.setEveuserByIduser(BotBl.getUserEntity());
-        //se almacena el usuario para registros de auditoria
-        LeasePlace.setTxuser(BotBl.getUserEntity().getNameuser());
-        LeasePlace.setTxhost("localhost");
-        Date datenew= new java.util.Date();
-        LeasePlace.setTxdate(new java.sql.Date(datenew.getTime()));
-
 
         leasePlaceRepository.save(LeasePlace);
         LOGGER.info("Datos almacenados {}",leasePlaceRepository);

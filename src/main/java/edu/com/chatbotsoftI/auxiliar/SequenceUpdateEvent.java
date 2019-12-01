@@ -7,29 +7,20 @@ import edu.com.chatbotsoftI.bot.commands.Option;
 import edu.com.chatbotsoftI.bot.message.ErrorMessage;
 import edu.com.chatbotsoftI.bot.message.RequestMessageAddEvent;
 import edu.com.chatbotsoftI.bot.message.RequestMessageUpdateEvent;
+import edu.com.chatbotsoftI.bot.special.keyboard.ConcatListEvent;
 import edu.com.chatbotsoftI.bot.special.keyboard.KbOptionsBot;
 import edu.com.chatbotsoftI.dao.*;
-import edu.com.chatbotsoftI.dto.EventDto;
 import edu.com.chatbotsoftI.entity.*;
 import edu.com.chatbotsoftI.enums.Status;
-import edu.com.chatbotsoftI.exception.AddressEventException;
 import edu.com.chatbotsoftI.exception.AddressEventUpdateException;
 import edu.com.chatbotsoftI.exception.TypeEventException;
 import edu.com.chatbotsoftI.exception.PriceNumberUpdateException;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.Time;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.List;
 
 public class SequenceUpdateEvent extends Sequence {
@@ -81,7 +72,8 @@ public class SequenceUpdateEvent extends Sequence {
                         StringBuilder text = new StringBuilder(RequestMessageUpdateEvent.REQUEST_LIST_EVENT);
                         listEvent = eveEventRepository.findAllByEveuserByIduser(BotBl.getUserEntity());
                         text.append("\n\n");
-                        text.append(concatListEvent(listEvent));
+                        ConcatListEvent concatListEvent = new ConcatListEvent(listEvent);
+                        text.append(concatListEvent.getStringListEvent());
                         setSendMessageRequest(sendMessage(message, text.toString()));
                         break;
 
@@ -171,22 +163,6 @@ public class SequenceUpdateEvent extends Sequence {
                 break;
         }// end switch case
     }// end method run sequence()
-
-    private String concatListEvent(List<EveEventEntity> events) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(String.format("\t%1$-10s %2$10s\n",
-                "ID",
-                "Nombre Evento"));
-        for (EveEventEntity event :
-                events) {
-            EventDto eventDto = new EventDto(event);
-            stringBuilder.append(String.format("\t%1$-10s %2$10s",
-                    eventDto.getIdevent().toString(),
-                    eventDto.getNameevent()));
-            stringBuilder.append("\n");
-        }
-        return stringBuilder.toString();
-    }
 
     @Override
     public void restartOperation(BoltonBot bot, Update update) throws TelegramApiException {

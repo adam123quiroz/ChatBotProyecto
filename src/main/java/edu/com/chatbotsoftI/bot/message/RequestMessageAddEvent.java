@@ -2,12 +2,17 @@ package edu.com.chatbotsoftI.bot.message;
 
 import edu.com.chatbotsoftI.bot.commands.Option;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RequestMessageAddEvent {
     public static final String RESET_ADD_EVENT = "";
     public static final String REQUEST_TYPE_EVENT = String.format(
-            "SI QUIERE REINICIAR LA CREACION DE EVENTOS MANDE /restart\n\nQue tipo de Evento sera?\n1.%s\n2.%s\n3.%s",
-            Option.OP_MOVIE, Option.OP_MUSIC, Option.OP_MUSEUM
-    );
+            "SI QUIERE REINICIAR LA CREACION DE EVENTOS MANDE /restart\n\nQue tipo de Evento sera?\n");
+    public static final List<String> TYPE_EVENT_LIST = new ArrayList<>(List.of(
+            Option.OP_MOVIE,
+            Option.OP_MUSIC,
+            Option.OP_MUSEUM));
     public static final String REQUEST_NAME_EVENT = "Cual sera el nombre?";
     public static final String REQUEST_CATEGORY_EVENT = "Cual sera la Categoria?";
     public static final String REQUEST_PRICE_EVENT = "Cual sera el precio del Evento?";
