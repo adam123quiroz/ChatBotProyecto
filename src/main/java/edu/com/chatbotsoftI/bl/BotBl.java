@@ -55,6 +55,9 @@ public class BotBl {
     private static EveUserEntity userEntity;
     private static BoltonBot boltonBot;
 
+    private MailServiceBl mailServiceBl;
+
+
     @Autowired
     public BotBl(EvePersonRepository userRepository,
                  EventBl eventBl,
@@ -66,7 +69,8 @@ public class BotBl {
                  EveStatusRepository eveStatusRepository,
                  EveCityRepository eveCityRepository,
                  EveLeasePlaceRepository eveLeasePlaceRepository,
-                 LeaseplaceBl leaseplaceBl) {
+                 LeaseplaceBl leaseplaceBl,
+                 MailServiceBl mailServiceBl) {
 
         this.userRepository = userRepository;
         this.eventBl = eventBl;
@@ -80,6 +84,9 @@ public class BotBl {
 
         this.eveLeasePlaceRepository = eveLeasePlaceRepository;
         this.leaseplaceBl = leaseplaceBl;
+
+        this.mailServiceBl = mailServiceBl;
+
     }
 
     public List<String> processUpdate(Update update, BoltonBot boltonBot) throws TelegramApiException {
@@ -191,9 +198,22 @@ public class BotBl {
                     startSequence(2, update, sequenceDeleteEvent);
                     break;
                 case Option.OP_LEASEPLACE:
-                    SequenceAddLeasePlace sequenceAddLeasePlace = new SequenceAddLeasePlace(eveLeasePlaceRepository,eveAddressRepository,
+                    //Version anterior por pruebas de agregar lugar
+                    SequenceAddLeasePlace sequenceAddLeasePlace;
+                    sequenceAddLeasePlace = new SequenceAddLeasePlace(eveLeasePlaceRepository,eveAddressRepository,
                             eveStatusRepository,eveCityRepository);
-                    startSequence(4, update, sequenceAddLeasePlace);
+                    sequenceAddLeasePlace.setRunning(true);
+                    sequenceAddLeasePlace.setNumberSteps(4);
+                    sequenceAddLeasePlace.runSequence(update, boltonBot);
+                    boltonBot.execute(sequenceAddLeasePlace.getSendMessage());
+                    this.sequence = sequenceAddLeasePlace;
+                    //Apartado Mail
+                    mailServiceBl.sendEmail("rc@feedback.com","Testing mail","New Leaseplace");
+                    LOGGER.info(" Viendo los datos {} ",mailServiceBl);
+                    /*SequenceAddLeasePlace sequenceAddLeasePlace = new SequenceAddLeasePlace(eveLeasePlaceRepository,eveAddressRepository,
+                            eveStatusRepository,eveCityRepository);
+                    startSequence(4, update, sequenceAddLeasePlace);*/
+                    break;
             }
         } else {
             SendMessage sendMessageGreeting = new SendMessage().setChatId(update.getMessage().getChatId());
