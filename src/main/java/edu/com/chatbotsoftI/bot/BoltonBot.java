@@ -4,6 +4,7 @@ import edu.com.chatbotsoftI.bl.BotBl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.AnswerPreCheckoutQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -42,7 +43,15 @@ public class BoltonBot extends TelegramLongPollingBot {
                             .setText(messageText);
                 } // end for
             } // end if inside
-        } //end if outside
+        } else {
+            LOGGER.info("Update Principal {}", update.getPreCheckoutQuery());
+            AnswerPreCheckoutQuery answerPreCheckoutQuery = new AnswerPreCheckoutQuery(update.getPreCheckoutQuery().getId(), true);
+            try {
+                execute(answerPreCheckoutQuery);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 //    private void onOriginReceived(Message message) throws TelegramApiException {

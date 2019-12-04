@@ -127,8 +127,12 @@ public class SequenceUpdateEvent extends Sequence {
                 eventManager.setName(data);
                 break;
             case Option.OP_ATTRIBUTE_PRICE :
-                if (! eventManager.setPrice(data)) {
-                    throw new PriceNumberUpdateException(bot, this, message);
+                try {
+                    if (! eventManager.setPrice(data)) {
+                        throw new PriceNumberUpdateException(bot, this, message);
+                    }
+                } catch (PriceNumberUpdateException e) {
+                    System.out.println("shshshshsh");
                 }
                 break;
 

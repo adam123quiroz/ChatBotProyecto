@@ -14,6 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.AnswerPreCheckoutQuery;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendInvoice;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -21,6 +23,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.payments.LabeledPrice;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
+import org.telegram.telegrambots.meta.updateshandlers.SentCallback;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +40,7 @@ public class BotBl {
     private static List<String> optionListII = new ArrayList<>(List.of(
             Option.OP_MOVIE, Option.OP_MUSIC, Option.OP_MUSEUM, Option.OP_PLACE));
 
-    private static final String PROVIDER_TOKEN = "284685063:TEST:ZjhmMDU1MTM2MjVi";
+    private static final String PROVIDER_TOKEN = "284685063:TEST:YTI0YTYzOGE1OTM4";
 
     private EventBl eventBl;
     private EvePersonRepository userRepository;
@@ -116,8 +120,6 @@ public class BotBl {
         List<EventDto> eventDtos;
         KbOptionsBot kbOptionsBot;
 
-        List<LeasePlaceDto> leaseplaceDtos;
-
         switch(message.getText()) {
             case Command.startCommand:
             case "hola":
@@ -162,44 +164,47 @@ public class BotBl {
                 showEventsInformation(eventDtos, idChat,
                         "https://ep00.epimg.net/elviajero/imagenes/2016/11/23/album/1479923555_950451_1479926380_album_normal.jpg");
                 break;
-            case Option.OP_PLACE:
-                leaseplaceDtos = leaseplaceBl.findAllLeaseplaceDto();
-                showLeasePlacesInformation(leaseplaceDtos,idChat);
-                break;
+//            case Option.OP_PLACE:
+//                leaseplaceDtos = leaseplaceBl.findAllLeaseplaceDto();
+//                showLeasePlacesInformation(leaseplaceDtos,idChat);
+//                break;
+            default:
+                if ( !(BotBl.getUserEntity() == null) ) {
+                    switch (message.getText()) {
+                        case Option.OP_ADD_EVENT:
+                            SequenceAddEvent sequenceAddEvent;
+                            sequenceAddEvent = new SequenceAddEvent(eveEventRepository, eveCategoryRepository,
+                                    eveAddressRepository, eveTypeEventRepository, eveStatusRepository, eveCityRepository);
+                            startSequence(7, update, sequenceAddEvent);
+                            break;
 
+                        case Option.OP_MODIFY_EVENT:
+                            SequenceUpdateEvent sequenceUpdateEvent;
+                            sequenceUpdateEvent = new SequenceUpdateEvent(eveEventRepository, eveCategoryRepository,
+                                    eveAddressRepository, eveTypeEventRepository, eveStatusRepository, eveCityRepository);
+                            startSequence(4, update, sequenceUpdateEvent);
+                            break;
+
+                        case Option.OP_DELETE_EVENT:
+                            SequenceDeleteEvent sequenceDeleteEvent;
+                            sequenceDeleteEvent = new SequenceDeleteEvent(eveEventRepository);
+                            startSequence(2, update, sequenceDeleteEvent);
+                            break;
+                        case Option.OP_LEASEPLACE:
+                            SequenceAddLeasePlace sequenceAddLeasePlace = new SequenceAddLeasePlace(eveLeasePlaceRepository,eveAddressRepository,
+                                    eveStatusRepository,eveCityRepository);
+                            startSequence(4, update, sequenceAddLeasePlace);
+                    }
+                } else {
+                    SendMessage sendMessageGreeting = new SendMessage().setChatId(update.getMessage().getChatId());
+                    sendMessageGreeting.setText("Tienes que iniciar sesion para poder entrar al modo Administrativo");
+                    boltonBot.execute(sendMessageGreeting);
+                }
         }
 
-        if ( !(BotBl.getUserEntity() == null) ) {
-            switch (message.getText()) {
-                case Option.OP_ADD_EVENT:
-                    SequenceAddEvent sequenceAddEvent;
-                    sequenceAddEvent = new SequenceAddEvent(eveEventRepository, eveCategoryRepository,
-                            eveAddressRepository, eveTypeEventRepository, eveStatusRepository, eveCityRepository);
-                    startSequence(7, update, sequenceAddEvent);
-                    break;
+        LOGGER.info("Update {}", update.getPreCheckoutQuery());
 
-                case Option.OP_MODIFY_EVENT:
-                    SequenceUpdateEvent sequenceUpdateEvent;
-                    sequenceUpdateEvent = new SequenceUpdateEvent(eveEventRepository, eveCategoryRepository,
-                            eveAddressRepository, eveTypeEventRepository, eveStatusRepository, eveCityRepository);
-                    startSequence(4, update, sequenceUpdateEvent);
-                    break;
 
-                case Option.OP_DELETE_EVENT:
-                    SequenceDeleteEvent sequenceDeleteEvent;
-                    sequenceDeleteEvent = new SequenceDeleteEvent(eveEventRepository);
-                    startSequence(2, update, sequenceDeleteEvent);
-                    break;
-                case Option.OP_LEASEPLACE:
-                    SequenceAddLeasePlace sequenceAddLeasePlace = new SequenceAddLeasePlace(eveLeasePlaceRepository,eveAddressRepository,
-                            eveStatusRepository,eveCityRepository);
-                    startSequence(4, update, sequenceAddLeasePlace);
-            }
-        } else {
-            SendMessage sendMessageGreeting = new SendMessage().setChatId(update.getMessage().getChatId());
-            sendMessageGreeting.setText("Tienes que iniciar sesion para poder entrar al modo Administrativo");
-            boltonBot.execute(sendMessageGreeting);
-        }
     }
 
     private void showEventsInformation(List<EventDto> eventDtos, int idChat, String url) throws TelegramApiException {
@@ -216,41 +221,30 @@ public class BotBl {
                     idChat,
                     event.getNameevent(),
                     description,
-                    "Visa", PROVIDER_TOKEN,
-                    "StartParam", "USD", Collections.singletonList(new LabeledPrice("label",
-                    200))
+                    "Visa",
+                    PROVIDER_TOKEN,
+                    "StartParam", "USD",
+                    Collections.singletonList(new LabeledPrice("label",200))
             )
                     .setPhotoUrl(url);
+            boltonBot.executeAsync(inv, new SentCallback<Message>() {
+                @Override
+                public void onResult(BotApiMethod<Message> botApiMethod, Message message) {
+                    LOGGER.info("{} {}", message.getSuccessfulPayment(), botApiMethod.getMethod());
+                }
 
-            boltonBot.execute(inv);
+                @Override
+                public void onError(BotApiMethod<Message> botApiMethod, TelegramApiRequestException e) {
+                    LOGGER.error("error uno");
+                }
+
+                @Override
+                public void onException(BotApiMethod<Message> botApiMethod, Exception e) {
+                    LOGGER.error("error 2");
+                }
+            });
+
         }
-    }
-
-        //Despliega los Lugares que se encuentren para rentar y esten activos
-        //Renta de lugar mas factura de prueba en Dolares
-        private void showLeasePlacesInformation(List<LeasePlaceDto> leasePlaceDtos, int idChat) throws TelegramApiException {
-        LOGGER.info(String.valueOf(leasePlaceDtos));
-        SendInvoice invocate;
-        for (LeasePlaceDto leaseplace:
-                leasePlaceDtos) {
-            String description = "" +
-                    "Fecha: " + leaseplace.getDate() + "\n" +
-                    "Precio " + leaseplace.getPrice() + "\n" +
-                    "Direccion: " + leaseplace.getAddress();      //+ "\n" +
-                LOGGER.info("datos de leaseplace a mostrar  {}",description);
-                    //"Nombre del lugar" + leaseplace.getNameplace();
-            invocate = new SendInvoice(
-                    idChat,
-                    //Nombre del lugar resalta en Color azul
-                    leaseplace.getNameplace(),
-                    description,
-                    "Visa", PROVIDER_TOKEN,
-                    "StartParam", "USD", Collections.singletonList(new LabeledPrice("label",
-                    100))
-             );
-            boltonBot.execute(invocate);
-        }
-
     }
 
     private void startSequence(int step, Update update, Sequence sequenceMethod) throws TelegramApiException {
