@@ -220,10 +220,10 @@ public class SequenceAddLeasePlace extends Sequence {
 
     @Override
     public void restartOperation(BoltonBot bot, Update update) throws TelegramApiException {
-        Message message= update.getMessage();
-        setSendMessageRequest(sendMessage(message, REQUEST_NAME_PLACE));
-        bot.execute(getSendMessageRequest());
-        setStepNow(1);
+//        Message message= update.getMessage();
+//        setSendMessageRequest(sendMessage(message, REQUEST_NAME_PLACE));
+//        bot.execute(getSendMessageRequest());
+//        setStepNow(1);
     }
 
    /* public void sendEmail(List<EveUserEntity> listusers, String subject, String content) {
