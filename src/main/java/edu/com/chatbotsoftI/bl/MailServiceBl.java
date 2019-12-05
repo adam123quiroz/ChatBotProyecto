@@ -16,7 +16,7 @@ import java.util.List;
 @Service
 public class MailServiceBl {
 
-       // private EveUserRepository userRepository;
+    // private EveUserRepository userRepository;
 
     @Autowired
     private JavaMailSender mailSender;
@@ -33,8 +33,7 @@ public class MailServiceBl {
 //    }
 
 
-
-    public void sendEmail(String to, String subject, String content ){
+    public void sendEmail(String to, String subject, String content) {
 
         /*JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost(this.mailCfg.getHost());
@@ -44,7 +43,7 @@ public class MailServiceBl {
 */
         SimpleMailMessage mailmessage = new SimpleMailMessage();
 
-        mailmessage.setFrom("welldone@example.com");
+        mailmessage.setFrom("altair_A_S@hotmail.com");
 
         mailmessage.setTo(to);
         mailmessage.setSubject(subject);
@@ -56,20 +55,20 @@ public class MailServiceBl {
         mailSender.send(mailmessage);
     }
 
-    /*public void sendEmail(List<EveUserEntity> listusers, String subject, String content){
+    public void sendAllEmail(List<EveUserEntity> listusers, String subject, String content) {
 
-        for (EveUserEntity userEntity: listusers){
+        for (EveUserEntity userEntity : listusers) {
 
-            SimpleMailMessage email= new SimpleMailMessage();
+            SimpleMailMessage email = new SimpleMailMessage();
 
             email.setTo(userEntity.getEmail());
             email.setSubject(subject);
             email.setText(content);
 
-           mailSender.send(email);
+            mailSender.send(email);
         }
-    */
 
+    }
 }
 
 

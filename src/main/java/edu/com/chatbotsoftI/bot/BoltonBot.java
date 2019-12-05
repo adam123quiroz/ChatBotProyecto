@@ -97,4 +97,6 @@ public class BoltonBot extends TelegramLongPollingBot {
     public String getBotToken() {
         return "751201519:AAGpBvLDr_56bftx-rzDG9iBr7d2ddbRPZs"; //Token del bot
     }
+
+
 }

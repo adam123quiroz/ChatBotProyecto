@@ -54,6 +54,7 @@ public class BotBl {
 
     private EveLeasePlaceRepository eveLeasePlaceRepository;
     private LeaseplaceBl leaseplaceBl;
+    private MailServiceBl mailServiceBl;
 
     private static Sequence sequence;
     private static EveUserEntity userEntity;
@@ -70,7 +71,8 @@ public class BotBl {
                  EveStatusRepository eveStatusRepository,
                  EveCityRepository eveCityRepository,
                  EveLeasePlaceRepository eveLeasePlaceRepository,
-                 LeaseplaceBl leaseplaceBl) {
+                 LeaseplaceBl leaseplaceBl,
+                 MailServiceBl mailServiceBl) {
 
         this.userRepository = userRepository;
         this.eventBl = eventBl;
@@ -84,6 +86,7 @@ public class BotBl {
 
         this.eveLeasePlaceRepository = eveLeasePlaceRepository;
         this.leaseplaceBl = leaseplaceBl;
+        this.mailServiceBl = mailServiceBl;
     }
 
     public List<String> processUpdate(Update update, BoltonBot boltonBot) throws TelegramApiException {
@@ -119,6 +122,7 @@ public class BotBl {
         int idChat = Integer.parseInt(message.getChatId().toString());
         List<EventDto> eventDtos;
         KbOptionsBot kbOptionsBot;
+        List<LeasePlaceDto> leaseplaceDtos;
 
         switch(message.getText()) {
             case Command.startCommand:
@@ -191,8 +195,9 @@ public class BotBl {
                             startSequence(2, update, sequenceDeleteEvent);
                             break;
                         case Option.OP_LEASEPLACE:
+
                             SequenceAddLeasePlace sequenceAddLeasePlace = new SequenceAddLeasePlace(eveLeasePlaceRepository,eveAddressRepository,
-                                    eveStatusRepository,eveCityRepository);
+                                    eveStatusRepository,eveCityRepository,mailServiceBl);
                             startSequence(4, update, sequenceAddLeasePlace);
                     }
                 } else {
