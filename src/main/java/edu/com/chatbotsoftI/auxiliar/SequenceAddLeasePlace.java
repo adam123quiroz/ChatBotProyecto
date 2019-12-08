@@ -6,6 +6,7 @@ import edu.com.chatbotsoftI.bl.BotBl;
 import edu.com.chatbotsoftI.bl.MailServiceBl;
 import edu.com.chatbotsoftI.bot.BoltonBot;
 import edu.com.chatbotsoftI.bot.commands.Command;
+import edu.com.chatbotsoftI.bot.special.keyboard.KbOptionsBot;
 import edu.com.chatbotsoftI.dao.EveAddressRepository;
 import edu.com.chatbotsoftI.dao.EveCityRepository;
 import edu.com.chatbotsoftI.dao.EveLeasePlaceRepository;
@@ -28,6 +29,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -42,17 +44,16 @@ public class SequenceAddLeasePlace extends Sequence {
     private EveAddressRepository addressRepository;
     private EveStatusRepository stateRepository;
     private EveCityRepository cityRepository;
-//   // private EveStateRepository stateRepository;
+
 
     private SendMessage sendMessage;
 
-
+    private MailServiceBl mailServiceBl;
 
     boolean pointmail= false;
 
     Date date;
-    //Preparando escenario para pasos de agregacion en rentar lugar
-    //es necesario para probar notificaciones
+
     private static final Logger LOGGER = LoggerFactory.getLogger(SequenceAddLeasePlace.class);
 
     // /*   private static final String REQUEST_LEASEPLACE  = String.format(
@@ -62,16 +63,25 @@ public class SequenceAddLeasePlace extends Sequence {
     private final static String REQUEST_DATE_PLACE = "Ingrese la fecha de publicacion";
     private final static String REQUEST_PRICE_PLACE = "Ingrese el precio de la renta del lugar";
     private final static String REQUEST_ADDRESS_PLACE = "Ingrese la direccion del lugar";
+    private final static String REQUEST_RESET_LEASEPLACE = "Si quiere reiniciar la agregacion de un lugar escriba /restart \n";
 
+/*    @Autowired
+    public void sendEmail(MailServiceBl mailServiceBl)
+    {
+        this.mailServiceBl =mailServiceBl;
+    }
+*/
+    @Autowired
     public SequenceAddLeasePlace(EveLeasePlaceRepository leasePlaceRepository, EveAddressRepository addressRepository,
-                                 EveStatusRepository stateRepository, EveCityRepository cityRepository) {
+                                 EveStatusRepository stateRepository, EveCityRepository cityRepository, MailServiceBl mailServiceBl) {
 
-//        //boolean running, int numberSteps, int stepNow
+        //boolean running, int numberSteps, int stepNow
         super(true, 4, 0);
         this.leasePlaceRepository = leasePlaceRepository;
         this.addressRepository = addressRepository;
         this.stateRepository = stateRepository;
         this.cityRepository = cityRepository;
+        this.mailServiceBl = mailServiceBl;
         LeasePlace = new EveLeasePlaceEntity();
     }
 
@@ -85,6 +95,8 @@ public class SequenceAddLeasePlace extends Sequence {
             if (getStepNow() < getNumberSteps()) {
                 switch (getStepNow()) {
                     case 0:
+                        KbOptionsBot kbOptionsBot = new KbOptionsBot(Collections.singletonList(REQUEST_RESET_LEASEPLACE));
+                        setSendMessageRequest(kbOptionsBot.showMenu(REQUEST_NAME_PLACE, update ));
                         sendMessage = sendMessage(message, REQUEST_NAME_PLACE);
                         bot.execute(sendMessage);
                         break;
@@ -178,15 +190,13 @@ public class SequenceAddLeasePlace extends Sequence {
                 bot.execute(sendMessage);
                 pointmail = true;
 
-
-
-           /* if(pointmail==true) {
-                mailServiceBl.sendEmail("altair_A_S@hotmail.com", "Nuevo lugar", "Se agrego un nuevo lugar");
+            if(getStepNow()>= 4) {
+                mailServiceBl.sendEmail("aldair@hotmail.com", "Nueva lugar en renta en BoltonBot", "Se agrego un nuevo lugar para rentar");
             }
             else{
                 sendMessage =sendMessage(message, "No se envio el correo de aviso a todos"+ "  "+ message.getChat().getFirstName());
                 bot.execute(sendMessage);
-            }*/
+            }
             /*MailServiceBl mailSender = new MailServiceBl();
         mailSender.sendEmail(mailSender,mailSender,"Se agrego un nuevo lugar");*/
 
@@ -220,10 +230,16 @@ public class SequenceAddLeasePlace extends Sequence {
 
     @Override
     public void restartOperation(BoltonBot bot, Update update) throws TelegramApiException {
+
+        KbOptionsBot kbOptionsBot = new KbOptionsBot(Collections.singletonList(REQUEST_RESET_LEASEPLACE));
+        setSendMessageRequest(kbOptionsBot.showMenu(REQUEST_NAME_PLACE, update ));
+        bot.execute(getSendMessageRequest());
+        setStepNow(0);
+//
 //        Message message= update.getMessage();
 //        setSendMessageRequest(sendMessage(message, REQUEST_NAME_PLACE));
 //        bot.execute(getSendMessageRequest());
-//        setStepNow(1);
+//
     }
 
    /* public void sendEmail(List<EveUserEntity> listusers, String subject, String content) {
