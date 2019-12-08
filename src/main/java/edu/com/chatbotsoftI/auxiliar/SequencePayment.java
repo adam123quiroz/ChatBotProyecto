@@ -102,10 +102,10 @@ public class SequencePayment extends Sequence {
 
                             invoice.sendInvoice();
 
-//                            Map<String, Object> receipt_email = new HashMap<>();
-//                            receipt_email.put("receipt_email", email);
-//                            assert payment != null;
-//                            payment = payment.update(receipt_email);
+                            Map<String, Object> receipt_email = new HashMap<>();
+                            receipt_email.put("receipt_email", email);
+                            assert payment != null;
+                            payment = payment.update(receipt_email);
 
                         } catch (StripeException e) {
                             e.printStackTrace();
