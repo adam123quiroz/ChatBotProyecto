@@ -56,13 +56,15 @@ public class SequenceUpdateEvent extends Sequence {
     public void runSequence(Update update, BoltonBot bot) throws TelegramApiException {
         Message message = update.getMessage();
         String data;
-        eventManager = new EventManager(eventEntity,
+        eventManager = new EventManager(
+                eventEntity,
                 eveCategoryRepository,
                 eveAddressRepository,
                 eveTypeEventRepository,
                 eveStatusRepository,
                 eveCityRepository,
-                update);
+                update
+        );
 
         if (! update.getMessage().getText().equalsIgnoreCase(Command.RESTART_COMMAND)) {
             if (getStepNow() < getNumberSteps()) {
@@ -121,7 +123,6 @@ public class SequenceUpdateEvent extends Sequence {
 
     private void chanceAttributeEvent(Message message, BoltonBot bot) throws TelegramApiException {
         String data = message.getText();
-        LOGGER.info("Attribute {}", attribute);
         switch (attribute) {
             case Option.OP_ATTRIBUTE_NAME :
                 eventManager.setName(data);
