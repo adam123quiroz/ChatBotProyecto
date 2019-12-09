@@ -53,6 +53,7 @@ public class BotBl {
     private EveAddressRepository eveAddressRepository;
     private EveStatusRepository eveStatusRepository;
     private EveCityRepository eveCityRepository;
+    private EvePaymentRepository evePaymentRepository;
 
     private EveLeasePlaceRepository eveLeasePlaceRepository;
     private LeaseplaceBl leaseplaceBl;
@@ -74,10 +75,12 @@ public class BotBl {
                  EveStatusRepository eveStatusRepository,
                  EveCityRepository eveCityRepository,
                  EveLeasePlaceRepository eveLeasePlaceRepository,
+                 EvePaymentRepository evePaymentRepository,
                  LeaseplaceBl leaseplaceBl,
                  MailServiceBl mailServiceBl,
                  EveNotificationRepository notificationRepository) {
 
+    this.evePaymentRepository = evePaymentRepository;
         this.userRepository = userRepository;
         this.eventBl = eventBl;
         this.eveUserRepository = eveUserEntity;
@@ -181,22 +184,20 @@ public class BotBl {
                 if ( !(BotBl.getUserEntity() == null) ) {
                     switch (message.getText()) {
                         case Option.OP_ADD_EVENT:
-                            SequenceAddEvent sequenceAddEvent;
-                            sequenceAddEvent = new SequenceAddEvent(eveEventRepository, eveCategoryRepository,
+                            SequenceAddEvent sequenceAddEvent = new SequenceAddEvent(eveEventRepository, eveCategoryRepository,
                                     eveAddressRepository, eveTypeEventRepository, eveStatusRepository, eveCityRepository);
                             startSequence(7, update, sequenceAddEvent);
                             break;
 
                         case Option.OP_MODIFY_EVENT:
-                            SequenceUpdateEvent sequenceUpdateEvent;
-                            sequenceUpdateEvent = new SequenceUpdateEvent(eveEventRepository, eveCategoryRepository,
+                            SequenceUpdateEvent sequenceUpdateEvent =
+                                    new SequenceUpdateEvent(eveEventRepository, eveCategoryRepository,
                                     eveAddressRepository, eveTypeEventRepository, eveStatusRepository, eveCityRepository);
                             startSequence(4, update, sequenceUpdateEvent);
                             break;
 
                         case Option.OP_DELETE_EVENT:
-                            SequenceDeleteEvent sequenceDeleteEvent;
-                            sequenceDeleteEvent = new SequenceDeleteEvent(eveEventRepository);
+                            SequenceDeleteEvent sequenceDeleteEvent = new SequenceDeleteEvent(eveEventRepository);
                             startSequence(2, update, sequenceDeleteEvent);
                             break;
                         case Option.OP_LEASEPLACE:
@@ -218,7 +219,10 @@ public class BotBl {
     }
 
     private void showEventsInformation(List<EventDto> eventDtos, int idChat, String url) throws TelegramApiException {
-        LOGGER.info(String.valueOf(eventDtos));
+        LOGGER.info("eventos {}", eventDtos);
+        List<LabeledPrice> priceList = new ArrayList<>();
+        priceList.add(new LabeledPrice("45.33", 120));
+        priceList.add(new LabeledPrice("45.33", 60994));
         SendInvoice inv;
         for (EventDto event:
                 eventDtos) {
@@ -233,19 +237,21 @@ public class BotBl {
                     description,
                     "Visa",
                     PROVIDER_TOKEN,
-                    "StartParam", "USD",
-                    Collections.singletonList(new LabeledPrice("label",200))
+                    "BoltonBot",
+                    "USD",
+                    priceList
             )
                     .setPhotoUrl(url);
+            inv.setNeedEmail(true);
             boltonBot.executeAsync(inv, new SentCallback<Message>() {
                 @Override
                 public void onResult(BotApiMethod<Message> botApiMethod, Message message) {
-                    LOGGER.info("{} {}", message.getSuccessfulPayment(), botApiMethod.getMethod());
+                    LOGGER.info("JODER {} {}", message.getSuccessfulPayment());
                 }
 
                 @Override
                 public void onError(BotApiMethod<Message> botApiMethod, TelegramApiRequestException e) {
-                    LOGGER.error("error uno");
+                    LOGGER.error(e.toString());
                 }
 
                 @Override
@@ -291,6 +297,16 @@ public class BotBl {
 //            LOGGER.error("gg");
 //        }
 //    }
+
+    public void processPayment(Update update, BoltonBot bot) {
+        BotBl.boltonBot = bot;
+        //TODO: implement logic payment
+        SequencePayment sequencePayment = new SequencePayment(evePaymentRepository);
+        sequencePayment.setRunning(true);
+        sequencePayment.setNumberSteps(2);
+        sequencePayment.runSequence(update, bot);
+        this.sequence = sequencePayment;
+    }
 
     public static EveUserEntity getUserEntity() {
         return userEntity;
