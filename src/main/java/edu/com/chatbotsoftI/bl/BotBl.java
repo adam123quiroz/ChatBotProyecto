@@ -7,6 +7,7 @@ import edu.com.chatbotsoftI.bot.commands.Option;
 import edu.com.chatbotsoftI.bot.special.keyboard.KbOptionsBot;
 import edu.com.chatbotsoftI.dao.*;
 import edu.com.chatbotsoftI.dto.*;
+import edu.com.chatbotsoftI.entity.EveLeasePlaceEntity;
 import edu.com.chatbotsoftI.entity.EvePersonEntity;
 import edu.com.chatbotsoftI.entity.EveUserEntity;
 import edu.com.chatbotsoftI.enums.TypeEvent;
@@ -14,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.AnswerInlineQuery;
 import org.telegram.telegrambots.meta.api.methods.AnswerPreCheckoutQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendInvoice;
@@ -55,6 +57,7 @@ public class BotBl {
     private EveLeasePlaceRepository eveLeasePlaceRepository;
     private LeaseplaceBl leaseplaceBl;
     private MailServiceBl mailServiceBl;
+    private EveNotificationRepository notificationRepository;
 
     private static Sequence sequence;
     private static EveUserEntity userEntity;
@@ -72,7 +75,8 @@ public class BotBl {
                  EveCityRepository eveCityRepository,
                  EveLeasePlaceRepository eveLeasePlaceRepository,
                  LeaseplaceBl leaseplaceBl,
-                 MailServiceBl mailServiceBl) {
+                 MailServiceBl mailServiceBl,
+                 EveNotificationRepository notificationRepository) {
 
         this.userRepository = userRepository;
         this.eventBl = eventBl;
@@ -87,6 +91,7 @@ public class BotBl {
         this.eveLeasePlaceRepository = eveLeasePlaceRepository;
         this.leaseplaceBl = leaseplaceBl;
         this.mailServiceBl = mailServiceBl;
+        this.notificationRepository = notificationRepository;
     }
 
     public List<String> processUpdate(Update update, BoltonBot boltonBot) throws TelegramApiException {
@@ -168,10 +173,10 @@ public class BotBl {
                 showEventsInformation(eventDtos, idChat,
                         "https://ep00.epimg.net/elviajero/imagenes/2016/11/23/album/1479923555_950451_1479926380_album_normal.jpg");
                 break;
-//            case Option.OP_PLACE:
-//                leaseplaceDtos = leaseplaceBl.findAllLeaseplaceDto();
-//                showLeasePlacesInformation(leaseplaceDtos,idChat);
-//                break;
+            case Option.OP_PLACE:
+                leaseplaceDtos = leaseplaceBl.findAllLeaseplaceDto();
+                showLeaseplace(leaseplaceDtos,idChat);
+                break;
             default:
                 if ( !(BotBl.getUserEntity() == null) ) {
                     switch (message.getText()) {
@@ -197,7 +202,7 @@ public class BotBl {
                         case Option.OP_LEASEPLACE:
 
                             SequenceAddLeasePlace sequenceAddLeasePlace = new SequenceAddLeasePlace(eveLeasePlaceRepository,eveAddressRepository,
-                                    eveStatusRepository,eveCityRepository,mailServiceBl);
+                                    eveStatusRepository,eveCityRepository,mailServiceBl,notificationRepository,eveUserRepository);
                             startSequence(4, update, sequenceAddLeasePlace);
                     }
                 } else {
@@ -248,6 +253,19 @@ public class BotBl {
                     LOGGER.error("error 2");
                 }
             });
+
+        }
+    }
+
+    private void showLeaseplace(List<LeasePlaceDto> leasePlaceDtos, int idChat)throws  TelegramApiException{
+
+        for (LeasePlaceDto leasePlaces : leasePlaceDtos) {
+                String information= ""+
+                        "Nombre Lugar: " + leasePlaces.getNameplace() + "\n" +
+                        "Fecha Publicacion: " + leasePlaces.getDate() + "\n" +
+                        "Precio de renta: " + leasePlaces.getPrice() + "\n" +
+                        "Direccion " + leasePlaces.getAddress();
+                boltonBot.execute(new SendMessage((long) idChat,information));
 
         }
     }

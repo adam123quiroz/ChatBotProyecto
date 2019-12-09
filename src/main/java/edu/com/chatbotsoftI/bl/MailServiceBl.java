@@ -11,7 +11,15 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 @Service
 public class MailServiceBl {
@@ -21,19 +29,9 @@ public class MailServiceBl {
     @Autowired
     private JavaMailSender mailSender;
 
-    //pertenece al mailsender es la configuracion
-//    private MailCfg mailCfg;
-//
-//    private Mail mail;
-//
-//    public void sendMail(MailCfg mailCfg)
-//    {
-//        this.mailCfg= mailCfg;
-//    //    this.mail=mail;
-//    }
+    private Mail mail;
 
-
-    public void sendEmail(String to, String subject, String content) {
+    public void sendEmail(String from,String to, String subject, String content) {
 
         /*JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost(this.mailCfg.getHost());
@@ -43,32 +41,64 @@ public class MailServiceBl {
 */
         SimpleMailMessage mailmessage = new SimpleMailMessage();
 
-        mailmessage.setFrom("altair_A_S@hotmail.com");
-
+        mailmessage.setFrom(from);
         mailmessage.setTo(to);
         mailmessage.setSubject(subject);
         mailmessage.setText(content);
-//        mailmessage.setTo("cr@feedback.com");
-//        mailmessage.setSubject("Email de prueba "+ mail.getSubject());
-//        mailmessage.setText("Funciono el correo"+ mail.getContent());
 
-        mailSender.send(mailmessage);
+
+       mailSender.send(mailmessage);
     }
 
-    public void sendAllEmail(List<EveUserEntity> listusers, String subject, String content) {
+    public void sendAllEmail(String from, String[] to, String subject, String content) throws MessagingException {
 
-        for (EveUserEntity userEntity : listusers) {
+        Properties p=System.getProperties();
+        String Host_Name= "smtp.mailtrap.io";
+        p.put("mail.smtp.host",Host_Name);
+        Session session=Session.getDefaultInstance(p,null);
+        MimeMessage message=new MimeMessage(session);
 
-            SimpleMailMessage email = new SimpleMailMessage();
+        List<EveUserEntity> mailAddressto = new ArrayList<>();
+            message.setFrom(from);
 
-            email.setTo(userEntity.getEmail());
-            email.setSubject(subject);
-            email.setText(content);
-
-            mailSender.send(email);
+        //InternetAddress[] mailto=new InternetAddress[mailAddressto.size()];
+        InternetAddress[] mailto =new InternetAddress[mailAddressto.size()];
+        for (int i=0;i<mailAddressto.size();i++){
+            mailto[i]=new InternetAddress(mailAddressto.get(i).getEmail());
         }
+        message.addRecipients(Message.RecipientType.TO,mailto);
+        message.setSubject(subject);
+        message.setContent(content,"txt");
+        mailSender.send(message);
+//        //    SimpleMailMessage email = new SimpleMailMessage();
+//
+//            email.setFrom(from);
+//            email.setTo(String.valueOf(to));
+//            email.setSubject(subject);
+//            email.setText(content);
+//
+//            mailSender.send(email);
+
 
     }
+//    public void sendAllEmail(String from,List<EveUserEntity> listusers, String subject, String content) {
+//
+//
+//        for (EveUserEntity userEntity : listusers) {
+//
+//            SimpleMailMessage email = new SimpleMailMessage();
+//
+//            email.setFrom(from);
+//            email.setTo(userEntity.getEmail());
+//            email.setSubject(subject);
+//            email.setText(content);
+//
+//            mailSender.send(email);
+//        }
+//
+//    }
+
+
 }
 
 

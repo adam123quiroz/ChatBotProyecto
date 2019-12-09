@@ -17,8 +17,8 @@ public class Option {
 
     public static final String OP_LEASEPLACE ="Rentar Lugar";
     public static final String OP_PLACE ="Lugares";
-//    public static final String OP_LEASEPLACEYES= "Si";
- //   public static final String OP_LEASEPLACENO= "NO";
+    public static final String OP_LEASEPLACEYES= "Si";
+    public static final String OP_LEASEPLACENO= "NO";
 
     public static final String OP_ATTRIBUTE_NAME = "Nombre";
     public static final String OP_ATTRIBUTE_PRICE = "Precio";
