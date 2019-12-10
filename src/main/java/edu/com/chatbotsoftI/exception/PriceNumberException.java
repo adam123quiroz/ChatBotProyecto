@@ -12,7 +12,8 @@ public class PriceNumberException extends RuntimeException {
     private static final Logger LOGGER = LoggerFactory.getLogger(PriceNumberException.class);
 
 
-    public PriceNumberException(Sequence sequenceUpdateEvent, Message message) throws TelegramApiException {
+    public PriceNumberException(Sequence sequenceUpdateEvent, Message message) {
+        LOGGER.info("Sequence {}\n message {}", sequenceUpdateEvent, message);
         sequenceUpdateEvent.setSendMessageRequest(sequenceUpdateEvent.sendMessage(message, ErrorMessage.ERROR_NUMBER_FORMAT));
         sequenceUpdateEvent.setStepNow(3);
     }

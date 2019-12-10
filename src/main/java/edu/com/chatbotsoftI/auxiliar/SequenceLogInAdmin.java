@@ -47,7 +47,7 @@ public class SequenceLogInAdmin extends Sequence {
                     break;
 
                 case 1: // graba primera pregunta
-                    String username = message.getText();
+                    String username = message.getText().trim();
                     getUser().setNameuser(username);
 
                     //siguiente pregunta
@@ -60,7 +60,7 @@ public class SequenceLogInAdmin extends Sequence {
         } else {
             //graba ultima pregunta y termina
 
-            String password = message.getText();
+            String password = message.getText().trim();
             getUser().setPassword(password);
 
             //Analisis de la Informacion

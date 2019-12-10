@@ -14,4 +14,6 @@ public class Command {
     public static final String STOP_COMMAND = commandInitChar + "stop";
 
     public static final String RESTART_COMMAND = commandInitChar + "restart";
+
+    public static final String STRIPE_KEY = "sk_test_vceSL7gg1Ggwjl8Yl5Pxd7Ob006KWSLj5y";
 }

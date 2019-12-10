@@ -1,31 +1,20 @@
 package edu.com.chatbotsoftI.auxiliar;
 
-import edu.com.chatbotsoftI.bl.BotBl;
 import edu.com.chatbotsoftI.bot.BoltonBot;
 import edu.com.chatbotsoftI.bot.commands.Command;
 import edu.com.chatbotsoftI.bot.message.ErrorMessage;
 import edu.com.chatbotsoftI.bot.message.RequestMessageAddEvent;
+import edu.com.chatbotsoftI.bot.special.keyboard.KbOptionsBot;
 import edu.com.chatbotsoftI.dao.*;
 import edu.com.chatbotsoftI.entity.*;
-import edu.com.chatbotsoftI.enums.Status;
 import edu.com.chatbotsoftI.exception.AddressEventException;
 import edu.com.chatbotsoftI.exception.TypeEventException;
 import edu.com.chatbotsoftI.exception.PriceNumberException;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
-import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.Time;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.List;
 
 public class SequenceAddEvent extends Sequence {
     private EveEventRepository eveEventRepository;
@@ -68,7 +57,8 @@ public class SequenceAddEvent extends Sequence {
             if (getStepNow() < getNumberSteps()) {
                 switch (getStepNow()) {
                     case 0: // primera pregunta al usuario
-                        setSendMessageRequest( sendMessage(message, RequestMessageAddEvent.REQUEST_TYPE_EVENT) );
+                        KbOptionsBot kbOptionsBot = new KbOptionsBot(RequestMessageAddEvent.TYPE_EVENT_LIST);
+                        setSendMessageRequest(kbOptionsBot.showMenu(RequestMessageAddEvent.REQUEST_TYPE_EVENT, update ));
                         break;
 
                     case 1: // graba primera pregunta
@@ -138,7 +128,8 @@ public class SequenceAddEvent extends Sequence {
                 //graba ultima pregunta y termina
                 data = message.getText();
                 if (! eventManager.setAddress(data)) {
-                    throw new AddressEventException(bot, this, message, 5);
+                    LOGGER.info("this {}, \nMESSAGE {}", this, message);
+                    throw new AddressEventException( bot, this, message, 5);
                 }
                 eventManager.setAuditoryCells();
 
@@ -153,8 +144,8 @@ public class SequenceAddEvent extends Sequence {
 
     @Override
     public void restartOperation(BoltonBot bot, Update update) throws TelegramApiException {
-        Message message = update.getMessage();
-        setSendMessageRequest(sendMessage(message, RequestMessageAddEvent.REQUEST_RESTART_EVENT));
+        KbOptionsBot kbOptionsBot = new KbOptionsBot(RequestMessageAddEvent.TYPE_EVENT_LIST);
+        setSendMessageRequest(kbOptionsBot.showMenu(RequestMessageAddEvent.REQUEST_TYPE_EVENT, update ));
         bot.execute(getSendMessageRequest());
         setStepNow(1);
     }

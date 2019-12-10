@@ -23,11 +23,11 @@ public class EventDto {
         this.date = event.getDate();
         this.starttime = event.getStarttime();
         this.status = event.getStatus();
-
-         this.category = event.getEvecategoryByIdcategory().getCategory();
-       // this.category = event.getIdcategory().getCategory();
-       // this.address = event.getIdaddress().getAddress();
-//        this.address = event.getEveaddressByIdaddress().getAddress();
+        this.category = event.getEvecategoryByIdcategory().getCategory();
+        this.address = String.format("%s, %s, %s",
+                event.getEveaddressByIdaddress().getAddress(),
+                event.getEveaddressByIdaddress().getEvecityByIdcity().getCity(),
+                event.getEveaddressByIdaddress().getEvecityByIdcity().getEvestateByIdstate().getState());
     }
 
     public Integer getIdevent() {
