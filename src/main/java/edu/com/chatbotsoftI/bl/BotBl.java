@@ -113,6 +113,7 @@ public class BotBl {
     private void continueChatWithUser( Update update, EvePersonEntity personEntity ) throws TelegramApiException {
         Message message = update.getMessage();
         int idChat = Integer.parseInt(message.getChatId().toString());
+        LOGGER.info("chat id : {}", message.getChatId().toString() );
         List<EventDto> eventDtos;
         KbOptionsBot kbOptionsBot;
 
