@@ -5,6 +5,7 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.*;
 import com.stripe.param.InvoiceUpdateParams;
 import com.stripe.param.PaymentIntentUpdateParams;
+import edu.com.chatbotsoftI.bl.SendEmailBl;
 import edu.com.chatbotsoftI.bot.BoltonBot;
 import edu.com.chatbotsoftI.bot.commands.Command;
 import edu.com.chatbotsoftI.dao.EvePaymentRepository;
@@ -22,10 +23,12 @@ public class SequencePayment extends Sequence {
     private static final Logger LOGGER = LoggerFactory.getLogger(SequencePayment.class);
     private String email;
     private EvePaymentRepository evePaymentRepository;
+    private SendEmailBl sendEmailBl;
 
-    public SequencePayment(EvePaymentRepository evePaymentRepository) {
+    public SequencePayment(EvePaymentRepository evePaymentRepository, SendEmailBl sendEmailBl) {
         super(true, 2, 0);
         this.evePaymentRepository = evePaymentRepository;
+        this.sendEmailBl = sendEmailBl;
     }
 
     @Override
@@ -33,7 +36,6 @@ public class SequencePayment extends Sequence {
         if (getStepNow() < getNumberSteps()) {
             switch (getStepNow()) {
                 case 0:
-                    //TODO: implement logic
                     try {
                         AnswerPreCheckoutQuery answerPreCheckoutQuery =
                             new AnswerPreCheckoutQuery(update.getPreCheckoutQuery().getId(), true);
@@ -44,7 +46,6 @@ public class SequencePayment extends Sequence {
                     }
                     break;
                 case 1:
-                    //TODO: implements second step
                     if (update.getMessage().getSuccessfulPayment() != null) {
                         try {
                             Stripe.apiKey = Command.STRIPE_KEY;
@@ -66,46 +67,9 @@ public class SequencePayment extends Sequence {
                             }
                             LOGGER.info("payment {}", payment);
 
-                            Map<String, Object> customerParams = new HashMap<>();
-                            customerParams.put("name", payment.getCharges().getData().get(0).getBillingDetails().getName());
-                            customerParams.put("email", email);
-                            customerParams.put("description", "Customer for jenny.rosen@example.com");
+                            sendEmailBl.sendMail("adam123quiroz@gmail.com", email, "Facturacion", "Hola");
 
-                            Customer customer = Customer.create(customerParams);
-                            LOGGER.info("customer {}", customer);
 
-                            Map<String, Object> metadata = new HashMap<>();
-                            metadata.put("customer", customer.getId());
-                            metadata.put("receipt_email", email);
-                            PaymentIntent paymentIntent = payment.update(metadata);
-
-                            Map<String, Object> invoiceItemParams = new HashMap<String, Object>();
-                            invoiceItemParams.put("customer", customer.getId());
-                            invoiceItemParams.put("amount", 2500);
-                            invoiceItemParams.put("currency", "usd");
-                            invoiceItemParams.put("description", "One-time setup fee");
-
-                            InvoiceItem.create(invoiceItemParams);
-
-                            Map<String, Object> invoiceParams = new HashMap<String, Object>();
-                            invoiceParams.put("customer", customer.getId());
-                            invoiceParams.put("auto_advance", true); // auto-finalize this draft after ~1 hour
-                            invoiceParams.put("collection_method", "send_invoice");
-                            invoiceParams.put("days_until_due", 30);
-//                            invoiceParams.put("default_source", customer.getDefaultSource());
-
-                            Invoice invoice = Invoice.create(invoiceParams);
-//                            invoice.pay();
-
-                            invoice = Invoice.retrieve(invoice.getId());
-                            invoice.finalizeInvoice();
-
-                            invoice.sendInvoice();
-
-                            Map<String, Object> receipt_email = new HashMap<>();
-                            receipt_email.put("receipt_email", email);
-                            assert payment != null;
-                            payment = payment.update(receipt_email);
 
                         } catch (StripeException e) {
                             e.printStackTrace();
