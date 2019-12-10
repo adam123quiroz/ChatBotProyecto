@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface EveNotificationRepository extends JpaRepository<EveNotificationEntity, Integer> {
     List<EveNotificationEntity> findAllByEveleaseplaceByIdleaseplace(int idleaseplace);
+
 }

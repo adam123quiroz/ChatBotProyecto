@@ -6,11 +6,13 @@ public class UserDto {
     private Integer iduser;
     private String nameuser;
     private String password;
+    private String email;
 
     public UserDto(EveUserEntity eveUserEntity) {
         this.iduser = eveUserEntity.getIduser();
         this.nameuser = eveUserEntity.getNameuser();
         this.password = eveUserEntity.getPassword();
+        this.email = eveUserEntity.getEmail();
     }
 
     public Integer getIduser() {
@@ -37,12 +39,17 @@ public class UserDto {
         this.password = password;
     }
 
+    public String getEmail(){return  email;}
+
+    public  void setEmail(String email){this.email = email;}
+
     @Override
     public String toString() {
         return "UserDto{" +
                 "iduser=" + iduser +
                 ", nameuser='" + nameuser + '\'' +
                 ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 }
