@@ -1,6 +1,6 @@
 package edu.com.chatbotsoftI.bl;
 
-import com.itextpdf.zugferd.PdfInvoiceBasic;
+import edu.com.chatbotsoftI.invoice.PdfInvoiceBasic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -27,20 +27,24 @@ public class SendEmailBl {
 
     public void sendMail(String from, String to, String  subject, String body) {
 
-        String smtpHost = "smtp.mailgun.org"; //replace this with a valid host
-        int smtpPort = 587; //replace this with a valid port
+        String smtpHost = "smtp.mailtrap.io"; //replace this with a valid host
+        int smtpPort = 2525; //replace this with a valid port
 
         Properties properties = new Properties();
         properties.put("mail.smtp.host", smtpHost);
         properties.put("mail.smtp.port", smtpPort);
-        properties.setProperty("mail.smtp.user", "postmaster@sandboxd7c0d74150234601ba2c3420a06d288e.mailgun.org ");
-        properties.setProperty("mail.smtp.password", "d71e2d6025efcd0f257beb6fe330be96-5645b1f9-7891f081");
+
+        String username1 = "tu token ";
+        String password1 = "tu password";
+
+        properties.setProperty("mail.smtp.user", username1);
+        properties.setProperty("mail.smtp.password", password1);
         properties.setProperty("mail.smtp.auth", "true");
         Session session = Session.getDefaultInstance(properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                String username = "postmaster@sandboxd7c0d74150234601ba2c3420a06d288e.mailgun.org";
-                String password = "d71e2d6025efcd0f257beb6fe330be96-5645b1f9-7891f081";
+                String username = username1;
+                String password = password1;
                 if ((username != null) && (username.length() > 0) && (password != null)
                         && (password.length   () > 0)) {
 
@@ -90,8 +94,6 @@ public class SendEmailBl {
         } catch (AddressException e) {
             e.printStackTrace();
         } catch (MessagingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         }
     }

@@ -2,37 +2,20 @@
  * This example was written by Bruno Lowagie in the context of a book.
  * See http://developers.itextpdf.com/content/zugferd-future-invoicing/5-creating-pdf-invoices-basic-profile
  */
-package com.itextpdf.zugferd;
+package edu.com.chatbotsoftI.invoice;
 
 import java.io.*;
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-
 import com.itextpdf.kernel.pdf.*;
-import com.itextpdf.kernel.pdf.filespec.PdfFileSpec;
 import edu.com.chatbotsoftI.invoice.*;
-import org.xml.sax.SAXException;
 
-import com.itextpdf.kernel.font.PdfFont;
-import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.borders.Border;
-import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
-import com.itextpdf.zugferd.exceptions.DataIncompleteException;
-import com.itextpdf.zugferd.exceptions.InvalidCodeException;
-import com.itextpdf.zugferd.profiles.IBasicProfile;
 
 /**
  * Reads invoice data from a test database and creates ZUGFeRD invoices
@@ -41,7 +24,7 @@ import com.itextpdf.zugferd.profiles.IBasicProfile;
  */
 public class PdfInvoiceBasic {
 
-    public void createPdf(OutputStream outputStream) throws  IOException {
+    public void createPdf(OutputStream outputStream) {
 
 
 
