@@ -1,6 +1,7 @@
 package edu.com.chatbotsoftI.bl;
 
 import edu.com.chatbotsoftI.dto.Mail;
+import edu.com.chatbotsoftI.entity.EveUserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;

@@ -43,7 +43,7 @@ public class SequenceDeleteEvent extends Sequence {
 
         Message mesagge = update.getMessage();
             //en esta lista sacamos todos los eventos que tenga el usuario
-        List<EveEventEntity> usereventlist = eveEventRepository.findAllByEveuserByIduser_IduserAndStatus(BotBl.getUserEntity().getIdUser(),
+        List<EveEventEntity> usereventlist = eveEventRepository.findAllByEveUserByIdUser_IdUserAndStatus(BotBl.getUserEntity().getIdUser(),
                 Status.ACTIVE.getStatus());
         String opcion;// Esta variable sera la id del evento que deseamos eliminar
         ConcatListEvent concatListEvent = new ConcatListEvent(usereventlist);
@@ -65,7 +65,7 @@ public class SequenceDeleteEvent extends Sequence {
                         opcion = mesagge.getText(); // Recibe el id escrito por el usuario
                        flag= validatingDeleteEvent(usereventlist ,Integer.parseInt(opcion)); // Utilizamos el flag para determinar si la opcion es valida
                         if(flag){ // Si es valida  aqui se procede a hacer la consulta a la base de datos
-                            eveEventEntity = eveEventRepository.findByIdevent(Integer.parseInt(opcion));
+                            eveEventEntity = eveEventRepository.findByIdEvent(Integer.parseInt(opcion));
                             LOGGER.info("opcion seleccionada {}", eveEventEntity );
 
                             setSendMessageRequest(sendMessage(mesagge,CONFIRM_DELETE)); // Se envia el mensaje para confirmar si se desea eliminar o no el evento

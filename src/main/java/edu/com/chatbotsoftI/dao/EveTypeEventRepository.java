@@ -4,6 +4,6 @@ import edu.com.chatbotsoftI.entity.EveTypeEventEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EveTypeEventRepository extends JpaRepository<EveTypeEventEntity, Integer> {
-    EveTypeEventEntity findByTypeevent(String typeEvent);
-    boolean existsByTypeevent(String typeEvent);
+    EveTypeEventEntity findByTypeEvent(String typeEvent);
+    boolean existsByTypeEvent(String typeEvent);
 }

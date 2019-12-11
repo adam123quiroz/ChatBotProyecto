@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 public class EvePaymentEntity {
     private int idPayment;
     private BigDecimal total;
-    private Timestamp date;
+    private Date date;
     private int status;
     private String txUser;
     private Date txDate;
@@ -43,11 +43,11 @@ public class EvePaymentEntity {
 
     @Basic
     @Column(name = "date", nullable = true)
-    public Timestamp getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(Timestamp date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

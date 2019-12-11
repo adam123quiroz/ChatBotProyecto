@@ -9,12 +9,16 @@ import edu.com.chatbotsoftI.bl.SendEmailBl;
 import edu.com.chatbotsoftI.bot.BoltonBot;
 import edu.com.chatbotsoftI.bot.commands.Command;
 import edu.com.chatbotsoftI.dao.EvePaymentRepository;
+import edu.com.chatbotsoftI.entity.EvePaymentEntity;
+import edu.com.chatbotsoftI.enums.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.methods.AnswerPreCheckoutQuery;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +70,13 @@ public class SequencePayment extends Sequence {
                                 }
                             }
                             LOGGER.info("payment {}", payment);
+                            EvePaymentEntity evePaymentEntity = new EvePaymentEntity();
+                            java.util.Date date;
+                            date = new Date();
+                            evePaymentEntity.setDate(new java.sql.Date(date.getTime()));
+                            evePaymentEntity.setStatus(Status.ACTIVE.getStatus());
+                            evePaymentEntity.setTotal(new BigDecimal(payment.getAmount()));
+//                            evePaymentEntity.set
 
                             sendEmailBl.sendMail("adam123quiroz@gmail.com", email, "Facturacion", "Hola");
 

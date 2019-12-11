@@ -121,7 +121,7 @@ public class SequenceAddLeasePlace extends Sequence {
                         break;
                     case 1:
                         data = message.getText();
-                        LeasePlace.setNameplace(data);
+                        LeasePlace.setNamePlace(data);
 //                //segunda pregunta
                         sendMessage = sendMessage(message, REQUEST_DATE_PLACE);
                         bot.execute(sendMessage);
@@ -177,7 +177,7 @@ public class SequenceAddLeasePlace extends Sequence {
                 } else {
                     EveCityEntity newEveCityEntity = new EveCityEntity();
                     newEveCityEntity.setCity(city);
-                    newEveCityEntity.setEvestateByIdstate(eveStateEntity);
+                    newEveCityEntity.setEveStateByIdState(eveStateEntity);
                     cityRepository.save(newEveCityEntity);
                     eveCityEntity = newEveCityEntity;
                 }
@@ -186,20 +186,20 @@ public class SequenceAddLeasePlace extends Sequence {
                 String address = addressPart.get(2).trim();
                 EveAddressEntity eveAddressEntity = new EveAddressEntity();
                 eveAddressEntity.setAddress(address);
-                eveAddressEntity.setEvecityByIdcity(eveCityEntity);
+                eveAddressEntity.setEveCityByIdCity(eveCityEntity);
                 addressRepository.save(eveAddressEntity);
-                LeasePlace.setEveaddressByIdaddress(eveAddressEntity);
+                LeasePlace.setEveAddressByIdAddress(eveAddressEntity);
 
                 //datos complementarios a la tabla leaseplcae
                 //se almacena el estado de la publicacion
                 LeasePlace.setStatus(Status.ACTIVE.getStatus());
                 //se almacena el id del usuario que publica
-                LeasePlace.setEveuserByIduser(BotBl.getUserEntity());
+                LeasePlace.setEveUserByIdUser(BotBl.getUserEntity());
                 //se almacena el usuario para registros de auditoria
-                LeasePlace.setTxuser(BotBl.getUserEntity().getNameuser());
-                LeasePlace.setTxhost("localhost");
+                LeasePlace.setTxUser(BotBl.getUserEntity().getNameUser());
+                LeasePlace.setTxHost("localhost");
                 Date datenew = new java.util.Date();
-                LeasePlace.setTxdate(new java.sql.Date(datenew.getTime()));
+                LeasePlace.setTxDate(new java.sql.Date(datenew.getTime()));
 
 
                 leasePlaceRepository.save(LeasePlace);
@@ -213,7 +213,7 @@ public class SequenceAddLeasePlace extends Sequence {
                 String email = BotBl.getUserEntity().getEmail();
                 LOGGER.info("EMAIL del USUARIO {}", email);
                 mailServiceBl.sendEmail(email,"aldair@hotmail.com", SUBJECT_NOTIFY, MSN_NOTIFY);
-              Integer evePersonEntityid = BotBl.getUserEntity().getIduser();
+              Integer evePersonEntityid = BotBl.getUserEntity().getIdUser();
               LOGGER.info("ID PERSONA {}",evePersonEntityid);
                 sendMessage = sendMessage(message, "Escribe Hola para continuar  " + " " + message.getChat().getFirstName());
                 bot.execute(sendMessage);
@@ -246,8 +246,8 @@ public class SequenceAddLeasePlace extends Sequence {
 //                }
              //   mailServiceBl.sendAllEmail("altair_A_S@hotmail.com",new InternetAddress(listusers),SUBJECT_NOTIFY,MSN_NOTIFY);
                 EveNotificationEntity eveNotificationEntity= new EveNotificationEntity();
-                eveNotificationEntity.setMsnotification(MSN_NOTIFY);
-                eveNotificationEntity.setEveleaseplaceByIdleaseplace(LeasePlace);
+                eveNotificationEntity.setMsNotification(MSN_NOTIFY);
+                eveNotificationEntity.setEveLeasePlaceByIdLeasePlace(LeasePlace);
                 notificationRepository.save(eveNotificationEntity);
 
 //                KbOptionsBot kbOptionsBot = new KbOptionsBot(optionList);
