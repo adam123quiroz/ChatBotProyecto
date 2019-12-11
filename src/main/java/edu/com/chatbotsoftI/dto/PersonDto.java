@@ -14,10 +14,10 @@ public class PersonDto {
     }
 
     public PersonDto(EvePersonEntity user){
-        this.idperson = user.getIdperson();
+        this.idperson = user.getIdPerson();
         this.ci = user.getCi();
         this.name = user.getName();
-        this.lastname = user.getLastname();
+        this.lastname = user.getLastName();
         this.botUserId = user.getBotUserId();
     }
 

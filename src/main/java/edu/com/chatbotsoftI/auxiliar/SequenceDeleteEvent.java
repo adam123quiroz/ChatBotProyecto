@@ -2,31 +2,20 @@ package edu.com.chatbotsoftI.auxiliar;
 
 import edu.com.chatbotsoftI.bl.BotBl;
 import edu.com.chatbotsoftI.bot.BoltonBot;
-import edu.com.chatbotsoftI.bot.commands.Option;
 import edu.com.chatbotsoftI.bot.special.keyboard.ConcatListEvent;
-import edu.com.chatbotsoftI.bot.special.keyboard.KbOptionsBot;
 import edu.com.chatbotsoftI.dao.EveEventRepository;
-import edu.com.chatbotsoftI.dao.EveLeasePlaceRepository;
-import edu.com.chatbotsoftI.dto.EventDto;
 import edu.com.chatbotsoftI.entity.EveEventEntity;
-import edu.com.chatbotsoftI.entity.EveLeasePlaceEntity;
-import edu.com.chatbotsoftI.entity.EveUserEntity;
 import edu.com.chatbotsoftI.enums.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ForceReplyKeyboard;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class SequenceDeleteEvent extends Sequence {
     private EveEventRepository eveEventRepository;
-
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SequenceDeleteEvent.class);
     public SequenceDeleteEvent(EveEventRepository eveEventRepository) {
@@ -54,7 +43,7 @@ public class SequenceDeleteEvent extends Sequence {
 
         Message mesagge = update.getMessage();
             //en esta lista sacamos todos los eventos que tenga el usuario
-        List<EveEventEntity> usereventlist = eveEventRepository.findAllByEveuserByIduser_IduserAndStatus(BotBl.getUserEntity().getIduser(),
+        List<EveEventEntity> usereventlist = eveEventRepository.findAllByEveuserByIduser_IduserAndStatus(BotBl.getUserEntity().getIdUser(),
                 Status.ACTIVE.getStatus());
         String opcion;// Esta variable sera la id del evento que deseamos eliminar
         ConcatListEvent concatListEvent = new ConcatListEvent(usereventlist);
@@ -112,7 +101,7 @@ public class SequenceDeleteEvent extends Sequence {
         boolean flag = false;
         for (EveEventEntity event:
              events) {
-            if(option == event.getIdevent())
+            if(option == event.getIdEvent())
                 flag = true;
         }
         return  flag;

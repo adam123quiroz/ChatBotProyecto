@@ -1,165 +1,28 @@
 package edu.com.chatbotsoftI.entity;
-/*
-import java.io.Serializable;
-import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
-@Entity
-@Table(name = "eveperson")
-@XmlRootElement
-
-public class EvePersonEntity implements Serializable  {
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "idperson")
-    private Integer idperson;
-    @Size(max = 45)
-    @Column(name = "ci")
-    private String ci;
-    @Size(max = 45)
-    @Column(name = "name")
-    private String name;
-    @Size(max = 45)
-    @Column(name = "lastname")
-    private String lastname;
-    @Size(max = 100)
-    @Column(name = "bot_user_id")
-    private String botUserId;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idperson", fetch = FetchType.LAZY)
-    private List<EveUserEntity> eveuserList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idperson", fetch = FetchType.LAZY)
-    private List<EvePersonChatEntity> evepersonchatList;
-
-    public EvePersonEntity() {
-    }
-
-    public EvePersonEntity(Integer idperson) {
-        this.idperson = idperson;
-    }
-
-    public Integer getIdperson() {
-        return idperson;
-    }
-
-    public void setIdperson(Integer idperson) {
-        this.idperson = idperson;
-    }
-
-    public String getCi() {
-        return ci;
-    }
-
-    public void setCi(String ci) {
-        this.ci = ci;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    public String getBotUserId() {
-        return botUserId;
-    }
-
-    public void setBotUserId(String botUserId) {
-        this.botUserId = botUserId;
-    }
-
-    @XmlTransient
-    public List<EveUserEntity> getEveuserList() {
-        return eveuserList;
-    }
-
-    public void setEveuserList(List<EveUserEntity> eveuserList) {
-        this.eveuserList = eveuserList;
-    }
-
-    @XmlTransient
-    public List<EvePersonChatEntity> getEvepersonchatList() {
-        return evepersonchatList;
-    }
-
-    public void setEvepersonchatList(List<EvePersonChatEntity> evepersonchatList) {
-        this.evepersonchatList = evepersonchatList;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (idperson != null ? idperson.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof EvePersonEntity)) {
-            return false;
-        }
-        EvePersonEntity other = (EvePersonEntity) object;
-        if ((this.idperson == null && other.idperson != null) || (this.idperson != null && !this.idperson.equals(other.idperson))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "entity.EvePersonEntity[ idperson=" + idperson + " ]";
-    }
-}
- */
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "eveperson", schema = "dbbot", catalog = "")
+@Table(name = "eve_person", schema = "dbbot", catalog = "")
 public class EvePersonEntity {
-    private Integer idperson;
+    private int idPerson;
     private String ci;
     private String name;
-    private String lastname;
+    private String lastName;
     private String botUserId;
-    private List<EvePersonChatEntity> evepersonchatsByIdperson;
-    private List<EveUserEntity> eveusersByIdperson;
+    private List<EvePersonChatEntity> evePersonChatsByIdPerson;
+    private List<EveUserEntity> eveUsersByIdPerson;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idperson", nullable = false)
-    public Integer getIdperson() {
-        return idperson;
+    @Column(name = "id_person", nullable = false)
+    public int getIdPerson() {
+        return idPerson;
     }
 
-    public void setIdperson(Integer idperson) {
-        this.idperson = idperson;
+    public void setIdPerson(int idPerson) {
+        this.idPerson = idPerson;
     }
 
     @Basic
@@ -183,13 +46,13 @@ public class EvePersonEntity {
     }
 
     @Basic
-    @Column(name = "lastname", nullable = true, length = 45)
-    public String getLastname() {
-        return lastname;
+    @Column(name = "last_name", nullable = true, length = 45)
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     @Basic
@@ -209,10 +72,10 @@ public class EvePersonEntity {
 
         EvePersonEntity that = (EvePersonEntity) o;
 
-        if (idperson != null ? !idperson.equals(that.idperson) : that.idperson != null) return false;
+        if (idPerson != that.idPerson) return false;
         if (ci != null ? !ci.equals(that.ci) : that.ci != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (lastname != null ? !lastname.equals(that.lastname) : that.lastname != null) return false;
+        if (lastName != null ? !lastName.equals(that.lastName) : that.lastName != null) return false;
         if (botUserId != null ? !botUserId.equals(that.botUserId) : that.botUserId != null) return false;
 
         return true;
@@ -220,29 +83,29 @@ public class EvePersonEntity {
 
     @Override
     public int hashCode() {
-        int result = idperson != null ? idperson.hashCode() : 0;
+        int result = idPerson;
         result = 31 * result + (ci != null ? ci.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (lastname != null ? lastname.hashCode() : 0);
+        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
         result = 31 * result + (botUserId != null ? botUserId.hashCode() : 0);
         return result;
     }
 
-    @OneToMany(mappedBy = "evepersonByIdperson")
-    public List<EvePersonChatEntity> getEvepersonchatsByIdperson() {
-        return evepersonchatsByIdperson;
+    @OneToMany(mappedBy = "evePersonByIdPerson")
+    public List<EvePersonChatEntity> getEvePersonChatsByIdPerson() {
+        return evePersonChatsByIdPerson;
     }
 
-    public void setEvepersonchatsByIdperson(List<EvePersonChatEntity> evepersonchatsByIdperson) {
-        this.evepersonchatsByIdperson = evepersonchatsByIdperson;
+    public void setEvePersonChatsByIdPerson(List<EvePersonChatEntity> evePersonChatsByIdPerson) {
+        this.evePersonChatsByIdPerson = evePersonChatsByIdPerson;
     }
 
-    @OneToMany(mappedBy = "evepersonByIdperson")
-    public List<EveUserEntity> getEveusersByIdperson() {
-        return eveusersByIdperson;
+    @OneToMany(mappedBy = "evePersonByIdPerson")
+    public List<EveUserEntity> getEveUsersByIdPerson() {
+        return eveUsersByIdPerson;
     }
 
-    public void setEveusersByIdperson(List<EveUserEntity> eveusersByIdperson) {
-        this.eveusersByIdperson = eveusersByIdperson;
+    public void setEveUsersByIdPerson(List<EveUserEntity> eveUsersByIdPerson) {
+        this.eveUsersByIdPerson = eveUsersByIdPerson;
     }
 }

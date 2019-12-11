@@ -1,7 +1,6 @@
 package edu.com.chatbotsoftI.auxiliar;
 
 import edu.com.chatbotsoftI.bot.BoltonBot;
-import edu.com.chatbotsoftI.bot.message.RequestMessageAddEvent;
 import edu.com.chatbotsoftI.entity.EveUserEntity;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;

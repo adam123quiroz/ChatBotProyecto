@@ -10,7 +10,6 @@ import javax.mail.*;
 import javax.mail.internet.*;
 import javax.mail.util.ByteArrayDataSource;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Properties;
 
 @Service
@@ -47,7 +46,6 @@ public class SendEmailBl {
                 String password = password1;
                 if ((username != null) && (username.length() > 0) && (password != null)
                         && (password.length   () > 0)) {
-
                     return new PasswordAuthentication(username, password);
                 }
 

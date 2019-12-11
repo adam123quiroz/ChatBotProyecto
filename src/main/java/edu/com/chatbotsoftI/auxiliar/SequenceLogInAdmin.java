@@ -6,7 +6,6 @@ import edu.com.chatbotsoftI.bot.commands.Option;
 import edu.com.chatbotsoftI.bot.special.keyboard.KbOptionsBot;
 import edu.com.chatbotsoftI.dao.EveUserRepository;
 import edu.com.chatbotsoftI.dto.UserDto;
-import edu.com.chatbotsoftI.entity.EveUserEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.objects.Message;

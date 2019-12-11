@@ -79,14 +79,14 @@ public class SequencePayment extends Sequence {
             }
             LOGGER.info("Numero de pasos {}", getStepNow());
             setStepNow(getStepNow() + 1);
-        } else {
-            //Analisis de la Informacion
-            //TODO: implement logic
-        } //end if else
+        }
+//        else {
+//            //Analisis de la Informacion
+//        } //end if else
     }
 
     @Override
-    public void restartOperation(BoltonBot bot, Update update) throws TelegramApiException {
+    public void restartOperation(BoltonBot bot, Update update)  {
         //TODO: implement with a logic about sequence payment
     }
 }
