@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.AnswerPreCheckoutQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendInvoice;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -27,8 +26,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.meta.updateshandlers.SentCallback;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -104,7 +101,7 @@ public class BotBl {
         if (userEntity == null) {
             EvePersonEntity evePerson = new EvePersonEntity();
             evePerson.setName(user.getFirstName());
-            evePerson.setLastname(user.getLastName());
+            evePerson.setLastName(user.getLastName());
             evePerson.setBotUserId(user.getId().toString());
             userRepository.save(evePerson);
         }

@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface EveNotificationRepository extends JpaRepository<EveNotificationEntity, Integer> {
-    List<EveNotificationEntity> findAllByEveleaseplaceByIdleaseplace(int idleaseplace);
+    List<EveNotificationEntity> findAllByEveLeasePlaceByIdLeasePlace(int idleaseplace);
 
 }

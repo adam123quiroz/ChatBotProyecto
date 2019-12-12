@@ -72,7 +72,7 @@ public class SequenceUpdateEvent extends Sequence {
                 switch (getStepNow()) {
                     case 0 : // primera pregunta al usuario
                         StringBuilder text = new StringBuilder(RequestMessageUpdateEvent.REQUEST_LIST_EVENT);
-                        listEvent = eveEventRepository.findAllByEveuserByIduser(BotBl.getUserEntity());
+                        listEvent = eveEventRepository.findAllByEveUserByIdUser(BotBl.getUserEntity());
                         text.append("\n\n");
                         ConcatListEvent concatListEvent = new ConcatListEvent(listEvent);
                         text.append(concatListEvent.getStringListEvent());
@@ -81,7 +81,7 @@ public class SequenceUpdateEvent extends Sequence {
 
                     case 1 : // graba primera pregunta
                         data = message.getText();
-                        eventEntity = eveEventRepository.findByIdeventAndStatus(
+                        eventEntity = eveEventRepository.findByIdEventAndStatus(
                                 Integer.parseInt(data),
                                 Status.ACTIVE.getStatus());
                         eventManager.setEventEntity(eventEntity); // agregamos el evento que necesitamos actualizar

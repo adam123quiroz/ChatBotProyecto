@@ -1,20 +1,15 @@
 package edu.com.chatbotsoftI.bl;
 
-import edu.com.chatbotsoftI.dao.EveUserRepository;
 import edu.com.chatbotsoftI.dto.Mail;
-import edu.com.chatbotsoftI.dto.MailCfg;
-import edu.com.chatbotsoftI.dto.UserDto;
 import edu.com.chatbotsoftI.entity.EveUserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
-import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.ArrayList;

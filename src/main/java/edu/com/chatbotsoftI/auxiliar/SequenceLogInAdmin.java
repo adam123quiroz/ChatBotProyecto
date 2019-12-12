@@ -48,7 +48,7 @@ public class SequenceLogInAdmin extends Sequence {
 
                 case 1: // graba primera pregunta
                     String username = message.getText().trim();
-                    getUser().setNameuser(username);
+                    getUser().setNameUser(username);
 
                     //siguiente pregunta
                     setSendMessageRequest(sendMessage(message, REQUEST_PASSWORD));
@@ -65,11 +65,11 @@ public class SequenceLogInAdmin extends Sequence {
 
             //Analisis de la Informacion
             String s;
-            EveUserEntity userAux = eveUserRepository.findByNameuserAndPassword(getUser().getNameuser(), getUser().getPassword());
+            EveUserEntity userAux = eveUserRepository.findByNameUserAndPassword(getUser().getNameUser(), getUser().getPassword());
             UserDto userDto = new UserDto(getUser());
             LOGGER.info("user {}", userDto);
             if (!(userAux == null)) {
-                s = String.format("Bienvenido %s, modo Administrativo", getUser().getNameuser());
+                s = String.format("Bienvenido %s, modo Administrativo", getUser().getNameUser());
                 bot.execute(sendMessage(message, s));
                 KbOptionsBot kbOptionsBot = new KbOptionsBot(optionEdit);
                 bot.execute(kbOptionsBot.showMenu(String.format("%s, donde deseas realizar tus cambios:",

@@ -19,12 +19,12 @@ public class LeasePlaceDto {
     }
 
     public LeasePlaceDto(EveLeasePlaceEntity leaseplace){
-        this.idleaseplace = leaseplace.getIdleaseplace();
-        this.nameplace = leaseplace.getNameplace();
+        this.idleaseplace = leaseplace.getIdLeasePlace();
+        this.nameplace = leaseplace.getNamePlace();
         this.date = leaseplace.getDate();
         this.price = leaseplace.getPrice();
 
-          this.address = leaseplace.getEveaddressByIdaddress().getAddress();
+          this.address = leaseplace.getEveAddressByIdAddress().getAddress();
      //   this.address = leaseplace.getIdaddress().getAddress();
     }
 

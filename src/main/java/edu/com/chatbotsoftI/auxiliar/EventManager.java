@@ -60,7 +60,7 @@ public class EventManager {
             eveCategoryRepository.save(newEveCategoryEntity);
             eveCategoryEntity = newEveCategoryEntity;
         }
-        eventEntity.setEvecategoryByIdcategory(eveCategoryEntity);
+        eventEntity.setEveCategoryByIdCategory(eveCategoryEntity);
     }
 
     public boolean setPrice(String data) {
@@ -77,9 +77,9 @@ public class EventManager {
 
     public boolean setTypeEvent(String data) {
         boolean flag = false;
-        if (eveTypeEventRepository.existsByTypeevent(data)){
-            EveTypeEventEntity eveTypeEventEntity = eveTypeEventRepository.findByTypeevent(data);//dao TypeEvent
-            eventEntity.setEvetypeeventByIdtypeevent(eveTypeEventEntity);
+        if (eveTypeEventRepository.existsByTypeEvent(data)){
+            EveTypeEventEntity eveTypeEventEntity = eveTypeEventRepository.findByTypeEvent(data);//dao TypeEvent
+            eventEntity.setEveTypeEventByIdTypeEvent(eveTypeEventEntity);
             flag = true;
         }
         return flag;
@@ -104,7 +104,7 @@ public class EventManager {
         try {
             DateFormat formatter = new SimpleDateFormat("HH:mm");
             Time timeValue = new Time(formatter.parse(data).getTime());
-            eventEntity.setStarttime(timeValue);
+            eventEntity.setStartTime(timeValue);
             flag = true;
         } catch (ParseException e) {
             flag = false;
@@ -113,7 +113,7 @@ public class EventManager {
     }
 
     public void setName(String data) {
-        eventEntity.setNameevent(data);
+        eventEntity.setNameEvent(data);
     }
 
     public boolean setAddress(String data) {
@@ -139,7 +139,7 @@ public class EventManager {
             } else {
                 EveCityEntity newEveCityEntity= new EveCityEntity();
                 newEveCityEntity.setCity(city);
-                newEveCityEntity.setEvestateByIdstate(eveStateEntity);
+                newEveCityEntity.setEveStateByIdState(eveStateEntity);
                 eveCityRepository.save(newEveCityEntity);
                 eveCityEntity = newEveCityEntity;
             }
@@ -147,9 +147,9 @@ public class EventManager {
             String address = addressPart.get(2).trim();
             EveAddressEntity eveAddressEntity = new EveAddressEntity();
             eveAddressEntity.setAddress(address);
-            eveAddressEntity.setEvecityByIdcity(eveCityEntity);
+            eveAddressEntity.setEveCityByIdCity(eveCityEntity);
             eveAddressRepository.save(eveAddressEntity);
-            eventEntity.setEveaddressByIdaddress(eveAddressEntity);
+            eventEntity.setEveAddressByIdAddress(eveAddressEntity);
 
             flag = true;
         }
@@ -158,10 +158,10 @@ public class EventManager {
 
     public void setAuditoryCells() {
         eventEntity.setStatus(Status.ACTIVE.getStatus());
-        eventEntity.setEveuserByIduser(BotBl.getUserEntity());
-        eventEntity.setTxuser(BotBl.getUserEntity().getNameuser());
-        eventEntity.setTxhost("localhost");
+        eventEntity.setEveUserByIdUser(BotBl.getUserEntity());
+        eventEntity.setTxUser(BotBl.getUserEntity().getNameUser());
+        eventEntity.setTxHost("localhost");
         java.util.Date dateCreate = new java.util.Date();
-        eventEntity.setTxdate(new Date(dateCreate.getTime()));
+        eventEntity.setTxDate(new Date(dateCreate.getTime()));
     }
 }
