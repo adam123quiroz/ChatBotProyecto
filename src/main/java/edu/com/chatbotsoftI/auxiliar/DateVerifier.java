@@ -23,13 +23,43 @@ public class DateVerifier {
     }
     private EveEventEntity eveEventEntity;
     public void DeletePastEventsMovie(){
-
-
         List<EveEventEntity> movieEvents=eveEventRepository.findAllByEveTypeEventByIdTypeEvent_TypeEventAndStatus(Option.OP_MOVIE, Status.ACTIVE.getStatus());
         LOGGER.info("chat id : {}", movieEvents );
         if(movieEvents!=null){
             for (EveEventEntity events:
                     movieEvents) {
+                eveEventEntity = events;
+                if( events.getDate().before(actual) && events.getStartTime().before(actual)){
+                    eveEventEntity.setStatus(0);
+                }
+                eveEventRepository.save(eveEventEntity); // se guardan los cambios de la base de datos
+
+
+            }
+        }
+    }
+    public void DeletePastEventsMusic(){
+        List<EveEventEntity> musicEvents=eveEventRepository.findAllByEveTypeEventByIdTypeEvent_TypeEventAndStatus(Option.OP_MUSIC, Status.ACTIVE.getStatus());
+        LOGGER.info("chat id : {}", musicEvents );
+        if(musicEvents!=null){
+            for (EveEventEntity events:
+                    musicEvents) {
+                eveEventEntity = events;
+                if( events.getDate().before(actual) && events.getStartTime().before(actual)){
+                    eveEventEntity.setStatus(0);
+                }
+                eveEventRepository.save(eveEventEntity); // se guardan los cambios de la base de datos
+
+
+            }
+        }
+    }
+    public void DeletePastEventsMuseum(){
+        List<EveEventEntity> museumEvents=eveEventRepository.findAllByEveTypeEventByIdTypeEvent_TypeEventAndStatus(Option.OP_MOVIE, Status.ACTIVE.getStatus());
+        LOGGER.info("chat id : {}", museumEvents );
+        if(museumEvents!=null){
+            for (EveEventEntity events:
+                    museumEvents) {
                 eveEventEntity = events;
                 if( events.getDate().before(actual) && events.getStartTime().before(actual)){
                     eveEventEntity.setStatus(0);

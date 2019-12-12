@@ -114,7 +114,7 @@ public class BotBl {
         LOGGER.info("chat id : {}", message.getChatId().toString() );
         List<EventDto> eventDtos;
         KbOptionsBot kbOptionsBot;
-
+        DateVerifier verifier = new DateVerifier(eveEventRepository);
         switch(message.getText()) {
             case Command.startCommand:
             case "hola":
@@ -144,19 +144,21 @@ public class BotBl {
                 break;
 
             case Option.OP_MOVIE:
-                DateVerifier verifier = new DateVerifier(eveEventRepository);
+
                 verifier.DeletePastEventsMovie();
                 eventDtos = eventBl.findAllEventByTypeEvent(TypeEvent.MOVIE.getTypeEvent());
                 showEventsInformation(eventDtos, idChat,
                         "https://www.yucatan.com.mx/wp-content/uploads/2019/03/2491246.jpg-r_1920_1080-f_jpg-q_x-xxyxx.jpg?width=1200&enable=upscale");
                 break;
             case Option.OP_MUSIC:
+                verifier.DeletePastEventsMusic();
                 eventDtos = eventBl.findAllEventByTypeEvent(TypeEvent.MUSIC.getTypeEvent());
                 showEventsInformation(eventDtos,idChat,
                         "https://static.rfstat.com/bloggers_folders/user_2540376/my_media/aab8b888-e24f-43af-83db-cc4cd88de9b3.jpeg");
                 break;
 
             case Option.OP_MUSEUM:
+                verifier.DeletePastEventsMuseum();
                 eventDtos = eventBl.findAllEventByTypeEvent(TypeEvent.MUSEUM.getTypeEvent());
                 showEventsInformation(eventDtos, idChat,
                         "https://ep00.epimg.net/elviajero/imagenes/2016/11/23/album/1479923555_950451_1479926380_album_normal.jpg");
