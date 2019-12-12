@@ -18,6 +18,7 @@ public class BoltonBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+        LOGGER.info("Chat id {}", update.getMessage().getChatId());
         LOGGER.info("Update Principal {}", update);
         if (update.hasMessage()) {
             Message message = update.getMessage();
