@@ -144,6 +144,8 @@ public class BotBl {
                 break;
 
             case Option.OP_MOVIE:
+                DateVerifier verifier = new DateVerifier(eveEventRepository);
+                verifier.DeletePastEventsMovie();
                 eventDtos = eventBl.findAllEventByTypeEvent(TypeEvent.MOVIE.getTypeEvent());
                 showEventsInformation(eventDtos, idChat,
                         "https://www.yucatan.com.mx/wp-content/uploads/2019/03/2491246.jpg-r_1920_1080-f_jpg-q_x-xxyxx.jpg?width=1200&enable=upscale");

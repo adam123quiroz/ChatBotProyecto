@@ -33,7 +33,7 @@ public class SendEmailBl {
         properties.put("mail.smtp.host", smtpHost);
         properties.put("mail.smtp.port", smtpPort);
 
-        String username1 = "tu token ";
+        String username1 = "";
         String password1 = "tu password";
 
         properties.setProperty("mail.smtp.user", username1);
