@@ -28,6 +28,7 @@ public class EveTicketEntity {
     }
 
     @Basic
+
     @Column(name = "number_ticket", nullable = true, length = 100)
     public String getNumberTicket() {
         return numberTicket;

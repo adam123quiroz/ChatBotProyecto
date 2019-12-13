@@ -23,6 +23,7 @@ public class EvePaymentMethodEntity {
     }
 
     @Basic
+
     @Column(name = "payment_method", nullable = true, length = 45)
     public String getPaymentMethod() {
         return paymentMethod;

@@ -233,7 +233,7 @@ public class BotBl {
             boltonBot.executeAsync(inv, new SentCallback<Message>() {
                 @Override
                 public void onResult(BotApiMethod<Message> botApiMethod, Message message) {
-                    LOGGER.info("JODER {} {}", message.getSuccessfulPayment());
+                    LOGGER.info("JODER {} ", message);
                 }
 
                 @Override
@@ -275,7 +275,7 @@ public class BotBl {
     public void processPayment(Update update, BoltonBot bot) {
         BotBl.boltonBot = bot;
         //TODO: implement logic payment
-        SequencePayment sequencePayment = new SequencePayment(evePaymentRepository, sendEmailBl);
+        SequencePayment sequencePayment = new SequencePayment(evePaymentRepository, userRepository, sendEmailBl);
         sequencePayment.setRunning(true);
         sequencePayment.setNumberSteps(2);
         sequencePayment.runSequence(update, bot);

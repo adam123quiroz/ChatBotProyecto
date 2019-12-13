@@ -9,7 +9,10 @@ import edu.com.chatbotsoftI.bl.SendEmailBl;
 import edu.com.chatbotsoftI.bot.BoltonBot;
 import edu.com.chatbotsoftI.bot.commands.Command;
 import edu.com.chatbotsoftI.dao.EvePaymentRepository;
+import edu.com.chatbotsoftI.dao.EvePersonRepository;
 import edu.com.chatbotsoftI.entity.EvePaymentEntity;
+import edu.com.chatbotsoftI.entity.EvePaymentMethodEntity;
+import edu.com.chatbotsoftI.entity.EvePersonEntity;
 import edu.com.chatbotsoftI.enums.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,11 +30,13 @@ public class SequencePayment extends Sequence {
     private static final Logger LOGGER = LoggerFactory.getLogger(SequencePayment.class);
     private String email;
     private EvePaymentRepository evePaymentRepository;
+    private EvePersonRepository evePersonRepository;
     private SendEmailBl sendEmailBl;
 
-    public SequencePayment(EvePaymentRepository evePaymentRepository, SendEmailBl sendEmailBl) {
+    public SequencePayment(EvePaymentRepository evePaymentRepository, EvePersonRepository evePersonRepository, SendEmailBl sendEmailBl) {
         super(true, 2, 0);
         this.evePaymentRepository = evePaymentRepository;
+        this.evePersonRepository = evePersonRepository;
         this.sendEmailBl = sendEmailBl;
     }
 
@@ -70,14 +75,23 @@ public class SequencePayment extends Sequence {
                                 }
                             }
                             LOGGER.info("payment {}", payment);
+                            EvePersonEntity userEntity = evePersonRepository.findByBotUserId(update.getMessage().getFrom().getId().toString());
                             EvePaymentEntity evePaymentEntity = new EvePaymentEntity();
                             java.util.Date date;
                             date = new Date();
                             evePaymentEntity.setDate(new java.sql.Date(date.getTime()));
                             evePaymentEntity.setStatus(Status.ACTIVE.getStatus());
                             evePaymentEntity.setTotal(new BigDecimal(payment.getAmount()));
-//                            evePaymentEntity.set
+                            evePaymentEntity.setTxDate(new java.sql.Date(date.getTime()));
+                            evePaymentEntity.setTxHost("Localhost");
+                            evePaymentEntity.setTxUser(userEntity.getName());
+                           // evePaymentEntity.setEveEventByIdEvent();
 
+                            evePaymentEntity.setEvePersonByIdPerson(userEntity);
+                            EvePaymentMethodEntity evePaymentMethodEntity = new EvePaymentMethodEntity();
+                            evePaymentMethodEntity.setPaymentMethod("Card");
+                            evePaymentEntity.setEvePaymentMethodByIdPaymentMethod(evePaymentMethodEntity);
+                            evePaymentRepository.save(evePaymentEntity);
                             sendEmailBl.sendMail("adam123quiroz@gmail.com", email, "Facturacion", "Hola");
 
 

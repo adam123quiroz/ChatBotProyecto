@@ -16,7 +16,7 @@ public class EvePaymentEntity {
     private Date txDate;
     private String txHost;
     private EvePaymentMethodEntity evePaymentMethodByIdPaymentMethod;
-    private EveUserEntity eveUserByIdUser;
+    private EvePersonEntity evePersonByIdPerson;
     private EveEventEntity eveEventByIdEvent;
     private EveTicketEntity eveTicketByIdTicket;
 
@@ -132,13 +132,13 @@ public class EvePaymentEntity {
     }
 
     @ManyToOne
-    @JoinColumn(name = "id_user", referencedColumnName = "id_user", nullable = false)
-    public EveUserEntity getEveUserByIdUser() {
-        return eveUserByIdUser;
+    @JoinColumn(name = "id_person", referencedColumnName = "id_person", nullable = false)
+    public EvePersonEntity getEvePersonByIdPerson() {
+        return evePersonByIdPerson;
     }
 
-    public void setEveUserByIdUser(EveUserEntity eveUserByIdUser) {
-        this.eveUserByIdUser = eveUserByIdUser;
+    public void setEvePersonByIdPerson(EvePersonEntity evePersonByIdPerson) {
+        this.evePersonByIdPerson = evePersonByIdPerson;
     }
 
     @ManyToOne
