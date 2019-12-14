@@ -25,6 +25,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.meta.updateshandlers.SentCallback;
 
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,6 +121,7 @@ public class BotBl {
             case Command.startCommand:
             case "hola":
             case "Hola":
+
                 kbOptionsBot = new KbOptionsBot(optionListI);
                 boltonBot.execute(kbOptionsBot.showMenu(String.format("" +
                                 "Hola %s, soy Bolton, para ayudarte necesito que entres en " +
@@ -203,9 +205,9 @@ public class BotBl {
 //                            startSequence(4, update, sequenceAddLeasePlace);
                     }
                 } else {
-                    SendMessage sendMessageGreeting = new SendMessage().setChatId(update.getMessage().getChatId());
-                    sendMessageGreeting.setText("Tienes que iniciar sesion para poder entrar al modo Administrativo");
-                    boltonBot.execute(sendMessageGreeting);
+                        SendMessage sendMessageGreeting = new SendMessage().setChatId(update.getMessage().getChatId());
+                        sendMessageGreeting.setText("Tienes que iniciar sesion para poder entrar al modo Administrativo");
+                        boltonBot.execute(sendMessageGreeting);
                 }
         }
 

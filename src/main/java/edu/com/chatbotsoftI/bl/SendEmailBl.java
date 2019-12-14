@@ -1,5 +1,6 @@
 package edu.com.chatbotsoftI.bl;
 
+import edu.com.chatbotsoftI.auxiliar.InvoiceMaker;
 import edu.com.chatbotsoftI.invoice.PdfInvoiceBasic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -16,12 +17,13 @@ import java.util.Properties;
 public class SendEmailBl {
 
     private JavaMailSender javaMailSender;
-    private PdfInvoiceBasic pdfInvoiceBasic;
+
+    private InvoiceMaker invoiceMaker;
 
     @Autowired
     public SendEmailBl(JavaMailSender javaMailSender) {
         this.javaMailSender = javaMailSender;
-        pdfInvoiceBasic = new PdfInvoiceBasic();
+        invoiceMaker = new InvoiceMaker();
     }
 
     public void sendMail(String from, String to, String  subject, String body) {
@@ -61,7 +63,7 @@ public class SendEmailBl {
 
             //now write the PDF content to the output stream
             outputStream = new ByteArrayOutputStream();
-            pdfInvoiceBasic.createPdf(outputStream);
+            invoiceMaker.createPdf(outputStream);
             byte[] bytes = outputStream.toByteArray();
 
             //construct the pdf body part
