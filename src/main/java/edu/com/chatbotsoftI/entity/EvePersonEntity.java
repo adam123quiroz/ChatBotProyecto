@@ -11,6 +11,7 @@ public class EvePersonEntity {
     private String name;
     private String lastName;
     private String botUserId;
+    private List<EvePaymentEntity> evePaymentsByIdPerson;
     private List<EvePersonChatEntity> evePersonChatsByIdPerson;
     private List<EveUserEntity> eveUsersByIdPerson;
 
@@ -26,6 +27,7 @@ public class EvePersonEntity {
     }
 
     @Basic
+
     @Column(name = "ci", nullable = true, length = 45)
     public String getCi() {
         return ci;
@@ -89,6 +91,15 @@ public class EvePersonEntity {
         result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
         result = 31 * result + (botUserId != null ? botUserId.hashCode() : 0);
         return result;
+    }
+
+    @OneToMany(mappedBy = "evePersonByIdPerson")
+    public List<EvePaymentEntity> getEvePaymentsByIdPerson() {
+        return evePaymentsByIdPerson;
+    }
+
+    public void setEvePaymentsByIdPerson(List<EvePaymentEntity> evePaymentsByIdPerson) {
+        this.evePaymentsByIdPerson = evePaymentsByIdPerson;
     }
 
     @OneToMany(mappedBy = "evePersonByIdPerson")

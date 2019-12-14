@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Properties;
 
 @Service
-public class MailServiceBl {
+public class  MailServiceBl {
 
     // private EveUserRepository userRepository;
 

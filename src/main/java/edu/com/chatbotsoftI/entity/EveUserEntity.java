@@ -20,7 +20,6 @@ public class EveUserEntity {
     private List<EveEventEntity> eveEventsByIdUser;
     private List<EveLeasePlaceEntity> eveLeasePlacesByIdUser;
     private List<EveNotificationUserEntity> eveNotificationUsersByIdUser;
-    private List<EvePaymentEntity> evePaymentsByIdUser;
     private EvePersonEntity evePersonByIdPerson;
 
     @Id
@@ -35,6 +34,7 @@ public class EveUserEntity {
     }
 
     @Basic
+
     @Column(name = "birthday", nullable = true)
     public Date getBirthday() {
         return birthday;
@@ -182,15 +182,6 @@ public class EveUserEntity {
 
     public void setEveNotificationUsersByIdUser(List<EveNotificationUserEntity> eveNotificationUsersByIdUser) {
         this.eveNotificationUsersByIdUser = eveNotificationUsersByIdUser;
-    }
-
-    @OneToMany(mappedBy = "eveUserByIdUser")
-    public List<EvePaymentEntity> getEvePaymentsByIdUser() {
-        return evePaymentsByIdUser;
-    }
-
-    public void setEvePaymentsByIdUser(List<EvePaymentEntity> evePaymentsByIdUser) {
-        this.evePaymentsByIdUser = evePaymentsByIdUser;
     }
 
     @ManyToOne

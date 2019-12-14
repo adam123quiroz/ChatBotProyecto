@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+        version="2.0">
+
+    <entity class="edu.com.chatbotsoftI.entity.EveAddressEntity">
+        <table name="eve_address" schema="dbbot" catalog=""/>
+        <attributes>
+            <id name="idAddress">
+                <column name="id_address" precision="11"/>
+            </id>
+            <basic name="address">
+                <column name="address" nullable="false" length="45"/>
+            </basic>
+            <many-to-one name="eveCityByIdCity" optional="true"
+                         target-entity="edu.com.chatbotsoftI.entity.EveCityEntity">
+                <join-column name="id_city" referenced-column-name="id_city"/>
+            </many-to-one>
+            <one-to-many name="eveEventsByIdAddress" mapped-by="eveAddressByIdAddress"
+                         target-entity="edu.com.chatbotsoftI.entity.EveEventEntity"/>
+            <one-to-many name="eveLeasePlacesByIdAddress" mapped-by="eveAddressByIdAddress"
+                         target-entity="edu.com.chatbotsoftI.entity.EveLeasePlaceEntity"/>
+        </attributes>
+    </entity>
+    <entity class="edu.com.chatbotsoftI.entity.EveBuyTicketEntity">
+        <table name="eve_buy_ticket" schema="dbbot" catalog=""/>
+        <attributes>
+            <id name="idBuy">
+                <column name="id_buy" precision="11"/>
+            </id>
+            <basic name="quantity">
+                <column name="quantity" nullable="false" precision="11"/>
+            </basic>
+            <basic name="total">
+                <column name="total" nullable="false" precision="5"/>
+            </basic>
+            <basic name="txUser">
+                <column name="tx_user" nullable="false" length="45"/>
+            </basic>
+            <basic name="txHost">
+                <column name="tx_host" nullable="false" length="100"/>
+            </basic>
+            <basic name="txDate">
+                <column name="tx_date" nullable="false" precision="-1"/>
+            </basic>
+            <many-to-one name="eveUserByIdUser" optional="true"
+                         target-entity="edu.com.chatbotsoftI.entity.EveUserEntity">
+                <join-column name="id_user" referenced-column-name="id_user"/>
+            </many-to-one>
+            <many-to-one name="eveEventByIdEvent" optional="true"
+                         target-entity="edu.com.chatbotsoftI.entity.EveEventEntity">
+                <join-column name="id_event" referenced-column-name="id_event"/>
+            </many-to-one>
+            <many-to-one name="eveTicketByIdTicket" optional="true"
+                         target-entity="edu.com.chatbotsoftI.entity.EveTicketEntity">
+                <join-column name="id_ticket" referenced-column-name="id_ticket"/>
+            </many-to-one>
+            <many-to-one name="evePaymentMethodByIdPaymentMethod" optional="true"
+                         target-entity="edu.com.chatbotsoftI.entity.EvePaymentMethodEntity">
+                <join-column name="id_payment_method" referenced-column-name="id_payment_method"/>
+            </many-to-one>
+        </attributes>
+    </entity>
+    <entity class="edu.com.chatbotsoftI.entity.EveCategoryEntity">
+        <table name="eve_category" schema="dbbot" catalog=""/>
+        <attributes>
+            <id name="idCategory">
+                <column name="id_category" precision="11"/>
+            </id>
+            <basic name="category">
+                <column name="category" nullable="false" length="45"/>
+            </basic>
+            <one-to-many name="eveEventsByIdCategory" mapped-by="eveCategoryByIdCategory"
+                         target-entity="edu.com.chatbotsoftI.entity.EveEventEntity"/>
+        </attributes>
+    </entity>
+    <entity class="edu.com.chatbotsoftI.entity.EveCityEntity">
+        <table name="eve_city" schema="dbbot" catalog=""/>
+        <attributes>
+            <id name="idCity">
+                <column name="id_city" precision="11"/>
+            </id>
+            <basic name="city">
+                <column name="city" nullable="false" length="45"/>
+            </basic>
+            <many-to-one name="eveStateByIdState" optional="true"
+                         target-entity="edu.com.chatbotsoftI.entity.EveStateEntity">
+                <join-column name="id_state" referenced-column-name="id_state"/>
+            </many-to-one>
+            <one-to-many name="eveAddressesByIdCity" mapped-by="eveCityByIdCity"
+                         target-entity="edu.com.chatbotsoftI.entity.EveAddressEntity"/>
+        </attributes>
+    </entity>
+    <entity class="edu.com.chatbotsoftI.entity.EveEventEntity">
+        <table name="eve_event" schema="dbbot" catalog=""/>
+        <attributes>
+            <id name="idEvent">
+                <column name="id_event" precision="11"/>
+            </id>
+            <basic name="nameEvent">
+                <column name="name_event" nullable="false" length="100"/>
+            </basic>
+            <basic name="price">
+                <column name="price" nullable="false" precision="5"/>
+            </basic>
+            <basic name="date">
+                <column name="date" nullable="false" precision="-1"/>
+            </basic>
+            <basic name="startTime">
+                <column name="start_time" nullable="false" precision="-1"/>
+            </basic>
+            <basic name="status">
+                <column name="status" nullable="false" precision="11"/>
+            </basic>
+            <basic name="txUser">
+                <column name="tx_user" nullable="false" length="45"/>
+            </basic>
+            <basic name="txHost">
+                <column name="tx_host" nullable="false" length="100"/>
+            </basic>
+            <basic name="txDate">
+                <column name="tx_date" nullable="false" precision="-1"/>
+            </basic>
+            <many-to-one name="eveUserByIdUser" optional="true"
+                         target-entity="edu.com.chatbotsoftI.entity.EveUserEntity">
+                <join-column name="id_user" nullable="false" referenced-column-name="id_user"/>
+            </many-to-one>
+            <many-to-one name="eveTypeEventByIdTypeEvent" optional="true"
+                         target-entity="edu.com.chatbotsoftI.entity.EveTypeEventEntity">
+                <join-column name="id_type_event" referenced-column-name="id_type_event"/>
+            </many-to-one>
+            <many-to-one name="eveCategoryByIdCategory" optional="true"
+                         target-entity="edu.com.chatbotsoftI.entity.EveCategoryEntity">
+                <join-column name="id_category" referenced-column-name="id_category"/>
+            </many-to-one>
+            <many-to-one name="eveAddressByIdAddress" optional="true"
+                         target-entity="edu.com.chatbotsoftI.entity.EveAddressEntity">
+                <join-column name="id_address" nullable="false" referenced-column-name="id_address"/>
+            </many-to-one>
+            <one-to-many name="eveBuyTicketsByIdEvent" mapped-by="eveEventByIdEvent"
+                         target-entity="edu.com.chatbotsoftI.entity.EveBuyTicketEntity"/>
+            <one-to-many name="eveEventFilesByIdEvent" mapped-by="eveEventByIdEvent"
+                         target-entity="edu.com.chatbotsoftI.entity.EveEventFileEntity"/>
+            <one-to-many name="evePaymentsByIdEvent" mapped-by="eveEventByIdEvent"
+                         target-entity="edu.com.chatbotsoftI.entity.EvePaymentEntity"/>
+        </attributes>
+    </entity>
+    <entity class="edu.com.chatbotsoftI.entity.EveEventFileEntity">
+        <table name="eve_event_file" schema="dbbot" catalog=""/>
+        <attributes>
+            <id name="idEveEventFile">
+                <column name="id_eve_event_file" precision="11"/>
+            </id>
+            <basic name="txUser">
+                <column name="tx_user" nullable="false" length="45"/>
+            </basic>
+            <basic name="txHost">
+                <column name="tx_host" nullable="false" length="100"/>
+            </basic>
+            <basic name="txDate">
+                <column name="tx_date" nullable="false" precision="-1"/>
+            </basic>
+            <many-to-one name="eveEventByIdEvent" optional="true"
+                         target-entity="edu.com.chatbotsoftI.entity.EveEventEntity">
+                <join-column name="id_event" referenced-column-name="id_event"/>
+            </many-to-one>
+            <many-to-one name="eveFileByIdEveFile" optional="true"
+                         target-entity="edu.com.chatbotsoftI.entity.EveFileEntity">
+                <join-column name="id_eve_file" referenced-column-name="id_file"/>
+            </many-to-one>
+        </attributes>
+    </entity>
+    <entity class="edu.com.chatbotsoftI.entity.EveFileEntity">
+        <table name="eve_file" schema="dbbot" catalog=""/>
+        <attributes>
+            <id name="idFile">
+                <column name="id_file" precision="11"/>
+            </id>
+            <basic name="fileName">
+                <column name="file_name" nullable="false" length="250"/>
+            </basic>
+            <basic name="mimeType">
+                <column name="mime_type" nullable="false" length="200"/>
+            </basic>
+            <basic name="path">
+                <column name="path" nullable="false" length="100"/>
+            </basic>
+            <basic name="storeType">
+                <column name="store_type" nullable="false" length="45"/>
+            </basic>
+            <basic name="txUser">
+                <column name="tx_user" nullable="false" length="45"/>
+            </basic>
+            <basic name="txHost">
+                <column name="tx_host" nullable="false" length="100"/>
+            </basic>
+            <basic name="txDate">
+                <column name="tx_date" nullable="false" precision="-1"/>
+            </basic>
+            <one-to-many name="eveEventFilesByIdFile" mapped-by="eveFileByIdEveFile"
+                         target-entity="edu.com.chatbotsoftI.entity.EveEventFileEntity"/>
+        </attributes>
+    </entity>
+    <entity class="edu.com.chatbotsoftI.entity.EveLeasePlaceEntity">
+        <table name="eve_lease_place" schema="dbbot" catalog=""/>
+        <attributes>
+            <id name="idLeasePlace">
+                <column name="id_lease_place" precision="11"/>
+            </id>
+            <basic name="namePlace">
+                <column name="name_place" nullable="false" length="45"/>
+            </basic>
+            <basic name="date">
+                <column name="date" nullable="false" precision="-1"/>
+            </basic>
+            <basic name="price">
+                <column name="price" nullable="false" precision="5"/>
+            </basic>
+            <basic name="status">
+                <column name="status" nullable="false" precision="11"/>
+            </basic>
+            <basic name="txUser">
+                <column name="tx_user" nullable="false" length="45"/>
+            </basic>
+            <basic name="txHost">
+                <column name="tx_host" nullable="false" length="100"/>
+            </basic>
+            <basic name="txDate">
+                <column name="tx_date" nullable="false" precision="-1"/>
+            </basic>
+            <many-to-one name="eveUserByIdUser" optional="true"
+                         target-entity="edu.com.chatbotsoftI.entity.EveUserEntity">
+                <join-column name="id_user" referenced-column-name="id_user"/>
+            </many-to-one>
+            <many-to-one name="eveAddressByIdAddress" optional="true"
+                         target-entity="edu.com.chatbotsoftI.entity.EveAddressEntity">
+                <join-column name="id_address" referenced-column-name="id_address"/>
+            </many-to-one>
+            <one-to-many name="eveNotificationsByIdLeasePlace" mapped-by="eveLeasePlaceByIdLeasePlace"
+                         target-entity="edu.com.chatbotsoftI.entity.EveNotificationEntity"/>
+        </attributes>
+    </entity>
+    <entity class="edu.com.chatbotsoftI.entity.EveNotificationEntity">
+        <table name="eve_notification" schema="dbbot" catalog=""/>
+        <attributes>
+            <id name="idNotification">
+                <column name="id_notification" precision="11"/>
+            </id>
+            <basic name="msNotification">
+                <column name="ms_notification" nullable="false" length="45"/>
+            </basic>
+            <many-to-one name="eveLeasePlaceByIdLeasePlace" optional="true"
+                         target-entity="edu.com.chatbotsoftI.entity.EveLeasePlaceEntity">
+                <join-column name="id_lease_place" referenced-column-name="id_lease_place"/>
+            </many-to-one>
+            <one-to-many name="eveNotificationUsersByIdNotification" mapped-by="eveNotificationByIdNotification"
+                         target-entity="edu.com.chatbotsoftI.entity.EveNotificationUserEntity"/>
+        </attributes>
+    </entity>
+    <entity class="edu.com.chatbotsoftI.entity.EveNotificationUserEntity">
+        <table name="eve_notification_user" schema="dbbot" catalog=""/>
+        <attributes>
+            <id name="idNotificationUser">
+                <column name="id_notification_user" precision="11"/>
+            </id>
+            <many-to-one name="eveNotificationByIdNotification" optional="true"
+                         target-entity="edu.com.chatbotsoftI.entity.EveNotificationEntity">
+                <join-column name="id_notification" referenced-column-name="id_notification"/>
+            </many-to-one>
+            <many-to-one name="eveUserByIdUser" optional="true"
+                         target-entity="edu.com.chatbotsoftI.entity.EveUserEntity">
+                <join-column name="id_user" referenced-column-name="id_user"/>
+            </many-to-one>
+        </attributes>
+    </entity>
+    <entity class="edu.com.chatbotsoftI.entity.EvePaymentEntity">
+        <table name="eve_payment" schema="dbbot" catalog=""/>
+        <attributes>
+            <id name="idPayment">
+                <column name="id_payment" precision="11"/>
+            </id>
+            <basic name="total">
+                <column name="total" nullable="false" precision="5"/>
+            </basic>
+            <basic name="date">
+                <column name="date" nullable="false" precision="-1"/>
+            </basic>
+            <basic name="status">
+                <column name="status" precision="11"/>
+            </basic>
+            <basic name="txUser">
+                <column name="tx_user" nullable="false" length="45"/>
+            </basic>
+            <basic name="txDate">
+                <column name="tx_date" nullable="false" precision="-1"/>
+            </basic>
+            <basic name="txHost">
+                <column name="tx_host" length="45"/>
+            </basic>
+            <many-to-one name="evePaymentMethodByIdPaymentMethod" optional="true"
+                         target-entity="edu.com.chatbotsoftI.entity.EvePaymentMethodEntity">
+                <join-column name="id_payment_method" referenced-column-name="id_payment_method"/>
+            </many-to-one>
+            <many-to-one name="evePersonByIdPerson" optional="true"
+                         target-entity="edu.com.chatbotsoftI.entity.EvePersonEntity">
+                <join-column name="id_person" referenced-column-name="id_person"/>
+            </many-to-one>
+            <many-to-one name="eveEventByIdEvent" optional="true"
+                         target-entity="edu.com.chatbotsoftI.entity.EveEventEntity">
+                <join-column name="id_event" nullable="false" referenced-column-name="id_event"/>
+            </many-to-one>
+            <many-to-one name="eveTicketByIdTicket" optional="true"
+                         target-entity="edu.com.chatbotsoftI.entity.EveTicketEntity">
+                <join-column name="id_ticket" nullable="false" referenced-column-name="id_ticket"/>
+            </many-to-one>
+        </attributes>
+    </entity>
+    <entity class="edu.com.chatbotsoftI.entity.EvePaymentMethodEntity">
+        <table name="eve_payment_method" schema="dbbot" catalog=""/>
+        <attributes>
+            <id name="idPaymentMethod">
+                <column name="id_payment_method" precision="11"/>
+            </id>
+            <basic name="paymentMethod">
+                <column name="payment_method" nullable="false" length="45"/>
+            </basic>
+            <one-to-many name="eveBuyTicketsByIdPaymentMethod" mapped-by="evePaymentMethodByIdPaymentMethod"
+                         target-entity="edu.com.chatbotsoftI.entity.EveBuyTicketEntity"/>
+            <one-to-many name="evePaymentsByIdPaymentMethod" mapped-by="evePaymentMethodByIdPaymentMethod"
+                         target-entity="edu.com.chatbotsoftI.entity.EvePaymentEntity"/>
+        </attributes>
+    </entity>
+    <entity class="edu.com.chatbotsoftI.entity.EvePersonEntity">
+        <table name="eve_person" schema="dbbot" catalog=""/>
+        <attributes>
+            <id name="idPerson">
+                <column name="id_person" precision="11"/>
+            </id>
+            <basic name="ci">
+                <column name="ci" nullable="false" length="45"/>
+            </basic>
+            <basic name="name">
+                <column name="name" nullable="false" length="45"/>
+            </basic>
+            <basic name="lastName">
+                <column name="last_name" nullable="false" length="45"/>
+            </basic>
+            <basic name="botUserId">
+                <column name="bot_user_id" nullable="false" length="100"/>
+            </basic>
+            <one-to-many name="evePaymentsByIdPerson" mapped-by="evePersonByIdPerson"
+                         target-entity="edu.com.chatbotsoftI.entity.EvePaymentEntity"/>
+            <one-to-many name="evePersonChatsByIdPerson" mapped-by="evePersonByIdPerson"
+                         target-entity="edu.com.chatbotsoftI.entity.EvePersonChatEntity"/>
+            <one-to-many name="eveUsersByIdPerson" mapped-by="evePersonByIdPerson"
+                         target-entity="edu.com.chatbotsoftI.entity.EveUserEntity"/>
+        </attributes>
+    </entity>
+    <entity class="edu.com.chatbotsoftI.entity.EvePersonChatEntity">
+        <table name="eve_person_chat" schema="dbbot" catalog=""/>
+        <attributes>
+            <id name="idEveUserChat">
+                <column name="id_eve_user_chat" precision="11"/>
+            </id>
+            <basic name="userBotChatId">
+                <column name="user_bot_chat_id" nullable="false" length="45"/>
+            </basic>
+            <basic name="txUser">
+                <column name="tx_user" nullable="false" length="45"/>
+            </basic>
+            <basic name="txHost">
+                <column name="tx_host" nullable="false" length="100"/>
+            </basic>
+            <basic name="txDate">
+                <column name="tx_date" nullable="false" precision="-1"/>
+            </basic>
+            <many-to-one name="evePersonByIdPerson" optional="true"
+                         target-entity="edu.com.chatbotsoftI.entity.EvePersonEntity">
+                <join-column name="id_person" referenced-column-name="id_person"/>
+            </many-to-one>
+        </attributes>
+    </entity>
+    <entity class="edu.com.chatbotsoftI.entity.EveStateEntity">
+        <table name="eve_state" schema="dbbot" catalog=""/>
+        <attributes>
+            <id name="idState">
+                <column name="id_state" precision="11"/>
+            </id>
+            <basic name="state">
+                <column name="state" nullable="false" length="45"/>
+            </basic>
+            <one-to-many name="eveCitiesByIdState" mapped-by="eveStateByIdState"
+                         target-entity="edu.com.chatbotsoftI.entity.EveCityEntity"/>
+        </attributes>
+    </entity>
+    <entity class="edu.com.chatbotsoftI.entity.EveTicketEntity">
+        <table name="eve_ticket" schema="dbbot" catalog=""/>
+        <attributes>
+            <id name="idTicket">
+                <column name="id_ticket" precision="11"/>
+            </id>
+            <basic name="numberTicket">
+                <column name="number_ticket" nullable="false" length="100"/>
+            </basic>
+            <basic name="txUser">
+                <column name="tx_user" nullable="false" length="45"/>
+            </basic>
+            <basic name="txHost">
+                <column name="tx_host" nullable="false" length="100"/>
+            </basic>
+            <basic name="txDate">
+                <column name="tx_date" nullable="false" precision="-1"/>
+            </basic>
+            <basic name="status">
+                <column name="status" precision="11"/>
+            </basic>
+            <one-to-many name="eveBuyTicketsByIdTicket" mapped-by="eveTicketByIdTicket"
+                         target-entity="edu.com.chatbotsoftI.entity.EveBuyTicketEntity"/>
+            <one-to-many name="evePaymentsByIdTicket" mapped-by="eveTicketByIdTicket"
+                         target-entity="edu.com.chatbotsoftI.entity.EvePaymentEntity"/>
+        </attributes>
+    </entity>
+    <entity class="edu.com.chatbotsoftI.entity.EveTypeEventEntity">
+        <table name="eve_type_event" schema="dbbot" catalog=""/>
+        <attributes>
+            <id name="idTypeEvent">
+                <column name="id_type_event" precision="11"/>
+            </id>
+            <basic name="typeEvent">
+                <column name="type_event" nullable="false" length="45"/>
+            </basic>
+            <one-to-many name="eveEventsByIdTypeEvent" mapped-by="eveTypeEventByIdTypeEvent"
+                         target-entity="edu.com.chatbotsoftI.entity.EveEventEntity"/>
+        </attributes>
+    </entity>
+    <entity class="edu.com.chatbotsoftI.entity.EveUserEntity">
+        <table name="eve_user" schema="dbbot" catalog=""/>
+        <attributes>
+            <id name="idUser">
+                <column name="id_user" precision="11"/>
+            </id>
+            <basic name="birthday">
+                <column name="birthday" nullable="false" precision="-1"/>
+            </basic>
+            <basic name="email">
+                <column name="email" nullable="false" length="45"/>
+            </basic>
+            <basic name="nameUser">
+                <column name="name_user" length="45"/>
+            </basic>
+            <basic name="password">
+                <column name="password" length="45"/>
+            </basic>
+            <basic name="status">
+                <column name="status" nullable="false" precision="11"/>
+            </basic>
+            <basic name="txUser">
+                <column name="tx_user" nullable="false" length="45"/>
+            </basic>
+            <basic name="txHost">
+                <column name="tx_host" nullable="false" length="45"/>
+            </basic>
+            <basic name="txDate">
+                <column name="tx_date" nullable="false" precision="-1"/>
+            </basic>
+            <many-to-one name="evePersonByIdPerson" optional="true"
+                         target-entity="edu.com.chatbotsoftI.entity.EvePersonEntity">
+                <join-column name="id_person" referenced-column-name="id_person"/>
+            </many-to-one>
+            <one-to-many name="eveBuyTicketsByIdUser" mapped-by="eveUserByIdUser"
+                         target-entity="edu.com.chatbotsoftI.entity.EveBuyTicketEntity"/>
+            <one-to-many name="eveEventsByIdUser" mapped-by="eveUserByIdUser"
+                         target-entity="edu.com.chatbotsoftI.entity.EveEventEntity"/>
+            <one-to-many name="eveLeasePlacesByIdUser" mapped-by="eveUserByIdUser"
+                         target-entity="edu.com.chatbotsoftI.entity.EveLeasePlaceEntity"/>
+            <one-to-many name="eveNotificationUsersByIdUser" mapped-by="eveUserByIdUser"
+                         target-entity="edu.com.chatbotsoftI.entity.EveNotificationUserEntity"/>
+        </attributes>
+    </entity>
+</entity-mappings>

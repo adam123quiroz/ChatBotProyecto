@@ -22,6 +22,7 @@ public class EveStateEntity {
     }
 
     @Basic
+
     @Column(name = "state", nullable = true, length = 45)
     public String getState() {
         return state;
