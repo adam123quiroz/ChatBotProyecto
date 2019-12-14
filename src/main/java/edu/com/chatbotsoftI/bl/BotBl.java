@@ -96,7 +96,6 @@ public class BotBl {
     }
 
     private EvePersonEntity initUser(User user) {
-        boolean result = false;
         EvePersonEntity userEntity = userRepository.findByBotUserId(user.getId().toString());
         if (userEntity == null) {
             EvePersonEntity evePerson = new EvePersonEntity();

@@ -1,5 +1,6 @@
 package edu.com.chatbotsoftI.bl;
 
+import com.sun.mail.smtp.SMTPTransport;
 import edu.com.chatbotsoftI.invoice.PdfInvoiceBasic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -14,44 +15,32 @@ import java.util.Properties;
 
 @Service
 public class SendEmailBl {
-
-    private JavaMailSender javaMailSender;
     private PdfInvoiceBasic pdfInvoiceBasic;
 
     @Autowired
-    public SendEmailBl(JavaMailSender javaMailSender) {
-        this.javaMailSender = javaMailSender;
+    public SendEmailBl() {
         pdfInvoiceBasic = new PdfInvoiceBasic();
     }
 
     public void sendMail(String from, String to, String  subject, String body) {
 
-        String smtpHost = "smtp.mailtrap.io"; //replace this with a valid host
-        int smtpPort = 2525; //replace this with a valid port
+        String mailHost = "smtp.mailgun.org";
+        String username1 = "postmaster@sandboxd3b9f22ed60c4a5ba063c9837031c9e4.mailgun.org";
+        String password1 = "76567937db4e18afd6e41b4464a5be3f-5645b1f9-a6404435";
+
+        String smtpHost = mailHost; //replace this with a valid host
+        int smtpPort = 587; //replace this with a valid port
 
         Properties properties = new Properties();
         properties.put("mail.smtp.host", smtpHost);
         properties.put("mail.smtp.port", smtpPort);
 
-        String username1 = "";
-        String password1 = "tu password";
+
 
         properties.setProperty("mail.smtp.user", username1);
         properties.setProperty("mail.smtp.password", password1);
         properties.setProperty("mail.smtp.auth", "true");
-        Session session = Session.getDefaultInstance(properties, new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                String username = username1;
-                String password = password1;
-                if ((username != null) && (username.length() > 0) && (password != null)
-                        && (password.length   () > 0)) {
-                    return new PasswordAuthentication(username, password);
-                }
-
-                return null;
-            }
-        });
+        Session session = Session.getInstance(properties,null);
 
         ByteArrayOutputStream outputStream = null;
         try {
@@ -80,14 +69,17 @@ public class SendEmailBl {
             InternetAddress iaRecipient = new InternetAddress(from);
 
             //construct the mime message
-            MimeMessage mimeMessage = new MimeMessage(session);
-            mimeMessage.setSender(iaSender);
-            mimeMessage.setSubject(subject);
-            mimeMessage.setRecipient(Message.RecipientType.TO, iaRecipient);
-            mimeMessage.setContent(mimeMultipart);
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("adam123quiroz@gmail.com"));
+            message.setSubject(subject);
+            message.setRecipient(Message.RecipientType.TO, iaRecipient);
+            message.setContent(mimeMultipart);
 
+            SMTPTransport t = (SMTPTransport) session.getTransport("smtps");
+            t.connect(smtpHost, username1, password1);
+//            t.sendMessage();
             //send off the email
-            Transport.send(mimeMessage);
+            Transport.send(message);
 
         } catch (AddressException e) {
             e.printStackTrace();

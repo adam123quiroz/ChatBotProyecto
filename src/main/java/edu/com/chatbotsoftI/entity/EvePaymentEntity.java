@@ -47,6 +47,10 @@ public class EvePaymentEntity {
         return date;
     }
 
+    public void setDate(Timestamp date) {
+        this.date = date;
+    }
+
     public void setDate(Date date) {
         this.date = date;
     }
