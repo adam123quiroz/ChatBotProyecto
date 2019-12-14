@@ -115,6 +115,7 @@ public class BotBl {
         List<EventDto> eventDtos;
         KbOptionsBot kbOptionsBot;
         DateVerifier verifier = new DateVerifier(eveEventRepository);
+
         switch(message.getText()) {
             case Command.startCommand:
             case "hola":
@@ -124,6 +125,7 @@ public class BotBl {
                                 "Hola %s, soy Bolton, para ayudarte necesito que entres en " +
                                 "sesión o te registres:", message.getChat().getFirstName() ),
                         update));
+                LOGGER.info("Texto del la lista : {}", message.getText() );
                 break;
 
             case Option.OP_CONTINUE:
@@ -131,6 +133,9 @@ public class BotBl {
                 boltonBot.execute(kbOptionsBot.showMenu(String.format("Bienvenido %s, " +
                                 "dime, ¿que te gustaría hacer hoy?", message.getChat().getFirstName()),
                         update));
+                LOGGER.info("Texto del la lista : {}", message.getText() );
+//                QrCreator qrCreator = new QrCreator();
+//                qrCreator.SaveQr(message.getText(),"png",300);
                 break;
 
             case Option.OP_LOG_IN_ADM:
@@ -144,11 +149,12 @@ public class BotBl {
                 break;
 
             case Option.OP_MOVIE:
-
+                LOGGER.info("Texto del la lista : {}", message.getText() );
                 verifier.DeletePastEventsMovie();
                 eventDtos = eventBl.findAllEventByTypeEvent(TypeEvent.MOVIE.getTypeEvent());
                 showEventsInformation(eventDtos, idChat,
                         "https://www.yucatan.com.mx/wp-content/uploads/2019/03/2491246.jpg-r_1920_1080-f_jpg-q_x-xxyxx.jpg?width=1200&enable=upscale");
+
                 break;
             case Option.OP_MUSIC:
                 verifier.DeletePastEventsMusic();
@@ -163,6 +169,9 @@ public class BotBl {
                 showEventsInformation(eventDtos, idChat,
                         "https://ep00.epimg.net/elviajero/imagenes/2016/11/23/album/1479923555_950451_1479926380_album_normal.jpg");
                 break;
+
+
+
 //            case Option.OP_PLACE:
 //                leaseplaceDtos = leaseplaceBl.findAllLeaseplaceDto();
 //                showLeasePlacesInformation(leaseplaceDtos,idChat);
@@ -204,6 +213,26 @@ public class BotBl {
 
 
     }
+//    private void verifiermenu(Message message){
+//        String verifier = message.getText();
+//        if(verifier.equals(Option.OP_MOVIE) || verifier.equals(Option.OP_MUSIC) || verifier.equals(Option.OP_MUSEUM) ||
+//                verifier.equals(Option.OP_ADD_EVENT) || verifier.equals(Option.OP_CONTINUE) || verifier.equals(Option.OP_DELETE_EVENT) ||
+//                verifier.equals(Option.OP_LOG_IN_ADM) || verifier.equals(Option.OP_MODIFY_EVENT)){
+//            LOGGER.info("eventos {}", message);
+//        }
+//        else{
+//
+//        }
+//    }
+//    private void verifierlogin(Message message, Update update){
+//        String verifier = message.getText();
+//        if(  verifier.equals(Option.OP_CONTINUE) || verifier.equals(Option.OP_LOG_IN_ADM) ){
+//            LOGGER.info("eventos {}", message);
+//        }
+//        else{
+//            message.
+//        }
+//    }
 
     private void showEventsInformation(List<EventDto> eventDtos, int idChat, String url) throws TelegramApiException {
         LOGGER.info("eventos {}", eventDtos);

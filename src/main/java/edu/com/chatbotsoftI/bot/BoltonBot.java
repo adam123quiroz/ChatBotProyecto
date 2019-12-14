@@ -41,12 +41,24 @@ public class BoltonBot extends TelegramLongPollingBot {
         }
     }
     @Override
+    //Bolton_EventBot
     public String getBotUsername() {
         return "Bolton_EventBot";
     }
-
+    //
     @Override
     public String getBotToken() {
         return "751201519:AAGpBvLDr_56bftx-rzDG9iBr7d2ddbRPZs"; //Token del bot
     }
+
+//    @Override
+//    //Bolton_EventBot
+//    public String getBotUsername() {
+//        return "lafayetbot";
+//    }
+//    //
+//    @Override
+//    public String getBotToken() {
+//        return "1034641548:AAGSRL6vGBfRI5SIkgz9y-hTNlrS0Hb5I5E";
+//    }
 }
