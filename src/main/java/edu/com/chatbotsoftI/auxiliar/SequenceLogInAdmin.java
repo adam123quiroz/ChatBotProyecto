@@ -18,11 +18,15 @@ import java.util.List;
 
 public class SequenceLogInAdmin extends Sequence {
 
+
     private static List<String> optionEdit = new ArrayList<>(List.of(
             Option.OP_ADD_EVENT, Option.OP_MODIFY_EVENT, Option.OP_DELETE_EVENT, Option.OP_LEASEPLACE));
 
+
+
     private static final String REQUEST_USERNAME = "A continuación coloca tu nombre de usuario";
     private static final String REQUEST_PASSWORD = "Ahora Ingresa tu password";
+    private static final String BACK = "Ahora debes ingresar hola para desplegar nuevamente las opciones de inicio de sesion";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SequenceLogInAdmin.class);
 
@@ -48,11 +52,24 @@ public class SequenceLogInAdmin extends Sequence {
 
                 case 1: // graba primera pregunta
                     String username = message.getText().trim();
-                    getUser().setNameUser(username);
+                    if(username.equals("volver" ) || username.equals("Volver")){
 
-                    //siguiente pregunta
-                    setSendMessageRequest(sendMessage(message, REQUEST_PASSWORD));
-                    bot.execute(getSendMessageRequest());
+                        setSendMessageRequest(sendMessage(message, BACK));
+                        bot.execute(getSendMessageRequest());
+                        setStepNow(10);
+                        LOGGER.info("Llego hasta aqui {}", getNumberSteps());
+                        setRunning(false);
+
+
+                    }
+                    else{
+                        getUser().setNameUser(username);
+
+                        //siguiente pregunta
+                        setSendMessageRequest(sendMessage(message, REQUEST_PASSWORD));
+                        bot.execute(getSendMessageRequest());
+                    }
+
                     break;
             }
             setStepNow(getStepNow() + 1);
@@ -80,6 +97,7 @@ public class SequenceLogInAdmin extends Sequence {
             } else {
                 s = "Nombre de Usuario o Password, Incorrectos";
                 s = s.concat("\nIngresa de nuevo tu usuario");
+                s = s.concat("\nSi desea volver al menu escriba volver");
                 bot.execute(sendMessage(message, s));
                 setStepNow(1);
             }

@@ -13,6 +13,7 @@ import edu.com.chatbotsoftI.dao.EvePersonRepository;
 import edu.com.chatbotsoftI.entity.EvePaymentEntity;
 import edu.com.chatbotsoftI.entity.EvePaymentMethodEntity;
 import edu.com.chatbotsoftI.entity.EvePersonEntity;
+import edu.com.chatbotsoftI.entity.EveTicketEntity;
 import edu.com.chatbotsoftI.enums.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,7 +92,13 @@ public class SequencePayment extends Sequence {
                             EvePaymentMethodEntity evePaymentMethodEntity = new EvePaymentMethodEntity();
                             evePaymentMethodEntity.setPaymentMethod("Card");
                             evePaymentEntity.setEvePaymentMethodByIdPaymentMethod(evePaymentMethodEntity);
+//                            evePaymentEntity.setEveTicketByIdTicket();
                             evePaymentRepository.save(evePaymentEntity);
+                            EveTicketEntity eveTicketEntity = new EveTicketEntity();
+//                            eveTicketEntity.setNumberTicket();
+
+
+
                             sendEmailBl.sendMail("adam123quiroz@gmail.com", email, "Facturacion", "Hola");
 
 
