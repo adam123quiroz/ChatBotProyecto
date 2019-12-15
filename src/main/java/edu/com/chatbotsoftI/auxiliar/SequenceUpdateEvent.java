@@ -50,21 +50,21 @@ public class SequenceUpdateEvent extends Sequence {
         this.eveTypeEventRepository = eveTypeEventRepository;
         this.eveStatusRepository = eveStatusRepository;
         this.eveCityRepository = eveCityRepository;
-    }
-
-    @Override
-    public void runSequence(Update update, BoltonBot bot) throws TelegramApiException {
-        Message message = update.getMessage();
-        String data;
         eventManager = new EventManager(
                 eventEntity,
                 eveCategoryRepository,
                 eveAddressRepository,
                 eveTypeEventRepository,
                 eveStatusRepository,
-                eveCityRepository,
-                update
+                eveCityRepository
         );
+    }
+
+    @Override
+    public void runSequence(Update update, BoltonBot bot) throws TelegramApiException {
+        Message message = update.getMessage();
+        String data;
+        eventManager.setUpdate(update);
 
         if (! update.getMessage().getText().equalsIgnoreCase(Command.RESTART_COMMAND)) {
             if (getStepNow() < getNumberSteps()) {
@@ -72,7 +72,7 @@ public class SequenceUpdateEvent extends Sequence {
                 switch (getStepNow()) {
                     case 0 : // primera pregunta al usuario
                         StringBuilder text = new StringBuilder(RequestMessageUpdateEvent.REQUEST_LIST_EVENT);
-                        listEvent = eveEventRepository.findAllByEveuserByIduser(BotBl.getUserEntity());
+                        listEvent = eveEventRepository.findAllByEveUserByIdUserAndStatus(BotBl.getUserEntity(), Status.ACTIVE.getStatus());
                         text.append("\n\n");
                         ConcatListEvent concatListEvent = new ConcatListEvent(listEvent);
                         text.append(concatListEvent.getStringListEvent());
@@ -81,7 +81,7 @@ public class SequenceUpdateEvent extends Sequence {
 
                     case 1 : // graba primera pregunta
                         data = message.getText();
-                        eventEntity = eveEventRepository.findByIdeventAndStatus(
+                        eventEntity = eveEventRepository.findByIdEventAndStatus(
                                 Integer.parseInt(data),
                                 Status.ACTIVE.getStatus());
                         eventManager.setEventEntity(eventEntity); // agregamos el evento que necesitamos actualizar
@@ -104,9 +104,9 @@ public class SequenceUpdateEvent extends Sequence {
                     case 3 : // graba primera pregunta
                         chanceAttributeEvent(message, bot);
 
-                        KbOptionsBot kbOptionsBot = new KbOptionsBot(Option.CONFIRMATION_LIST);
-                        bot.execute(kbOptionsBot.showMenu(RequestMessageUpdateEvent.REQUEST_CONFIRMATION_EVENT, update));
-                        break;
+//                        KbOptionsBot kbOptionsBot = new KbOptionsBot(Option.CONFIRMATION_LIST);
+//                        bot.execute(kbOptionsBot.showMenu(RequestMessageUpdateEvent.REQUEST_CONFIRMATION_EVENT, update));
+//                        break;
                 }
                 LOGGER.info("Numero de pasos {}", getStepNow());
                 setStepNow(getStepNow() + 1);
@@ -128,25 +128,24 @@ public class SequenceUpdateEvent extends Sequence {
                 eventManager.setName(data);
                 break;
             case Option.OP_ATTRIBUTE_PRICE :
-                try {
-                    if (! eventManager.setPrice(data)) {
-                        throw new PriceNumberUpdateException(bot, this, message);
-                    }
-                } catch (PriceNumberUpdateException e) {
-                    System.out.println("shshshshsh");
+                if (! eventManager.setPrice(data)) {
+                    PriceNumberUpdateException exception = new PriceNumberUpdateException(bot, this, message);
+                    exception.error();
                 }
                 break;
 
             case Option.OP_ATTRIBUTE_TYPE_EVENT :
                 if (! eventManager.setTypeEvent(data)) {
-                    throw new TypeEventException(bot, this, message, 2);
+                    TypeEventException exception = new TypeEventException(bot, this, message, 2);
+                    exception.error();
                 }
                 break;
 
             case Option.OP_ATTRIBUTE_ADDRESS :
                 data = message.getText();
                 if (! eventManager.setAddress(data)) {
-                    throw new AddressEventUpdateException(bot, this, message);
+                    AddressEventUpdateException exception = new AddressEventUpdateException(bot, this, message);
+                    exception.error();
                 }
                 break;
             case Option.OP_ATTRIBUTE_START_TIME :

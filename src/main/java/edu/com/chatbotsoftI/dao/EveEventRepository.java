@@ -9,17 +9,17 @@ import java.util.List;
 public interface EveEventRepository extends JpaRepository<EveEventEntity, Integer> {
     List<EveEventEntity> findAllByStatus(int status);
 
-    List<EveEventEntity> findAllByEvetypeeventByIdtypeevent_TypeeventAndStatus(String typeEvent, int status);
+    List<EveEventEntity> findAllByEveTypeEventByIdTypeEvent_TypeEventAndStatus(String typeEvent, int status);
     // List<EveEventEntity> findAllByIdtypeevent_TypeeventAndStatus(String typeEvent, int status);
 
-    List<EveEventEntity> findAllByEveuserByIduser_Nameuser(String userName);
+    List<EveEventEntity> findAllByEveUserByIdUser_NameUser(String userName);
    // List<EveEventEntity> findAllByIduser_Nameuser(String userName);
 
-    List<EveEventEntity> findAllByEveuserByIduser(EveUserEntity userEntity);
+    List<EveEventEntity> findAllByEveUserByIdUserAndStatus(EveUserEntity userEntity, int status);
 
-    EveEventEntity findByIdeventAndStatus(Integer id, Integer status);
+    EveEventEntity findByIdEventAndStatus(Integer id, Integer status);
 
-    EveEventEntity findByIdevent(Integer id);
-    List<EveEventEntity> findAllByEveuserByIduser_IduserAndStatus(Integer idSer, Integer status);
+    EveEventEntity findByIdEvent(Integer id);
+    List<EveEventEntity> findAllByEveUserByIdUser_IdUserAndStatus(Integer idSer, Integer status);
 }
 

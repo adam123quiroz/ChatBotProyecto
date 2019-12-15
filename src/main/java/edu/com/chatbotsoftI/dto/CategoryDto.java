@@ -9,7 +9,7 @@ public class CategoryDto {
     private String category;
 
     public CategoryDto(EveCategoryEntity category) {
-        this.idcategory = category.getIdcategory();
+        this.idcategory = category.getIdCategory();
         this.category = category.getCategory();
     }
 

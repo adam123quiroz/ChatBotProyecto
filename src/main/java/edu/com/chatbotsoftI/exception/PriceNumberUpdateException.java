@@ -9,12 +9,20 @@ import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-public class PriceNumberUpdateException extends RuntimeException {
+public class PriceNumberUpdateException {
     private static final Logger LOGGER = LoggerFactory.getLogger(PriceNumberUpdateException.class);
+    private BoltonBot bot;
+    private Sequence sequenceUpdateEvent;
+    private Message message;
 
+    public PriceNumberUpdateException(BoltonBot bot, Sequence sequenceUpdateEvent, Message message) {
+        this.bot = bot;
+        this.sequenceUpdateEvent = sequenceUpdateEvent;
+        this.message = message;
+    }
 
-    public PriceNumberUpdateException(BoltonBot bot, Sequence sequenceUpdateEvent, Message message) throws TelegramApiException {
-        sequenceUpdateEvent.setSendMessageRequest(sequenceUpdateEvent.sendMessage(message, ErrorMessage.ERROR_TYPE_CATEGORY));
+    public void error() throws TelegramApiException {
+        sequenceUpdateEvent.setSendMessageRequest(sequenceUpdateEvent.sendMessage(message, ErrorMessage.ERROR_NUMBER_FORMAT));
         bot.execute(sequenceUpdateEvent.getSendMessageRequest());
         sequenceUpdateEvent.setStepNow(2);
     }

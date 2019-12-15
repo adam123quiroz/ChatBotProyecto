@@ -5,15 +5,27 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.*;
 import com.stripe.param.InvoiceUpdateParams;
 import com.stripe.param.PaymentIntentUpdateParams;
+import edu.com.chatbotsoftI.bl.SendEmailBl;
 import edu.com.chatbotsoftI.bot.BoltonBot;
 import edu.com.chatbotsoftI.bot.commands.Command;
+import edu.com.chatbotsoftI.dao.EvePaymentMethodRepository;
 import edu.com.chatbotsoftI.dao.EvePaymentRepository;
+import edu.com.chatbotsoftI.dao.EvePersonRepository;
+import edu.com.chatbotsoftI.dao.EveTicketRepository;
+import edu.com.chatbotsoftI.entity.EvePaymentEntity;
+
+import edu.com.chatbotsoftI.entity.EvePaymentMethodEntity;
+import edu.com.chatbotsoftI.entity.EvePersonEntity;
+import edu.com.chatbotsoftI.entity.EveTicketEntity;
+import edu.com.chatbotsoftI.enums.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.methods.AnswerPreCheckoutQuery;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,10 +34,18 @@ public class SequencePayment extends Sequence {
     private static final Logger LOGGER = LoggerFactory.getLogger(SequencePayment.class);
     private String email;
     private EvePaymentRepository evePaymentRepository;
-
-    public SequencePayment(EvePaymentRepository evePaymentRepository) {
+    private SendEmailBl sendEmailBl;
+    private EveTicketRepository eveTicketRepository;
+    private EvePaymentMethodRepository evePaymentMethodRepository;
+    private EvePersonRepository evePersonRepository;
+    public SequencePayment(EvePaymentRepository evePaymentRepository, SendEmailBl sendEmailBl, EveTicketRepository eveTicketRepository
+    ,EvePaymentMethodRepository evePaymentMethodRepository,EvePersonRepository evePersonRepository) {
         super(true, 2, 0);
         this.evePaymentRepository = evePaymentRepository;
+        this.sendEmailBl = sendEmailBl;
+        this.eveTicketRepository = eveTicketRepository;
+        this.evePaymentMethodRepository = evePaymentMethodRepository;
+        this.evePersonRepository = evePersonRepository;
     }
 
     @Override
@@ -33,7 +53,6 @@ public class SequencePayment extends Sequence {
         if (getStepNow() < getNumberSteps()) {
             switch (getStepNow()) {
                 case 0:
-                    //TODO: implement logic
                     try {
                         AnswerPreCheckoutQuery answerPreCheckoutQuery =
                             new AnswerPreCheckoutQuery(update.getPreCheckoutQuery().getId(), true);
@@ -44,7 +63,6 @@ public class SequencePayment extends Sequence {
                     }
                     break;
                 case 1:
-                    //TODO: implements second step
                     if (update.getMessage().getSuccessfulPayment() != null) {
                         try {
                             Stripe.apiKey = Command.STRIPE_KEY;
@@ -65,48 +83,44 @@ public class SequencePayment extends Sequence {
                                 }
                             }
                             LOGGER.info("payment {}", payment);
+                            EvePaymentEntity evePaymentEntity = new EvePaymentEntity();
+                            java.util.Date date;
+                            date = new Date();
+                            evePaymentEntity.setTxHost("Localhost");
+                            evePaymentEntity.setTxUser("Admin");
+                            evePaymentEntity.setTxDate(new java.sql.Date(new Date().getTime()));
+                            evePaymentEntity.setDate(new java.sql.Date(date.getTime()));
+                            evePaymentEntity.setStatus(Status.ACTIVE.getStatus());
+                            evePaymentEntity.setTotal(new BigDecimal(payment.getAmount()));
+                            String detalle = "Payment to bot @Bolton_EventBot";
+                            int cantidad = 1;
+                            long amount = payment.getAmount();
+                            Date buydate = date;
+                            InvoiceMaker invoiceMaker = new
+                                    InvoiceMaker(buydate, detalle,cantidad, amount);
+                            EvePaymentMethodEntity evePaymentMethodEntity = new EvePaymentMethodEntity();
+                            evePaymentMethodEntity.setPaymentMethod(payment.getPaymentMethod());
+                            evePaymentMethodRepository.save(evePaymentMethodEntity);
 
-                            Map<String, Object> customerParams = new HashMap<>();
-                            customerParams.put("name", payment.getCharges().getData().get(0).getBillingDetails().getName());
-                            customerParams.put("email", email);
-                            customerParams.put("description", "Customer for jenny.rosen@example.com");
+//                            evePaymentEntity.set
+                            EvePersonEntity userEntity = evePersonRepository.findByBotUserId(update.getMessage().getFrom().getId().toString());
+                            evePaymentEntity.setEvePersonByIdPerson(userEntity);
+                            EveTicketEntity eveTicketEntity = new EveTicketEntity();
+                            int x = (int) Math.random()*(1-(100000+1))+(10000);
+                            String dato = String.valueOf(x);
+                            eveTicketEntity.setNumberTicket(dato);
+                            eveTicketEntity.setStatus(1);
+                            eveTicketEntity.setTxDate(new java.sql.Date(new Date().getTime()));
+                            eveTicketEntity.setTxHost("Localhost");
+                            eveTicketEntity.setTxUser("admin");
+                            eveTicketRepository.save(eveTicketEntity);
+                            evePaymentEntity.setEveTicketByIdTicket(eveTicketEntity);
+                            evePaymentEntity.setEvePaymentMethodByIdPaymentMethod(evePaymentMethodEntity);//
 
-                            Customer customer = Customer.create(customerParams);
-                            LOGGER.info("customer {}", customer);
-
-                            Map<String, Object> metadata = new HashMap<>();
-                            metadata.put("customer", customer.getId());
-                            metadata.put("receipt_email", email);
-                            PaymentIntent paymentIntent = payment.update(metadata);
-
-                            Map<String, Object> invoiceItemParams = new HashMap<String, Object>();
-                            invoiceItemParams.put("customer", customer.getId());
-                            invoiceItemParams.put("amount", 2500);
-                            invoiceItemParams.put("currency", "usd");
-                            invoiceItemParams.put("description", "One-time setup fee");
-
-                            InvoiceItem.create(invoiceItemParams);
-
-                            Map<String, Object> invoiceParams = new HashMap<String, Object>();
-                            invoiceParams.put("customer", customer.getId());
-                            invoiceParams.put("auto_advance", true); // auto-finalize this draft after ~1 hour
-                            invoiceParams.put("collection_method", "send_invoice");
-                            invoiceParams.put("days_until_due", 30);
-//                            invoiceParams.put("default_source", customer.getDefaultSource());
-
-                            Invoice invoice = Invoice.create(invoiceParams);
-//                            invoice.pay();
-
-                            invoice = Invoice.retrieve(invoice.getId());
-                            invoice.finalizeInvoice();
-
-                            invoice.sendInvoice();
-
-                            Map<String, Object> receipt_email = new HashMap<>();
-                            receipt_email.put("receipt_email", email);
-                            assert payment != null;
-                            payment = payment.update(receipt_email);
-
+                            evePaymentEntity.setEvePaymentMethodByIdPaymentMethod(evePaymentMethodEntity);
+                        evePaymentRepository.save(evePaymentEntity);
+                        LOGGER.info("email {}", email);
+                            sendEmailBl.sendMail("bolton@gmail.com", email, "Facturacion", "Hola", invoiceMaker);
                         } catch (StripeException e) {
                             e.printStackTrace();
                         }
@@ -115,14 +129,14 @@ public class SequencePayment extends Sequence {
             }
             LOGGER.info("Numero de pasos {}", getStepNow());
             setStepNow(getStepNow() + 1);
-        } else {
-            //Analisis de la Informacion
-            //TODO: implement logic
-        } //end if else
+        }
+//        else {
+//            //Analisis de la Informacion
+//        } //end if else
     }
 
     @Override
-    public void restartOperation(BoltonBot bot, Update update) throws TelegramApiException {
+    public void restartOperation(BoltonBot bot, Update update)  {
         //TODO: implement with a logic about sequence payment
     }
 }

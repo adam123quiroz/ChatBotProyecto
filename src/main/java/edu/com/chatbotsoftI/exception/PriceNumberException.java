@@ -8,13 +8,20 @@ import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-public class PriceNumberException extends RuntimeException {
+public class PriceNumberException {
     private static final Logger LOGGER = LoggerFactory.getLogger(PriceNumberException.class);
-
+    private Sequence sequence;
+    private Message message;
 
     public PriceNumberException(Sequence sequenceUpdateEvent, Message message) {
         LOGGER.info("Sequence {}\n message {}", sequenceUpdateEvent, message);
-        sequenceUpdateEvent.setSendMessageRequest(sequenceUpdateEvent.sendMessage(message, ErrorMessage.ERROR_NUMBER_FORMAT));
-        sequenceUpdateEvent.setStepNow(3);
+        this.sequence = sequenceUpdateEvent;
+        this.message = message;
+
+    }
+
+    public void error() {
+        sequence.setSendMessageRequest(sequence.sendMessage(message, ErrorMessage.ERROR_NUMBER_FORMAT));
+        sequence.setStepNow(3);
     }
 }

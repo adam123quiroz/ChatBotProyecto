@@ -12,13 +12,14 @@ import edu.com.chatbotsoftI.entity.EveLeasePlaceEntity;
 //import edu.com.chatbotsoftI.entity.EvePersonEntity;
 //import edu.com.chatbotsoftI.entity.EveUserEntity;
 import edu.com.chatbotsoftI.entity.*;
+import edu.com.chatbotsoftI.entity.EveChatEntity;
+import edu.com.chatbotsoftI.entity.EvePersonEntity;
+import edu.com.chatbotsoftI.entity.EveUserEntity;
 import edu.com.chatbotsoftI.enums.TypeEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.AnswerInlineQuery;
-import org.telegram.telegrambots.meta.api.methods.AnswerPreCheckoutQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendInvoice;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -30,9 +31,9 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.meta.updateshandlers.SentCallback;
 
+import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -64,9 +65,13 @@ public class BotBl {
     private MailServiceBl mailServiceBl;
     private EveNotificationRepository notificationRepository;
 
+    private EveChatRepository eveChatRepository;
+    private SendEmailBl sendEmailBl;
+    EveTicketRepository eveTicketRepository;
     private static Sequence sequence;
     private static EveUserEntity userEntity;
     private static BoltonBot boltonBot;
+    private EvePaymentMethodRepository evePaymentMethodRepository;
 
     @Autowired
     public BotBl(EvePersonRepository userRepository,
@@ -78,7 +83,7 @@ public class BotBl {
                  EveAddressRepository eveAddressRepository,
                  EveStatusRepository eveStatusRepository,
                  EveCityRepository eveCityRepository,
-                 EveLeasePlaceRepository eveLeasePlaceRepository,
+                 SendEmailBl sendEmailBl,
                  EvePaymentRepository evePaymentRepository,
                  LeaseplaceBl leaseplaceBl,
                  MailServiceBl mailServiceBl,
@@ -87,6 +92,10 @@ public class BotBl {
                  EvePersonRepository evePersonRepository) {
 
     this.evePaymentRepository = evePaymentRepository;
+                 EveChatRepository eveChatRepository,
+                 EveTicketRepository eveTicketRepository,
+                 EvePaymentMethodRepository evePaymentMethodRepository) {
+        this.evePaymentRepository = evePaymentRepository;
         this.userRepository = userRepository;
         this.eventBl = eventBl;
         this.eveUserRepository = eveUserEntity;
@@ -103,6 +112,10 @@ public class BotBl {
         this.notificationRepository = notificationRepository;
         this.evePersonChatRepository =evePersonChatRepository;
         this.evePersonRepository = evePersonRepository;
+        this.sendEmailBl = sendEmailBl;
+        this.eveChatRepository = eveChatRepository;
+        this.eveTicketRepository = eveTicketRepository;
+        this.evePaymentMethodRepository = evePaymentMethodRepository;
     }
 
     public List<String> processUpdate(Update update, BoltonBot boltonBot) throws TelegramApiException {
@@ -129,7 +142,7 @@ public class BotBl {
         if (userEntity == null) {
             EvePersonEntity evePerson = new EvePersonEntity();
             evePerson.setName(user.getFirstName());
-            evePerson.setLastname(user.getLastName());
+            evePerson.setLastName(user.getLastName());
             evePerson.setBotUserId(user.getId().toString());
             userRepository.save(evePerson);
         }
@@ -165,6 +178,49 @@ public class BotBl {
     }
 
     private void continueChatWithUser( Update update, EvePersonEntity personEntity ) throws TelegramApiException {
+        Message message = update.getMessage();
+        int idChat = Integer.parseInt(message.getChatId().toString());
+        List<EventDto> eventDtos;
+        KbOptionsBot kbOptionsBot;
+        DateVerifier verifier = new DateVerifier(eveEventRepository);
+
+
+        // Obtener el ultimo mensaje que envió el usuario
+        EveChatEntity lastMessage = eveChatRepository.findLastChatByUserId(personEntity.getIdPerson());
+        // Preparo la vaiable para retornar la respuesta
+        String response = null;
+        // Si el ultimo mensaje no existe (es la primera conversación)
+        if (lastMessage == null) {
+            // Retornamos 1
+            LOGGER.info("Primer mensaje del usuario botUserId {}", personEntity.getBotUserId());
+            response = "1";
+        } else {
+            // Si existe convesasción previa iniciamos la variable del ultimo mensaje en 1
+            int lastMessageInt = 0;
+            try {
+                // Intenemos obtener el ultimo mensaje retornado y lo convertimos a entero.
+                // Si la coversin falla en el catch retornamos 1
+                lastMessageInt = Integer.parseInt(lastMessage.getOutMessage());
+                response = "" + (lastMessageInt + 1);
+            } catch (NumberFormatException nfe) {
+                response = "1";
+            }
+        }
+        LOGGER.info("PROCESSING IN MESSAGE: {} from user {}" ,update.getMessage().getText(), personEntity.getIdPerson());
+        // Creamos el objeto CpChat con la respuesta a la presente conversación.
+        EveChatEntity eveChat = new EveChatEntity();
+        eveChat.setEvePersonByIdPerson(personEntity);
+        eveChat.setInMessage(update.getMessage().getText());
+        eveChat.setOutMessage(response);
+        eveChat.setMsgDate(new java.sql.Date(new Date(update.getMessage().getDate()).getTime())); //FIXME Obtener la fecha del campo entero update.getMessage().
+        eveChat.setTxDate(new java.sql.Date(new Date().getTime()));
+        eveChat.setTxUser(String.valueOf(personEntity.getIdPerson()));
+        eveChat.setTxHost(update.getMessage().getChatId().toString());
+        // Guardamos en base dedatos
+        eveChatRepository.save(eveChat);
+        // Agregamos la respuesta al chatResponse.
+//        boltonBot.execute(new SendMessage().setText(response).setChatId(update.getMessage().getChatId()));
+
             Message message = update.getMessage();
             int idChat = Integer.parseInt(message.getChatId().toString());
         //agregado
@@ -179,11 +235,12 @@ public class BotBl {
             case Command.startCommand:
             case "hola":
             case "Hola":
+
                 kbOptionsBot = new KbOptionsBot(optionListI);
                 boltonBot.execute(kbOptionsBot.showMenu(String.format("" +
-                                "Hola %s, soy Bolton, para ayudarte necesito que entres en " +
-                                "sesión o te registres:", message.getChat().getFirstName() ),
+                                "Hola %s, soy Bolton, para ayudarte puedes precionar Continuar:", message.getChat().getFirstName() ),
                         update));
+                LOGGER.info("Texto del la lista : {}", message.getText() );
                 break;
 
             case Option.OP_CONTINUE:
@@ -191,6 +248,9 @@ public class BotBl {
                 boltonBot.execute(kbOptionsBot.showMenu(String.format("Bienvenido %s, " +
                                 "dime, ¿que te gustaría hacer hoy?", message.getChat().getFirstName()),
                         update));
+                LOGGER.info("Texto del la lista : {}", message.getText() );
+//                QrCreator qrCreator = new QrCreator();
+//                qrCreator.SaveQr(message.getText(),"png",300);
                 break;
 
             case Option.OP_LOG_IN_ADM:
@@ -204,9 +264,14 @@ public class BotBl {
                 break;
 
             case Option.OP_MOVIE:
+
+                LOGGER.info("Texto del la lista : {}", message.getText() );
+                verifier.DeletePastEventsMovie();
+
                 eventDtos = eventBl.findAllEventByTypeEvent(TypeEvent.MOVIE.getTypeEvent());
                 showEventsInformation(eventDtos, idChat,
                         "https://www.yucatan.com.mx/wp-content/uploads/2019/03/2491246.jpg-r_1920_1080-f_jpg-q_x-xxyxx.jpg?width=1200&enable=upscale");
+
                 break;
             case Option.OP_MUSIC:
                 eventDtos = eventBl.findAllEventByTypeEvent(TypeEvent.MUSIC.getTypeEvent());
@@ -245,6 +310,11 @@ public class BotBl {
                             SequenceDeleteEvent sequenceDeleteEvent = new SequenceDeleteEvent(eveEventRepository);
                             startSequence(2, update, sequenceDeleteEvent);
                             break;
+//                        case Option.OP_LEASEPLACE:
+//                            SequenceAddLeasePlace sequenceAddLeasePlace =
+//                                    new SequenceAddLeasePlace(eveLeasePlaceRepository,eveAddressRepository,
+//                                    eveStatusRepository,eveCityRepository);
+//                            startSequence(4, update, sequenceAddLeasePlace);
                         case Option.OP_LEASEPLACE:
 
                             SequenceAddLeasePlace sequenceAddLeasePlace = new SequenceAddLeasePlace(eveLeasePlaceRepository,eveAddressRepository,
@@ -253,9 +323,9 @@ public class BotBl {
                     }
 
                 } else {
-                    SendMessage sendMessageGreeting = new SendMessage().setChatId(update.getMessage().getChatId());
-                    sendMessageGreeting.setText("Tienes que iniciar sesion para poder entrar al modo Administrativo");
-                    boltonBot.execute(sendMessageGreeting);
+                        SendMessage sendMessageGreeting = new SendMessage().setChatId(update.getMessage().getChatId());
+                        sendMessageGreeting.setText("Modo Administrativo Desactivado");
+                        boltonBot.execute(sendMessageGreeting);
                 }
         }
 
@@ -263,15 +333,34 @@ public class BotBl {
 
 
     }
+//    private void verifiermenu(Message message){
+//        String verifier = message.getText();
+//        if(verifier.equals(Option.OP_MOVIE) || verifier.equals(Option.OP_MUSIC) || verifier.equals(Option.OP_MUSEUM) ||
+//                verifier.equals(Option.OP_ADD_EVENT) || verifier.equals(Option.OP_CONTINUE) || verifier.equals(Option.OP_DELETE_EVENT) ||
+//                verifier.equals(Option.OP_LOG_IN_ADM) || verifier.equals(Option.OP_MODIFY_EVENT)){
+//            LOGGER.info("eventos {}", message);
+//        }
+//        else{
+//        }
+//    }
+//    private void verifierlogin(Message message, Update update){
+//        String verifier = message.getText();
+//        if(  verifier.equals(Option.OP_CONTINUE) || verifier.equals(Option.OP_LOG_IN_ADM) ){
+//            LOGGER.info("eventos {}", message);
+//        }
+//        else{
+//
+//        }
+//    }
 
     private void showEventsInformation(List<EventDto> eventDtos, int idChat, String url) throws TelegramApiException {
         LOGGER.info("eventos {}", eventDtos);
-        List<LabeledPrice> priceList = new ArrayList<>();
-        priceList.add(new LabeledPrice("45.33", 120));
-        priceList.add(new LabeledPrice("45.33", 60994));
+
         SendInvoice inv;
         for (EventDto event:
                 eventDtos) {
+            List<LabeledPrice> priceList = new ArrayList<>();
+            priceList.add(new LabeledPrice("Evento", event.getPrice().intValue()));
             String description = "" +
                     "Fecha: " + event.getDate() + "\n" +
                     "Hora: " + event.getStarttime() + "\n"+
@@ -292,7 +381,7 @@ public class BotBl {
             boltonBot.executeAsync(inv, new SentCallback<Message>() {
                 @Override
                 public void onResult(BotApiMethod<Message> botApiMethod, Message message) {
-                    LOGGER.info("JODER {} {}", message.getSuccessfulPayment());
+                    LOGGER.info("JODER {}", message.getSuccessfulPayment());
                 }
 
                 @Override
@@ -346,8 +435,7 @@ public class BotBl {
 
     public void processPayment(Update update, BoltonBot bot) {
         BotBl.boltonBot = bot;
-        //TODO: implement logic payment
-        SequencePayment sequencePayment = new SequencePayment(evePaymentRepository);
+        SequencePayment sequencePayment = new SequencePayment(evePaymentRepository, sendEmailBl,eveTicketRepository,evePaymentMethodRepository,userRepository);
         sequencePayment.setRunning(true);
         sequencePayment.setNumberSteps(2);
         sequencePayment.runSequence(update, bot);

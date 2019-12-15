@@ -8,4 +8,5 @@ import java.util.List;
 public interface EveUserRepository extends JpaRepository<EveUserEntity, Integer> {
     EveUserEntity findByNameuserAndPassword(String userName, String password);
     List<EveUserEntity> findAllByEmail(String email);
+    EveUserEntity findByNameUserAndPassword(String userName, String password);
 }

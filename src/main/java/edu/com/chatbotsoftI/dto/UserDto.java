@@ -9,8 +9,8 @@ public class UserDto {
     private String email;
 
     public UserDto(EveUserEntity eveUserEntity) {
-        this.iduser = eveUserEntity.getIduser();
-        this.nameuser = eveUserEntity.getNameuser();
+        this.iduser = eveUserEntity.getIdUser();
+        this.nameuser = eveUserEntity.getNameUser();
         this.password = eveUserEntity.getPassword();
         this.email = eveUserEntity.getEmail();
     }
