@@ -8,7 +8,6 @@ import java.util.List;
 public class EvePaymentMethodEntity {
     private int idPaymentMethod;
     private String paymentMethod;
-    private List<EveBuyTicketEntity> eveBuyTicketsByIdPaymentMethod;
     private List<EvePaymentEntity> evePaymentsByIdPaymentMethod;
 
     @Id
@@ -23,7 +22,6 @@ public class EvePaymentMethodEntity {
     }
 
     @Basic
-
     @Column(name = "payment_method", nullable = true, length = 45)
     public String getPaymentMethod() {
         return paymentMethod;
@@ -52,15 +50,6 @@ public class EvePaymentMethodEntity {
         int result = idPaymentMethod;
         result = 31 * result + (paymentMethod != null ? paymentMethod.hashCode() : 0);
         return result;
-    }
-
-    @OneToMany(mappedBy = "evePaymentMethodByIdPaymentMethod")
-    public List<EveBuyTicketEntity> getEveBuyTicketsByIdPaymentMethod() {
-        return eveBuyTicketsByIdPaymentMethod;
-    }
-
-    public void setEveBuyTicketsByIdPaymentMethod(List<EveBuyTicketEntity> eveBuyTicketsByIdPaymentMethod) {
-        this.eveBuyTicketsByIdPaymentMethod = eveBuyTicketsByIdPaymentMethod;
     }
 
     @OneToMany(mappedBy = "evePaymentMethodByIdPaymentMethod")

@@ -115,26 +115,12 @@ public class SequencePayment extends Sequence {
                             eveTicketEntity.setTxUser("admin");
                             eveTicketRepository.save(eveTicketEntity);
                             evePaymentEntity.setEveTicketByIdTicket(eveTicketEntity);
-                            evePaymentEntity.setEvePaymentMethodByIdPaymentMethod(evePaymentMethodEntity);
-
-
-
-
-//
+                            evePaymentEntity.setEvePaymentMethodByIdPaymentMethod(evePaymentMethodEntity);//
 
                             evePaymentEntity.setEvePaymentMethodByIdPaymentMethod(evePaymentMethodEntity);
-//                            evePaymentEntity.setEveTicketByIdTicket();
-//                            evePaymentRepository.save(evePaymentEntity);
-                          //  EveTicketEntity eveTicketEntity = new EveTicketEntity();
-//                            eveTicketEntity.setNumberTicket();
-
                         evePaymentRepository.save(evePaymentEntity);
                         LOGGER.info("email {}", email);
-                            sendEmailBl.sendMail("adam123quiroz@gmail.com", email, "Facturacion", "Hola", invoiceMaker);
-
-
-
-
+                            sendEmailBl.sendMail("bolton@gmail.com", email, "Facturacion", "Hola", invoiceMaker);
                         } catch (StripeException e) {
                             e.printStackTrace();
                         }

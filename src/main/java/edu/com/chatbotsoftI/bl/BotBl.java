@@ -160,7 +160,7 @@ public class BotBl {
         // Guardamos en base dedatos
         eveChatRepository.save(eveChat);
         // Agregamos la respuesta al chatResponse.
-        boltonBot.execute(new SendMessage().setText(response).setChatId(update.getMessage().getChatId()));
+//        boltonBot.execute(new SendMessage().setText(response).setChatId(update.getMessage().getChatId()));
 
 
         switch(message.getText()) {

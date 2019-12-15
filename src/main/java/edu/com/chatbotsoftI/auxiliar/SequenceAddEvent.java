@@ -23,6 +23,9 @@ public class SequenceAddEvent extends Sequence {
     private EveTypeEventRepository eveTypeEventRepository;
     private EveStatusRepository eveStatusRepository;
     private EveCityRepository eveCityRepository;
+    private EventManager eventManager;
+
+
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SequenceLogInAdmin.class);
 
@@ -39,19 +42,19 @@ public class SequenceAddEvent extends Sequence {
         this.eveTypeEventRepository = eveTypeEventRepository;
         this.eveStatusRepository = eveStatusRepository;
         this.eveCityRepository = eveCityRepository;
+        eventManager = new EventManager(new EveEventEntity(),
+                eveCategoryRepository,
+                eveAddressRepository,
+                eveTypeEventRepository,
+                eveStatusRepository,
+                eveCityRepository);
     }
 
     @Override
     public void runSequence(Update update, BoltonBot bot) throws TelegramApiException {
         Message message = update.getMessage();
         String data;
-        EventManager eventManager = new EventManager(new EveEventEntity(),
-                eveCategoryRepository,
-                eveAddressRepository,
-                eveTypeEventRepository,
-                eveStatusRepository,
-                eveCityRepository,
-                update);
+        eventManager.setUpdate(update);
 
         if (! update.getMessage().getText().equalsIgnoreCase(Command.RESTART_COMMAND)) {
             if (getStepNow() < getNumberSteps()) {
@@ -67,7 +70,8 @@ public class SequenceAddEvent extends Sequence {
                             // siguiente pregunta
                             setSendMessageRequest( sendMessage(message, RequestMessageAddEvent.REQUEST_NAME_EVENT) );
                         } else {
-                            throw new TypeEventException(bot, this, message, 0);
+                            TypeEventException exception = new TypeEventException(bot, this, message, 0);
+                            exception.error();
                         }
                         bot.execute(getSendMessageRequest());
                         break;
@@ -94,7 +98,8 @@ public class SequenceAddEvent extends Sequence {
                             //segunda pregunta
                             setSendMessageRequest(sendMessage(message, RequestMessageAddEvent.REQUEST_DATE_EVENT));
                         } else {
-                            throw new PriceNumberException(this, message);
+                            PriceNumberException exception =  new PriceNumberException(this, message);
+                            exception.error();
                         }
                         bot.execute(getSendMessageRequest());
                         break;
@@ -129,7 +134,8 @@ public class SequenceAddEvent extends Sequence {
                 data = message.getText();
                 if (! eventManager.setAddress(data)) {
                     LOGGER.info("this {}, \nMESSAGE {}", this, message);
-                    throw new AddressEventException( bot, this, message, 5);
+                    AddressEventException exception = new AddressEventException( bot, this, message, 5);
+                    exception.error();
                 }
                 eventManager.setAuditoryCells();
 

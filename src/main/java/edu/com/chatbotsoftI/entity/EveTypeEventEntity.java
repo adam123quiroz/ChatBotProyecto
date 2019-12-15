@@ -22,7 +22,6 @@ public class EveTypeEventEntity {
     }
 
     @Basic
-
     @Column(name = "type_event", nullable = true, length = 45)
     public String getTypeEvent() {
         return typeEvent;

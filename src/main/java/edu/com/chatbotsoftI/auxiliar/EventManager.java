@@ -5,6 +5,8 @@ import edu.com.chatbotsoftI.dao.*;
 import edu.com.chatbotsoftI.entity.*;
 import edu.com.chatbotsoftI.enums.Status;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -26,19 +28,23 @@ public class EventManager {
     private EveCityRepository eveCityRepository;
     private Update update;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(EventManager.class);
+
     public EventManager(EveEventEntity eventEntity,
                         EveCategoryRepository eveCategoryRepository,
                         EveAddressRepository eveAddressRepository,
                         EveTypeEventRepository eveTypeEventRepository,
                         EveStatusRepository eveStatusRepository,
-                        EveCityRepository eveCityRepository,
-                        Update update) {
+                        EveCityRepository eveCityRepository) {
         this.eventEntity = eventEntity;
         this.eveCategoryRepository = eveCategoryRepository;
         this.eveAddressRepository = eveAddressRepository;
         this.eveTypeEventRepository = eveTypeEventRepository;
         this.eveStatusRepository = eveStatusRepository;
         this.eveCityRepository = eveCityRepository;
+    }
+
+    public void setUpdate(Update update) {
         this.update = update;
     }
 
@@ -61,12 +67,12 @@ public class EventManager {
             eveCategoryEntity = newEveCategoryEntity;
         }
         eventEntity.setEveCategoryByIdCategory(eveCategoryEntity);
+
     }
 
     public boolean setPrice(String data) {
         boolean flag = false;
         Message message = update.getMessage();
-        System.out.println("?''''''''''''' " + data);
         if (NumberUtils.isNumber(data)) {
             data = message.getText();
             eventEntity.setPrice(new BigDecimal(data));

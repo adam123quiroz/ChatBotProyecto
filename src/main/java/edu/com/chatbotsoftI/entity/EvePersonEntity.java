@@ -11,10 +11,9 @@ public class EvePersonEntity {
     private String name;
     private String lastName;
     private String botUserId;
-    private List<EvePaymentEntity> evePaymentsByIdPerson;
-    private List<EvePersonChatEntity> evePersonChatsByIdPerson;
-    private List<EveUserEntity> eveUsersByIdPerson;
     private List<EveChatEntity> eveChatsByIdPerson;
+    private List<EvePaymentEntity> evePaymentsByIdPerson;
+    private List<EveUserEntity> eveUsersByIdPerson;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +27,6 @@ public class EvePersonEntity {
     }
 
     @Basic
-
     @Column(name = "ci", nullable = true, length = 45)
     public String getCi() {
         return ci;
@@ -95,6 +93,15 @@ public class EvePersonEntity {
     }
 
     @OneToMany(mappedBy = "evePersonByIdPerson")
+    public List<EveChatEntity> getEveChatsByIdPerson() {
+        return eveChatsByIdPerson;
+    }
+
+    public void setEveChatsByIdPerson(List<EveChatEntity> eveChatsByIdPerson) {
+        this.eveChatsByIdPerson = eveChatsByIdPerson;
+    }
+
+    @OneToMany(mappedBy = "evePersonByIdPerson")
     public List<EvePaymentEntity> getEvePaymentsByIdPerson() {
         return evePaymentsByIdPerson;
     }
@@ -104,29 +111,11 @@ public class EvePersonEntity {
     }
 
     @OneToMany(mappedBy = "evePersonByIdPerson")
-    public List<EvePersonChatEntity> getEvePersonChatsByIdPerson() {
-        return evePersonChatsByIdPerson;
-    }
-
-    public void setEvePersonChatsByIdPerson(List<EvePersonChatEntity> evePersonChatsByIdPerson) {
-        this.evePersonChatsByIdPerson = evePersonChatsByIdPerson;
-    }
-
-    @OneToMany(mappedBy = "evePersonByIdPerson")
     public List<EveUserEntity> getEveUsersByIdPerson() {
         return eveUsersByIdPerson;
     }
 
     public void setEveUsersByIdPerson(List<EveUserEntity> eveUsersByIdPerson) {
         this.eveUsersByIdPerson = eveUsersByIdPerson;
-    }
-
-    @OneToMany(mappedBy = "evePersonByIdPerson")
-    public List<EveChatEntity> getEveChatsByIdPerson() {
-        return eveChatsByIdPerson;
-    }
-
-    public void setEveChatsByIdPerson(List<EveChatEntity> eveChatsByIdPerson) {
-        this.eveChatsByIdPerson = eveChatsByIdPerson;
     }
 }

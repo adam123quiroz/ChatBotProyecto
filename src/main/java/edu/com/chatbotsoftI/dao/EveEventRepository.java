@@ -15,7 +15,7 @@ public interface EveEventRepository extends JpaRepository<EveEventEntity, Intege
     List<EveEventEntity> findAllByEveUserByIdUser_NameUser(String userName);
    // List<EveEventEntity> findAllByIduser_Nameuser(String userName);
 
-    List<EveEventEntity> findAllByEveUserByIdUser(EveUserEntity userEntity);
+    List<EveEventEntity> findAllByEveUserByIdUserAndStatus(EveUserEntity userEntity, int status);
 
     EveEventEntity findByIdEventAndStatus(Integer id, Integer status);
 

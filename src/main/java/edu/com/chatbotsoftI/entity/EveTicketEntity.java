@@ -13,7 +13,6 @@ public class EveTicketEntity {
     private String txHost;
     private Date txDate;
     private int status;
-    private List<EveBuyTicketEntity> eveBuyTicketsByIdTicket;
     private List<EvePaymentEntity> evePaymentsByIdTicket;
 
     @Id
@@ -28,7 +27,6 @@ public class EveTicketEntity {
     }
 
     @Basic
-
     @Column(name = "number_ticket", nullable = true, length = 100)
     public String getNumberTicket() {
         return numberTicket;
@@ -104,15 +102,6 @@ public class EveTicketEntity {
         result = 31 * result + (txDate != null ? txDate.hashCode() : 0);
         result = 31 * result + status;
         return result;
-    }
-
-    @OneToMany(mappedBy = "eveTicketByIdTicket")
-    public List<EveBuyTicketEntity> getEveBuyTicketsByIdTicket() {
-        return eveBuyTicketsByIdTicket;
-    }
-
-    public void setEveBuyTicketsByIdTicket(List<EveBuyTicketEntity> eveBuyTicketsByIdTicket) {
-        this.eveBuyTicketsByIdTicket = eveBuyTicketsByIdTicket;
     }
 
     @OneToMany(mappedBy = "eveTicketByIdTicket")

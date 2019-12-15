@@ -42,11 +42,6 @@ public class SequenceAddLeasePlace extends Sequence {
     ));
 
     private EveLeasePlaceEntity LeasePlace;
-    private EveAddressEntity eveAddressEntity;
-    private EveStateEntity eveStateEntity;
-    private EveCityEntity eveCityEntity;
-    private EveNotificationEntity eveNotificationEntity;
-    private EveUserEntity eveUserEntity;
 
     private EveLeasePlaceRepository leasePlaceRepository;
     private EveAddressRepository addressRepository;

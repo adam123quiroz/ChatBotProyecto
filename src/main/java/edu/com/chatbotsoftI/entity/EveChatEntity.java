@@ -16,6 +16,7 @@ public class EveChatEntity {
     private EvePersonEntity evePersonByIdPerson;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_eve_user_chat", nullable = false)
     public int getIdEveUserChat() {
         return idEveUserChat;

@@ -16,7 +16,6 @@ public class EveUserEntity {
     private String txUser;
     private String txHost;
     private Date txDate;
-    private List<EveBuyTicketEntity> eveBuyTicketsByIdUser;
     private List<EveEventEntity> eveEventsByIdUser;
     private List<EveLeasePlaceEntity> eveLeasePlacesByIdUser;
     private List<EveNotificationUserEntity> eveNotificationUsersByIdUser;
@@ -34,7 +33,6 @@ public class EveUserEntity {
     }
 
     @Basic
-
     @Column(name = "birthday", nullable = true)
     public Date getBirthday() {
         return birthday;
@@ -146,15 +144,6 @@ public class EveUserEntity {
         result = 31 * result + (txHost != null ? txHost.hashCode() : 0);
         result = 31 * result + (txDate != null ? txDate.hashCode() : 0);
         return result;
-    }
-
-    @OneToMany(mappedBy = "eveUserByIdUser")
-    public List<EveBuyTicketEntity> getEveBuyTicketsByIdUser() {
-        return eveBuyTicketsByIdUser;
-    }
-
-    public void setEveBuyTicketsByIdUser(List<EveBuyTicketEntity> eveBuyTicketsByIdUser) {
-        this.eveBuyTicketsByIdUser = eveBuyTicketsByIdUser;
     }
 
     @OneToMany(mappedBy = "eveUserByIdUser")

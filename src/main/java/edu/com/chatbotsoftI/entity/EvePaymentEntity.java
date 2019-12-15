@@ -3,6 +3,7 @@ package edu.com.chatbotsoftI.entity;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "eve_payment", schema = "dbbot", catalog = "")

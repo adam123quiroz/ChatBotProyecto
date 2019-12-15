@@ -18,7 +18,6 @@ public class EveEventEntity {
     private String txUser;
     private String txHost;
     private Date txDate;
-    private List<EveBuyTicketEntity> eveBuyTicketsByIdEvent;
     private EveUserEntity eveUserByIdUser;
     private EveTypeEventEntity eveTypeEventByIdTypeEvent;
     private EveCategoryEntity eveCategoryByIdCategory;
@@ -149,15 +148,6 @@ public class EveEventEntity {
         result = 31 * result + (txHost != null ? txHost.hashCode() : 0);
         result = 31 * result + (txDate != null ? txDate.hashCode() : 0);
         return result;
-    }
-
-    @OneToMany(mappedBy = "eveEventByIdEvent")
-    public List<EveBuyTicketEntity> getEveBuyTicketsByIdEvent() {
-        return eveBuyTicketsByIdEvent;
-    }
-
-    public void setEveBuyTicketsByIdEvent(List<EveBuyTicketEntity> eveBuyTicketsByIdEvent) {
-        this.eveBuyTicketsByIdEvent = eveBuyTicketsByIdEvent;
     }
 
     @ManyToOne
