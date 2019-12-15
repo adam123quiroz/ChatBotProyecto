@@ -97,7 +97,6 @@ public class BotBl {
     }
 
     private EvePersonEntity initUser(User user) {
-        boolean result = false;
         EvePersonEntity userEntity = userRepository.findByBotUserId(user.getId().toString());
         if (userEntity == null) {
             EvePersonEntity evePerson = new EvePersonEntity();
@@ -112,10 +111,10 @@ public class BotBl {
     private void continueChatWithUser( Update update, EvePersonEntity personEntity ) throws TelegramApiException {
         Message message = update.getMessage();
         int idChat = Integer.parseInt(message.getChatId().toString());
-        LOGGER.info("chat id : {}", message.getChatId().toString() );
         List<EventDto> eventDtos;
         KbOptionsBot kbOptionsBot;
         DateVerifier verifier = new DateVerifier(eveEventRepository);
+
 
         switch(message.getText()) {
             case Command.startCommand:
@@ -151,22 +150,22 @@ public class BotBl {
                 break;
 
             case Option.OP_MOVIE:
+
                 LOGGER.info("Texto del la lista : {}", message.getText() );
                 verifier.DeletePastEventsMovie();
+
                 eventDtos = eventBl.findAllEventByTypeEvent(TypeEvent.MOVIE.getTypeEvent());
                 showEventsInformation(eventDtos, idChat,
                         "https://www.yucatan.com.mx/wp-content/uploads/2019/03/2491246.jpg-r_1920_1080-f_jpg-q_x-xxyxx.jpg?width=1200&enable=upscale");
 
                 break;
             case Option.OP_MUSIC:
-                verifier.DeletePastEventsMusic();
                 eventDtos = eventBl.findAllEventByTypeEvent(TypeEvent.MUSIC.getTypeEvent());
                 showEventsInformation(eventDtos,idChat,
                         "https://static.rfstat.com/bloggers_folders/user_2540376/my_media/aab8b888-e24f-43af-83db-cc4cd88de9b3.jpeg");
                 break;
 
             case Option.OP_MUSEUM:
-                verifier.DeletePastEventsMuseum();
                 eventDtos = eventBl.findAllEventByTypeEvent(TypeEvent.MUSEUM.getTypeEvent());
                 showEventsInformation(eventDtos, idChat,
                         "https://ep00.epimg.net/elviajero/imagenes/2016/11/23/album/1479923555_950451_1479926380_album_normal.jpg");
@@ -264,7 +263,7 @@ public class BotBl {
             boltonBot.executeAsync(inv, new SentCallback<Message>() {
                 @Override
                 public void onResult(BotApiMethod<Message> botApiMethod, Message message) {
-                    LOGGER.info("JODER {} ", message);
+                    LOGGER.info("JODER {}", message.getSuccessfulPayment());
                 }
 
                 @Override
@@ -305,8 +304,7 @@ public class BotBl {
 
     public void processPayment(Update update, BoltonBot bot) {
         BotBl.boltonBot = bot;
-        //TODO: implement logic payment
-        SequencePayment sequencePayment = new SequencePayment(evePaymentRepository, userRepository, sendEmailBl);
+        SequencePayment sequencePayment = new SequencePayment(evePaymentRepository, sendEmailBl);
         sequencePayment.setRunning(true);
         sequencePayment.setNumberSteps(2);
         sequencePayment.runSequence(update, bot);

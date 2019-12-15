@@ -1,6 +1,8 @@
 package edu.com.chatbotsoftI.bl;
 
+
 import edu.com.chatbotsoftI.auxiliar.InvoiceMaker;
+import com.sun.mail.smtp.SMTPTransport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -16,44 +18,32 @@ import java.util.Properties;
 @Service
 public class SendEmailBl {
 
-    private JavaMailSender javaMailSender;
 
     private InvoiceMaker invoiceMaker;
 
     @Autowired
-    public SendEmailBl(JavaMailSender javaMailSender) {
-        this.javaMailSender = javaMailSender;
+    public SendEmailBl() {
         invoiceMaker = new InvoiceMaker();
     }
 
     public void sendMail(String from, String to, String  subject, String body) {
 
-        String smtpHost = "smtp.mailtrap.io"; //replace this with a valid host
-        int smtpPort = 2525; //replace this with a valid port
+        String mailHost = "smtp.mailgun.org";
+        String username1 = "";
+        String password1 = "";
+
+        String smtpHost = mailHost; //replace this with a valid host
+        int smtpPort = 587; //replace this with a valid port
 
         Properties properties = new Properties();
         properties.put("mail.smtp.host", smtpHost);
         properties.put("mail.smtp.port", smtpPort);
 
-        String username1 = "4b6a8a34d44361";
-        String password1 = "2f5624fd2c0d24";
 
         properties.setProperty("mail.smtp.user", username1);
         properties.setProperty("mail.smtp.password", password1);
         properties.setProperty("mail.smtp.auth", "true");
-        Session session = Session.getDefaultInstance(properties, new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                String username = username1;
-                String password = password1;
-                if ((username != null) && (username.length() > 0) && (password != null)
-                        && (password.length   () > 0)) {
-                    return new PasswordAuthentication(username, password);
-                }
-
-                return null;
-            }
-        });
+        Session session = Session.getInstance(properties,null);
 
         ByteArrayOutputStream outputStream = null;
         try {
@@ -82,14 +72,17 @@ public class SendEmailBl {
             InternetAddress iaRecipient = new InternetAddress(from);
 
             //construct the mime message
-            MimeMessage mimeMessage = new MimeMessage(session);
-            mimeMessage.setSender(iaSender);
-            mimeMessage.setSubject(subject);
-            mimeMessage.setRecipient(Message.RecipientType.TO, iaRecipient);
-            mimeMessage.setContent(mimeMultipart);
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("adam123quiroz@gmail.com"));
+            message.setSubject(subject);
+            message.setRecipient(Message.RecipientType.TO, iaRecipient);
+            message.setContent(mimeMultipart);
 
+            SMTPTransport t = (SMTPTransport) session.getTransport("smtps");
+            t.connect(smtpHost, username1, password1);
+//            t.sendMessage();
             //send off the email
-            Transport.send(mimeMessage);
+            Transport.send(message);
 
         } catch (AddressException e) {
             e.printStackTrace();

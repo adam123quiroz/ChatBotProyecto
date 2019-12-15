@@ -14,6 +14,7 @@ public class EvePersonEntity {
     private List<EvePaymentEntity> evePaymentsByIdPerson;
     private List<EvePersonChatEntity> evePersonChatsByIdPerson;
     private List<EveUserEntity> eveUsersByIdPerson;
+    private List<EveChatEntity> eveChatsByIdPerson;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -118,5 +119,14 @@ public class EvePersonEntity {
 
     public void setEveUsersByIdPerson(List<EveUserEntity> eveUsersByIdPerson) {
         this.eveUsersByIdPerson = eveUsersByIdPerson;
+    }
+
+    @OneToMany(mappedBy = "evePersonByIdPerson")
+    public List<EveChatEntity> getEveChatsByIdPerson() {
+        return eveChatsByIdPerson;
+    }
+
+    public void setEveChatsByIdPerson(List<EveChatEntity> eveChatsByIdPerson) {
+        this.eveChatsByIdPerson = eveChatsByIdPerson;
     }
 }
