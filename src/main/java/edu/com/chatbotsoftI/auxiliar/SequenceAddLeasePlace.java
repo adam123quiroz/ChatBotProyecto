@@ -49,7 +49,7 @@ public class SequenceAddLeasePlace extends Sequence {
     private EveCityEntity eveCityEntity;
     private EveNotificationEntity eveNotificationEntity;
     private EveUserEntity eveUserEntity;
-    private EvePersonChatEntity evePersonChatEntity;
+    private EveChatEntity evePersonChatEntity;
     private EvePersonEntity evePersonEntity;
 
     private EveLeasePlaceRepository leasePlaceRepository;
@@ -111,9 +111,9 @@ public class SequenceAddLeasePlace extends Sequence {
         Message message = update.getMessage();
         String data;
 
-        evePersonChatEntity=evePersonChatRepository.findLastChatByIdevuserchat(BotBl.getUserEntity().getIduser());
+        evePersonChatEntity=evePersonChatRepository.findLastChatByIdevuserchat(BotBl.getUserEntity().getIdUser());
         LOGGER.info("User2 {}",evePersonChatEntity);
-        EvePersonChatEntity lastmessage=evePersonChatRepository.findLastChatByIdevuserchat(BotBl.getUserEntity().getIduser());
+        EveChatEntity lastmessage=evePersonChatRepository.findLastChatByIdevuserchat(BotBl.getUserEntity().getIdUser());
         LOGGER.info("LastMessage {}",lastmessage);
         String response =null;
 
@@ -121,10 +121,10 @@ public class SequenceAddLeasePlace extends Sequence {
 
        if (lastmessage ==null)
        {
-            LOGGER.info("PRIMER MENSAJE {}",BotBl.getUserEntity().getIduser());
+            LOGGER.info("PRIMER MENSAJE {}",BotBl.getUserEntity().getIdUser());
             response="0";
-            EvePersonChatEntity evePersonChatEntity =new EvePersonChatEntity();
-            Integer idperson= BotBl.getUserEntity().getIduser();
+            EveChatEntity evePersonChatEntity =new EveChatEntity();
+            Integer idperson= BotBl.getUserEntity().getIdUser();
             EvePersonEntity evePersonEntity;
             if (evePersonRepository.existsById(idperson)) {
                evePersonEntity = evePersonRepository.findByIdperson(idperson);
@@ -132,13 +132,13 @@ public class SequenceAddLeasePlace extends Sequence {
                EvePersonEntity newevepersonentity = new EvePersonEntity();
                evePersonEntity = newevepersonentity;
             }
-            evePersonChatEntity.setEvepersonByIdperson(evePersonEntity);
+            evePersonChatEntity.setEvePersonByIdPerson(evePersonEntity);
             LOGGER.info("Nuevo usuario en chat {} ",evePersonChatEntity);
-            evePersonChatEntity.setUserbotchatid(response);
+            evePersonChatEntity.setInMessage(response);
             evePersonChatRepository.save(evePersonChatEntity);
        }
             int conversation;
-            conversation = Integer.parseInt(lastmessage.getUserbotchatid());
+            conversation = Integer.parseInt(lastmessage.getInMessage());
             LOGGER.info("Conversacion {}", conversation);
 
         if (!update.getMessage().getText().equalsIgnoreCase(Command.RESTART_COMMAND)) {
@@ -154,7 +154,7 @@ public class SequenceAddLeasePlace extends Sequence {
                     case 1:
                         data = message.getText();
                         if(isOnlyAlphaNumeric(data)){
-                            LeasePlace.setNameplace(data);
+                            LeasePlace.setNamePlace(data);
                             LOGGER.info("NOMBRE LUGAR INGRESA {}",LeasePlace);
                             //segunda pregunta
                             sendMessage = sendMessage(message, REQUEST_DATE_PLACE);
@@ -213,14 +213,14 @@ public class SequenceAddLeasePlace extends Sequence {
                 LOGGER.info("numero de pasos actualizados {}", conversation);
               //  conversation=getStepNow();
 //                EvePersonChatEntity evePersonChatEntity=new EvePersonChatEntity();
-                evePersonChatEntity.setIdevuserchat(BotBl.getUserEntity().getIduser());
+                evePersonChatEntity.setIdEveUserChat(BotBl.getUserEntity().getIdUser());
                 LOGGER.info("USUARIO {}",evePersonChatEntity);
-                evePersonChatEntity.setUserbotchatid(String.valueOf(conversation));
+                evePersonChatEntity.setInMessage(String.valueOf(conversation));
                 LOGGER.info("NUMERO DE PASO ALMACENADO {}",evePersonChatEntity);
-                evePersonChatEntity.setTxuser(BotBl.getUserEntity().getNameuser());
-                evePersonChatEntity.setTxhost("localhost");
+                evePersonChatEntity.setTxUser(BotBl.getUserEntity().getNameUser());
+                evePersonChatEntity.setTxHost("localhost");
                 Date datenew = new java.util.Date();
-                evePersonChatEntity.setTxdate(new java.sql.Date(datenew.getTime()));
+                evePersonChatEntity.setTxDate(new java.sql.Date(datenew.getTime()));
                 evePersonChatRepository.save(evePersonChatEntity);
                 LOGGER.info("DATOS ALMACENADOS CONSTANTEMENTE {}",evePersonChatEntity);
                // conversation++;
@@ -309,12 +309,12 @@ public class SequenceAddLeasePlace extends Sequence {
                 {
                     conversation=0;
                   //  EvePersonChatEntity evePersonChatEntity=new EvePersonChatEntity();
-                    evePersonChatEntity.setEvepersonByIdperson(BotBl.getUserEntity().getEvepersonByIdperson());
-                    evePersonChatEntity.setUserbotchatid(String.valueOf(conversation));
-                    evePersonChatEntity.setTxuser(BotBl.getUserEntity().getNameuser());
-                    evePersonChatEntity.setTxhost("localhost");
+                    evePersonChatEntity.setEvePersonByIdPerson(BotBl.getUserEntity().getEvePersonByIdPerson());
+                    evePersonChatEntity.setInMessage(String.valueOf(conversation));
+                    evePersonChatEntity.setTxUser(BotBl.getUserEntity().getNameUser());
+                    evePersonChatEntity.setTxHost("localhost");
                   //  Date datenew = new java.util.Date();
-                    evePersonChatEntity.setTxdate(new java.sql.Date(datenew.getTime()));
+                    evePersonChatEntity.setTxDate(new java.sql.Date(datenew.getTime()));
                     evePersonChatRepository.save(evePersonChatEntity);
                 }
             }
@@ -351,8 +351,8 @@ public class SequenceAddLeasePlace extends Sequence {
         setSendMessageRequest(kbOptionsBot.showMenu(REQUEST_NAME_PLACE, update ));
         bot.execute(getSendMessageRequest());
         int conversation= 0;
-        evePersonChatEntity.setEvepersonByIdperson(BotBl.getUserEntity().getEvepersonByIdperson());
-        evePersonChatEntity.setUserbotchatid(String.valueOf(conversation));
+        evePersonChatEntity.setEvePersonByIdPerson(BotBl.getUserEntity().getEvePersonByIdPerson());
+        evePersonChatEntity.setInMessage(String.valueOf(conversation));
         evePersonChatRepository.save(evePersonChatEntity);
         setStepNow(0);
 

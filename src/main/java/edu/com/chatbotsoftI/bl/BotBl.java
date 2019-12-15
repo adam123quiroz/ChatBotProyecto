@@ -89,12 +89,13 @@ public class BotBl {
                  MailServiceBl mailServiceBl,
                  EveNotificationRepository notificationRepository,
                  EvePersonChatRepository evePersonChatRepository,
-                 EvePersonRepository evePersonRepository) {
-
-    this.evePaymentRepository = evePaymentRepository;
+                 EvePersonRepository evePersonRepository,
                  EveChatRepository eveChatRepository,
                  EveTicketRepository eveTicketRepository,
                  EvePaymentMethodRepository evePaymentMethodRepository) {
+
+
+        this.evePaymentRepository = evePaymentRepository;
         this.evePaymentRepository = evePaymentRepository;
         this.userRepository = userRepository;
         this.eventBl = eventBl;
@@ -133,21 +134,21 @@ public class BotBl {
         return sendMessages;
     }
 
-    private EvePersonEntity initUser(User user) {
-        boolean result = false;
+    private EvePersonEntity initUser(User user){
+            boolean result = false;
 
-     //   String response =null;
+            //   String response =null;
 
-        EvePersonEntity userEntity = userRepository.findByBotUserId(user.getId().toString());
-        if (userEntity == null) {
-            EvePersonEntity evePerson = new EvePersonEntity();
-            evePerson.setName(user.getFirstName());
-            evePerson.setLastName(user.getLastName());
-            evePerson.setBotUserId(user.getId().toString());
-            userRepository.save(evePerson);
-        }
-            // agregado
-           // EvePersonChatEntity lastmessage=evePersonChatRepository.findLastChatByIdevuserchat(BotBl.getUserEntity().getIduser());
+            EvePersonEntity userEntity = userRepository.findByBotUserId(user.getId().toString());
+            if (userEntity == null) {
+                EvePersonEntity evePerson = new EvePersonEntity();
+                evePerson.setName(user.getFirstName());
+                evePerson.setLastName(user.getLastName());
+                evePerson.setBotUserId(user.getId().toString());
+                userRepository.save(evePerson);
+
+                // agregado
+                // EvePersonChatEntity lastmessage=evePersonChatRepository.findLastChatByIdevuserchat(BotBl.getUserEntity().getIduser());
        /*     EvePersonChatEntity lastmessage=evePersonChatRepository.findLastChatByIdperson(BotBl.getUserEntity().getIduser());
             LOGGER.info("LastMessage {}",lastmessage);
             if (lastmessage ==null)
@@ -174,14 +175,17 @@ public class BotBl {
         conversation = Integer.parseInt(lastmessage.getUserbotchatid());
         LOGGER.info("Conversacion {}", conversation);
         */
-        return userEntity;
-    }
+
+            }
+            return userEntity;
+        }
 
     private void continueChatWithUser( Update update, EvePersonEntity personEntity ) throws TelegramApiException {
         Message message = update.getMessage();
         int idChat = Integer.parseInt(message.getChatId().toString());
         List<EventDto> eventDtos;
         KbOptionsBot kbOptionsBot;
+        List<LeasePlaceDto> leaseplaceDtos;
         DateVerifier verifier = new DateVerifier(eveEventRepository);
 
 
@@ -212,7 +216,7 @@ public class BotBl {
         eveChat.setEvePersonByIdPerson(personEntity);
         eveChat.setInMessage(update.getMessage().getText());
         eveChat.setOutMessage(response);
-        eveChat.setMsgDate(new java.sql.Date(new Date(update.getMessage().getDate()).getTime())); //FIXME Obtener la fecha del campo entero update.getMessage().
+        eveChat.setMsgDate(new java.sql.Date(new Date(update.getMessage().getDate()).getTime()));
         eveChat.setTxDate(new java.sql.Date(new Date().getTime()));
         eveChat.setTxUser(String.valueOf(personEntity.getIdPerson()));
         eveChat.setTxHost(update.getMessage().getChatId().toString());
@@ -221,16 +225,11 @@ public class BotBl {
         // Agregamos la respuesta al chatResponse.
 //        boltonBot.execute(new SendMessage().setText(response).setChatId(update.getMessage().getChatId()));
 
-            Message message = update.getMessage();
-            int idChat = Integer.parseInt(message.getChatId().toString());
+
         //agregado
       /*  EvePersonChatEntity lastmessage=evePersonChatRepository.findLastChatByIdevuserchat(Integer.parseInt(personEntity.getBotUserId()));
         String response=null;   //para in message
         */
-            List<EventDto> eventDtos;
-            KbOptionsBot kbOptionsBot;
-            List<LeasePlaceDto> leaseplaceDtos;
-
         switch(message.getText()) {
             case Command.startCommand:
             case "hola":

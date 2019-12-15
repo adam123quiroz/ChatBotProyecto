@@ -28,7 +28,6 @@ public class BoltonBot extends TelegramLongPollingBot {
         if (update.hasMessage()) {
             Message message = update.getMessage();
             if (message.hasText() || message.hasLocation() || message != null) {
-
 //                List<String> messages = null;
                 try {
                     botBl.processUpdate(update, this);
