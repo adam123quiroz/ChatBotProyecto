@@ -29,8 +29,8 @@ public class SendEmailBl {
     public void sendMail(String from, String to, String  subject, String body) {
 
         String mailHost = "smtp.gmail.com";
-        String username = "adam123quiroz@gmail.com";
-        String password = "";
+        String username = "boltonbot2019@gmail.com";
+        String password = "software2019";
 
         String smtpHost = mailHost; //replace this with a valid host
         int smtpPort = 465; //replace this with a valid port
@@ -68,8 +68,7 @@ public class SendEmailBl {
             mimeMultipart.addBodyPart(pdfBodyPart);
 
             //create the sender/recipient addresses
-            InternetAddress iaSender = new InternetAddress(to);
-            InternetAddress iaRecipient = new InternetAddress(from);
+            InternetAddress iaRecipient = new InternetAddress(to);
 
             //construct the mime message
             Message message = new MimeMessage(session);

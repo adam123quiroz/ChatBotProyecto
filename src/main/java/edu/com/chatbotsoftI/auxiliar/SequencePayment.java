@@ -93,8 +93,9 @@ public class SequencePayment extends Sequence {
 //                            eveTicketEntity.setNumberTicket();
 
 
-
+                        LOGGER.info("email {}", email);
                             sendEmailBl.sendMail("adam123quiroz@gmail.com", email, "Facturacion", "Hola");
+
 
 
 
