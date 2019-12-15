@@ -128,7 +128,7 @@ public class BotBl {
         // Si el ultimo mensaje no existe (es la primera conversación)
         if (lastMessage == null) {
             // Retornamos 1
-            LOGGER.info("Primer mensaje del usuario botUserId{}", personEntity.getBotUserId());
+            LOGGER.info("Primer mensaje del usuario botUserId {}", personEntity.getBotUserId());
             response = "1";
         } else {
             // Si existe convesasción previa iniciamos la variable del ultimo mensaje en 1
@@ -144,16 +144,16 @@ public class BotBl {
         }
         LOGGER.info("PROCESSING IN MESSAGE: {} from user {}" ,update.getMessage().getText(), personEntity.getIdPerson());
         // Creamos el objeto CpChat con la respuesta a la presente conversación.
-        EveChatEntity cpChat = new EveChatEntity();
-        cpChat.setEvePersonByIdPerson(personEntity);
-        cpChat.setInMessage(update.getMessage().getText());
-        cpChat.setOutMessage(response);
-        cpChat.setMsgDate(new java.sql.Date(new Date(update.getMessage().getDate()).getTime())); //FIXME Obtener la fecha del campo entero update.getMessage().
-        cpChat.setTxDate(new java.sql.Date(new Date().getTime()));
-        cpChat.setTxUser(String.valueOf(personEntity.getIdPerson()));
-        cpChat.setTxHost(update.getMessage().getChatId().toString());
+        EveChatEntity eveChat = new EveChatEntity();
+        eveChat.setEvePersonByIdPerson(personEntity);
+        eveChat.setInMessage(update.getMessage().getText());
+        eveChat.setOutMessage(response);
+        eveChat.setMsgDate(new java.sql.Date(new Date(update.getMessage().getDate()).getTime())); //FIXME Obtener la fecha del campo entero update.getMessage().
+        eveChat.setTxDate(new java.sql.Date(new Date().getTime()));
+        eveChat.setTxUser(String.valueOf(personEntity.getIdPerson()));
+        eveChat.setTxHost(update.getMessage().getChatId().toString());
         // Guardamos en base dedatos
-        eveChatRepository.save(cpChat);
+        eveChatRepository.save(eveChat);
         // Agregamos la respuesta al chatResponse.
         boltonBot.execute(new SendMessage().setText(response).setChatId(update.getMessage().getChatId()));
 
