@@ -54,10 +54,11 @@ public class BotBl {
     private EvePaymentRepository evePaymentRepository;
     private EveChatRepository eveChatRepository;
     private SendEmailBl sendEmailBl;
-
+    EveTicketRepository eveTicketRepository;
     private static Sequence sequence;
     private static EveUserEntity userEntity;
     private static BoltonBot boltonBot;
+    private EvePaymentMethodRepository evePaymentMethodRepository;
 
     @Autowired
     public BotBl(EvePersonRepository userRepository,
@@ -71,7 +72,9 @@ public class BotBl {
                  EveCityRepository eveCityRepository,
                  SendEmailBl sendEmailBl,
                  EvePaymentRepository evePaymentRepository,
-                 EveChatRepository eveChatRepository) {
+                 EveChatRepository eveChatRepository,
+                 EveTicketRepository eveTicketRepository,
+                 EvePaymentMethodRepository evePaymentMethodRepository) {
         this.evePaymentRepository = evePaymentRepository;
         this.userRepository = userRepository;
         this.eventBl = eventBl;
@@ -84,6 +87,8 @@ public class BotBl {
         this.eveCityRepository = eveCityRepository;
         this.sendEmailBl = sendEmailBl;
         this.eveChatRepository = eveChatRepository;
+        this.eveTicketRepository = eveTicketRepository;
+        this.evePaymentMethodRepository = evePaymentMethodRepository;
     }
 
     public List<String> processUpdate(Update update, BoltonBot boltonBot) throws TelegramApiException {
@@ -345,7 +350,7 @@ public class BotBl {
 
     public void processPayment(Update update, BoltonBot bot) {
         BotBl.boltonBot = bot;
-        SequencePayment sequencePayment = new SequencePayment(evePaymentRepository, sendEmailBl);
+        SequencePayment sequencePayment = new SequencePayment(evePaymentRepository, sendEmailBl,eveTicketRepository,evePaymentMethodRepository,userRepository);
         sequencePayment.setRunning(true);
         sequencePayment.setNumberSteps(2);
         sequencePayment.runSequence(update, bot);
