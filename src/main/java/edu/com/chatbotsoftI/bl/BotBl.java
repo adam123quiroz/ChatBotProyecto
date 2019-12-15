@@ -252,7 +252,7 @@ public class BotBl {
                     }
                 } else {
                         SendMessage sendMessageGreeting = new SendMessage().setChatId(update.getMessage().getChatId());
-                        sendMessageGreeting.setText("Tienes que iniciar sesion para poder entrar al modo Administrativo");
+                        sendMessageGreeting.setText("Bienvenido, pulsa Continuar para usar los Beneficios del Bot");
                         boltonBot.execute(sendMessageGreeting);
                 }
         }
@@ -283,12 +283,12 @@ public class BotBl {
 
     private void showEventsInformation(List<EventDto> eventDtos, int idChat, String url) throws TelegramApiException {
         LOGGER.info("eventos {}", eventDtos);
-        List<LabeledPrice> priceList = new ArrayList<>();
-        priceList.add(new LabeledPrice("45.33", 120));
-        priceList.add(new LabeledPrice("45.33", 60994));
+
         SendInvoice inv;
         for (EventDto event:
                 eventDtos) {
+            List<LabeledPrice> priceList = new ArrayList<>();
+            priceList.add(new LabeledPrice("Evento", Integer.valueOf(event.getPrice().toString())));
             String description = "" +
                     "Fecha: " + event.getDate() + "\n" +
                     "Hora: " + event.getStarttime() + "\n"+
