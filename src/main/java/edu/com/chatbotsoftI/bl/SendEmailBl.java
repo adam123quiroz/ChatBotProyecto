@@ -28,20 +28,20 @@ public class SendEmailBl {
 
     public void sendMail(String from, String to, String  subject, String body) {
 
-        String mailHost = "smtp.mailgun.org";
-        String username1 = "";
-        String password1 = "";
+        String mailHost = "smtp.mailtrap.io";
+        String username = "4b6a8a34d44361";
+        String password = "2f5624fd2c0d24";
 
         String smtpHost = mailHost; //replace this with a valid host
-        int smtpPort = 587; //replace this with a valid port
+        int smtpPort = 2525; //replace this with a valid port
 
         Properties properties = new Properties();
         properties.put("mail.smtp.host", smtpHost);
         properties.put("mail.smtp.port", smtpPort);
 
 
-        properties.setProperty("mail.smtp.user", username1);
-        properties.setProperty("mail.smtp.password", password1);
+        properties.setProperty("mail.smtp.user", username);
+        properties.setProperty("mail.smtp.password", password);
         properties.setProperty("mail.smtp.auth", "true");
         Session session = Session.getInstance(properties,null);
 
@@ -79,7 +79,7 @@ public class SendEmailBl {
             message.setContent(mimeMultipart);
 
             SMTPTransport t = (SMTPTransport) session.getTransport("smtps");
-            t.connect(smtpHost, username1, password1);
+            t.connect(smtpHost, username, password);
 //            t.sendMessage();
             //send off the email
             Transport.send(message);

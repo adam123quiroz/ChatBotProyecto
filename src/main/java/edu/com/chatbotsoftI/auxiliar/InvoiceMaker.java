@@ -18,12 +18,11 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
 
-/**
- * Reads invoice data from a test database and creates ZUGFeRD invoices
- * (Basic profile).
- * @author Bruno Lowagie
- */
+import javax.lang.model.element.Element;
+
+
 public class InvoiceMaker {
+
 
     public void createPdf(OutputStream outputStream) throws MalformedURLException {
 
@@ -32,27 +31,35 @@ public class InvoiceMaker {
         PdfDocument pdfDocument = new PdfDocument(new PdfWriter(outputStream));
         Document layoutDocument = new Document(pdfDocument);
 
-        // title
+// Facturacion de prueba.
         addTitle(layoutDocument);
 
-        // customer reference information
+
         addCustomerReference(layoutDocument);
         addTable(layoutDocument, Arrays.asList(
                 new Article(1, "VentaTicket",1, 60),
                 new Article(2, "ServicioBot", 1, 1)));
+        double total = 61;
 
-        // articles
-
+        addTotal(layoutDocument,total);
         String imageFile = "./MyQRCode.png";
         ImageData data = ImageDataFactory.create(imageFile);
         Image img = new Image(data);
         layoutDocument.add(img);
+
         layoutDocument.close();
     }
 
-    public static void addTitle(Document layoutDocument)
-    {
-        layoutDocument.add(new Paragraph("BOLTON BOT INVOICE").setBold().setUnderline().setTextAlignment(TextAlignment.CENTER));
+    public static void addTitle(Document layoutDocument) throws MalformedURLException {
+        String imageFile = "./BoltonLogo.jpg";
+        ImageData data = ImageDataFactory.create(imageFile);
+        Image img = new Image(data);
+        img.scaleToFit(50,150);
+        img.setMarginRight(600);
+        img.setUnderline().setTextAlignment(TextAlignment.LEFT);
+        layoutDocument.add(img);
+        layoutDocument.add(new Paragraph("INVOICE").setBold().setUnderline().setTextAlignment(TextAlignment.CENTER));
+
     }
 
     public static void addCustomerReference(Document layoutDocument)
@@ -61,17 +68,22 @@ public class InvoiceMaker {
         layoutDocument.add(new Paragraph("La Paz, Bolivia").setMultipliedLeading(.2f));
         layoutDocument.add(new Paragraph("UCB Bolivia").setMultipliedLeading(.2f));
     }
+    public void addTotal(Document layoutDocument, double total){
 
+        Table table = new Table(UnitValue.createPointArray(new float[]{200f}));
+        table.addCell(new Paragraph("Total:            "+total).setBold());
+        layoutDocument.add(table);
+    }
     public void addTable(Document layoutDocument, List<Article> articleList)
     {
         Table table = new Table(UnitValue.createPointArray(new float[]{60f, 180f, 50f, 80f, 110f}));
 
         // headers
-        table.addCell(new Paragraph("S.N.O.").setBold());
-        table.addCell(new Paragraph("PARTICULARS").setBold());
-        table.addCell(new Paragraph("QTY").setBold());
-        table.addCell(new Paragraph("RATE").setBold());
-        table.addCell(new Paragraph("AMOUNT IN RS.").setBold());
+        table.addCell(new Paragraph("item").setBold());
+        table.addCell(new Paragraph("Detalle").setBold());
+        table.addCell(new Paragraph("Cantidad").setBold());
+        table.addCell(new Paragraph("Precio").setBold());
+        table.addCell(new Paragraph("Total en Bs.").setBold());
 
         // items
         for(Article a : articleList)

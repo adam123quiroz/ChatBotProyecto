@@ -120,7 +120,8 @@ public class BotBl {
             case Command.startCommand:
             case "hola":
             case "Hola":
-
+//                QrCreator qrCreator = new QrCreator();
+//                qrCreator.SaveQr("Nombre del evento: Avengers EndGame \n Fecha y hora:14-12-2019 | 14:31:07","png",150);
                 kbOptionsBot = new KbOptionsBot(optionListI);
                 boltonBot.execute(kbOptionsBot.showMenu(String.format("" +
                                 "Hola %s, soy Bolton, para ayudarte necesito que entres en " +
