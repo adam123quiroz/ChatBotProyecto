@@ -287,7 +287,7 @@ public class BotBl {
         for (EventDto event:
                 eventDtos) {
             List<LabeledPrice> priceList = new ArrayList<>();
-            priceList.add(new LabeledPrice("Evento", Integer.valueOf(event.getPrice().toString())));
+            priceList.add(new LabeledPrice("Evento", event.getPrice().intValue()));
             String description = "" +
                     "Fecha: " + event.getDate() + "\n" +
                     "Hora: " + event.getStarttime() + "\n"+
