@@ -33,12 +33,12 @@ public class QrCreator {
     }
     public void SaveQr(String content, String fileType, int size){
         try {
-            String filePath = "./MyQRCode.png";
+            String filePath = "./MyQRCode";
             UUID uuid = UUID.randomUUID();
             String randomUUIDString = uuid.toString();
             QRCodeWriter qrcode = new QRCodeWriter();
             BitMatrix matrix = qrcode.encode(content, BarcodeFormat.QR_CODE, size, size);
-            File qrFile = new File(filePath + randomUUIDString + "." + fileType);
+            File qrFile = new File(filePath  + "." + fileType);
             int matrixWidth = matrix.getWidth();
             BufferedImage image = new BufferedImage(matrixWidth, matrixWidth, BufferedImage.TYPE_INT_RGB);
             image.createGraphics();

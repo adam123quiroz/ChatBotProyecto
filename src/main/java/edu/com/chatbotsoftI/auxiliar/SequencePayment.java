@@ -93,7 +93,7 @@ public class SequencePayment extends Sequence {
                             evePaymentMethodEntity.setPaymentMethod("Card");
                             evePaymentEntity.setEvePaymentMethodByIdPaymentMethod(evePaymentMethodEntity);
 //                            evePaymentEntity.setEveTicketByIdTicket();
-                            evePaymentRepository.save(evePaymentEntity);
+//                            evePaymentRepository.save(evePaymentEntity);
                             EveTicketEntity eveTicketEntity = new EveTicketEntity();
 //                            eveTicketEntity.setNumberTicket();
 

@@ -1,7 +1,6 @@
 package edu.com.chatbotsoftI.bl;
 
 import edu.com.chatbotsoftI.auxiliar.InvoiceMaker;
-import edu.com.chatbotsoftI.invoice.PdfInvoiceBasic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -11,6 +10,7 @@ import javax.mail.*;
 import javax.mail.internet.*;
 import javax.mail.util.ByteArrayDataSource;
 import java.io.ByteArrayOutputStream;
+import java.net.MalformedURLException;
 import java.util.Properties;
 
 @Service
@@ -35,8 +35,8 @@ public class SendEmailBl {
         properties.put("mail.smtp.host", smtpHost);
         properties.put("mail.smtp.port", smtpPort);
 
-        String username1 = "";
-        String password1 = "tu password";
+        String username1 = "4b6a8a34d44361";
+        String password1 = "2f5624fd2c0d24";
 
         properties.setProperty("mail.smtp.user", username1);
         properties.setProperty("mail.smtp.password", password1);
@@ -94,6 +94,8 @@ public class SendEmailBl {
         } catch (AddressException e) {
             e.printStackTrace();
         } catch (MessagingException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
     }

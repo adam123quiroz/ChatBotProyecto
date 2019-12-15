@@ -2,10 +2,14 @@
 package edu.com.chatbotsoftI.auxiliar;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.List;
 
+import com.itextpdf.io.image.ImageData;
+import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.pdf.*;
+import com.itextpdf.layout.element.Image;
 import edu.com.chatbotsoftI.invoice.*;
 
 import com.itextpdf.layout.Document;
@@ -21,7 +25,7 @@ import com.itextpdf.layout.property.UnitValue;
  */
 public class InvoiceMaker {
 
-    public void createPdf(OutputStream outputStream) {
+    public void createPdf(OutputStream outputStream) throws MalformedURLException {
 
 
 
@@ -38,6 +42,11 @@ public class InvoiceMaker {
                 new Article(2, "ServicioBot", 1, 1)));
 
         // articles
+
+        String imageFile = "./MyQRCode.png";
+        ImageData data = ImageDataFactory.create(imageFile);
+        Image img = new Image(data);
+        layoutDocument.add(img);
         layoutDocument.close();
     }
 
