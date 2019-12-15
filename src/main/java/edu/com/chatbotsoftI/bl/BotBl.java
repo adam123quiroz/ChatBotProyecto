@@ -170,8 +170,7 @@ public class BotBl {
 
                 kbOptionsBot = new KbOptionsBot(optionListI);
                 boltonBot.execute(kbOptionsBot.showMenu(String.format("" +
-                                "Hola %s, soy Bolton, para ayudarte necesito que entres en " +
-                                "sesión o te registres:", message.getChat().getFirstName() ),
+                                "Hola %s, soy Bolton, para ayudarte puedes precionar Continuar:", message.getChat().getFirstName() ),
                         update));
                 LOGGER.info("Texto del la lista : {}", message.getText() );
                 break;
@@ -252,7 +251,7 @@ public class BotBl {
                     }
                 } else {
                         SendMessage sendMessageGreeting = new SendMessage().setChatId(update.getMessage().getChatId());
-                        sendMessageGreeting.setText("Bienvenido, pulsa Continuar para usar los Beneficios del Bot");
+                        sendMessageGreeting.setText("Modo Administrativo Desactivado");
                         boltonBot.execute(sendMessageGreeting);
                 }
         }
