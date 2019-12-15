@@ -7,6 +7,7 @@ import edu.com.chatbotsoftI.bot.commands.Option;
 import edu.com.chatbotsoftI.bot.special.keyboard.KbOptionsBot;
 import edu.com.chatbotsoftI.dao.*;
 import edu.com.chatbotsoftI.dto.*;
+import edu.com.chatbotsoftI.entity.EveChatEntity;
 import edu.com.chatbotsoftI.entity.EvePersonEntity;
 import edu.com.chatbotsoftI.entity.EveUserEntity;
 import edu.com.chatbotsoftI.enums.TypeEvent;
@@ -27,6 +28,7 @@ import org.telegram.telegrambots.meta.updateshandlers.SentCallback;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -50,6 +52,7 @@ public class BotBl {
     private EveStatusRepository eveStatusRepository;
     private EveCityRepository eveCityRepository;
     private EvePaymentRepository evePaymentRepository;
+    private EveChatRepository eveChatRepository;
     private SendEmailBl sendEmailBl;
 
     private static Sequence sequence;
@@ -67,7 +70,8 @@ public class BotBl {
                  EveStatusRepository eveStatusRepository,
                  EveCityRepository eveCityRepository,
                  SendEmailBl sendEmailBl,
-                 EvePaymentRepository evePaymentRepository) {
+                 EvePaymentRepository evePaymentRepository,
+                 EveChatRepository eveChatRepository) {
         this.evePaymentRepository = evePaymentRepository;
         this.userRepository = userRepository;
         this.eventBl = eventBl;
@@ -79,6 +83,7 @@ public class BotBl {
         this.eveStatusRepository = eveStatusRepository;
         this.eveCityRepository = eveCityRepository;
         this.sendEmailBl = sendEmailBl;
+        this.eveChatRepository = eveChatRepository;
     }
 
     public List<String> processUpdate(Update update, BoltonBot boltonBot) throws TelegramApiException {
@@ -114,6 +119,43 @@ public class BotBl {
         List<EventDto> eventDtos;
         KbOptionsBot kbOptionsBot;
         DateVerifier verifier = new DateVerifier(eveEventRepository);
+
+
+        // Obtener el ultimo mensaje que envió el usuario
+        EveChatEntity lastMessage = eveChatRepository.findLastChatByUserId(personEntity.getIdPerson());
+        // Preparo la vaiable para retornar la respuesta
+        String response = null;
+        // Si el ultimo mensaje no existe (es la primera conversación)
+        if (lastMessage == null) {
+            // Retornamos 1
+            LOGGER.info("Primer mensaje del usuario botUserId {}", personEntity.getBotUserId());
+            response = "1";
+        } else {
+            // Si existe convesasción previa iniciamos la variable del ultimo mensaje en 1
+            int lastMessageInt = 0;
+            try {
+                // Intenemos obtener el ultimo mensaje retornado y lo convertimos a entero.
+                // Si la coversin falla en el catch retornamos 1
+                lastMessageInt = Integer.parseInt(lastMessage.getOutMessage());
+                response = "" + (lastMessageInt + 1);
+            } catch (NumberFormatException nfe) {
+                response = "1";
+            }
+        }
+        LOGGER.info("PROCESSING IN MESSAGE: {} from user {}" ,update.getMessage().getText(), personEntity.getIdPerson());
+        // Creamos el objeto CpChat con la respuesta a la presente conversación.
+        EveChatEntity eveChat = new EveChatEntity();
+        eveChat.setEvePersonByIdPerson(personEntity);
+        eveChat.setInMessage(update.getMessage().getText());
+        eveChat.setOutMessage(response);
+        eveChat.setMsgDate(new java.sql.Date(new Date(update.getMessage().getDate()).getTime())); //FIXME Obtener la fecha del campo entero update.getMessage().
+        eveChat.setTxDate(new java.sql.Date(new Date().getTime()));
+        eveChat.setTxUser(String.valueOf(personEntity.getIdPerson()));
+        eveChat.setTxHost(update.getMessage().getChatId().toString());
+        // Guardamos en base dedatos
+        eveChatRepository.save(eveChat);
+        // Agregamos la respuesta al chatResponse.
+        boltonBot.execute(new SendMessage().setText(response).setChatId(update.getMessage().getChatId()));
 
 
         switch(message.getText()) {
