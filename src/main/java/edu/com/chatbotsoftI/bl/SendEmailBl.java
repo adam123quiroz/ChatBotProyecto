@@ -29,8 +29,8 @@ public class SendEmailBl {
     public void sendMail(String from, String to, String  subject, String body) {
 
         String mailHost = "smtp.gmail.com";
-        String username = "adam123quiroz@gmail.com";
-        String password = "";
+        String username = "boltonbot2019@gmail.com";
+        String password = "software2019";
 
         String smtpHost = mailHost; //replace this with a valid host
         int smtpPort = 465; //replace this with a valid port
