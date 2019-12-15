@@ -4,7 +4,10 @@ import edu.com.chatbotsoftI.bl.BotBl;
 import edu.com.chatbotsoftI.bot.BoltonBot;
 import edu.com.chatbotsoftI.bot.special.keyboard.ConcatListEvent;
 import edu.com.chatbotsoftI.dao.EveEventRepository;
+import edu.com.chatbotsoftI.dao.EvePersonRepository;
 import edu.com.chatbotsoftI.entity.EveEventEntity;
+import edu.com.chatbotsoftI.entity.EvePersonEntity;
+import edu.com.chatbotsoftI.entity.EveUserEntity;
 import edu.com.chatbotsoftI.enums.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +19,7 @@ import java.util.List;
 
 public class SequenceDeleteEvent extends Sequence {
     private EveEventRepository eveEventRepository;
-
+    private EvePersonRepository evePersonRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger(SequenceDeleteEvent.class);
     public SequenceDeleteEvent(EveEventRepository eveEventRepository) {
         super(true, 2 , 0);
@@ -24,6 +27,7 @@ public class SequenceDeleteEvent extends Sequence {
 
 
     }
+
     // Todas estas variables son los mensajes que se mostrara en pantalla por el bot para que al momento de cambiar algo en el codigo solo se requiera modificar la variable
     // Correspondiente
 
@@ -37,6 +41,8 @@ public class SequenceDeleteEvent extends Sequence {
     private boolean flag; // Se encargara de determinar si el id del evento que se desea eliminar existe
 
     private EveEventEntity eveEventEntity;
+
+
     // este metodo se utiliza para comenzar la secuencia de eliminacion, para poder recibir y responder los mensajes del usuario
     @Override
     public void runSequence(Update update, BoltonBot bot) throws TelegramApiException {

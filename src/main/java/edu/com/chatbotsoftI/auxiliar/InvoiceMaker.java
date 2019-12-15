@@ -56,7 +56,7 @@ public class InvoiceMaker {
         ImageData data = ImageDataFactory.create(imageFile);
         Image img = new Image(data);
         img.scaleToFit(50,150);
-        img.setMarginRight(600);
+
         img.setUnderline().setTextAlignment(TextAlignment.LEFT);
         layoutDocument.add(img);
         layoutDocument.add(new Paragraph("INVOICE").setBold().setUnderline().setTextAlignment(TextAlignment.CENTER));

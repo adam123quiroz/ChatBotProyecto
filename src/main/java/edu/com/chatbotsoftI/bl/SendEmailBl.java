@@ -68,8 +68,7 @@ public class SendEmailBl {
             mimeMultipart.addBodyPart(pdfBodyPart);
 
             //create the sender/recipient addresses
-            InternetAddress iaSender = new InternetAddress(to);
-            InternetAddress iaRecipient = new InternetAddress(from);
+            InternetAddress iaRecipient = new InternetAddress(to);
 
             //construct the mime message
             Message message = new MimeMessage(session);

@@ -264,7 +264,6 @@ public class BotBl {
 //            LOGGER.info("eventos {}", message);
 //        }
 //        else{
-//
 //        }
 //    }
 //    private void verifierlogin(Message message, Update update){
@@ -273,7 +272,7 @@ public class BotBl {
 //            LOGGER.info("eventos {}", message);
 //        }
 //        else{
-//            message.
+//
 //        }
 //    }
 
