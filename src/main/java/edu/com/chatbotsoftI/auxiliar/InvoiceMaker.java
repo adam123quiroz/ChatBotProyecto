@@ -40,7 +40,8 @@ public class InvoiceMaker {
                 new Article(1, "VentaTicket",1, 60),
                 new Article(2, "ServicioBot", 1, 1)));
         double total = 61;
-
+        QrCreator qrCreator = new QrCreator();
+        qrCreator.SaveQr("Nombre del evento: Avengers EndGame \n Fecha y hora:14-12-2019 | 14:31:07","png",150);
         addTotal(layoutDocument,total);
         String imageFile = "./MyQRCode.png";
         ImageData data = ImageDataFactory.create(imageFile);
