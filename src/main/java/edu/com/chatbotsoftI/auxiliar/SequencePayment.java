@@ -80,6 +80,13 @@ public class SequencePayment extends Sequence {
                             evePaymentEntity.setDate(new java.sql.Date(date.getTime()));
                             evePaymentEntity.setStatus(Status.ACTIVE.getStatus());
                             evePaymentEntity.setTotal(new BigDecimal(payment.getAmount()));
+                            String detalle = "Payment to bot @Bolton_EventBot";
+                            int cantidad = 1;
+                            long amount = payment.getAmount();
+                            Date buydate = date;
+                            InvoiceMaker invoiceMaker = new
+                                    InvoiceMaker(buydate, detalle,cantidad, amount);
+
 //                            evePaymentEntity.set
 
 
@@ -94,7 +101,7 @@ public class SequencePayment extends Sequence {
 
 
                         LOGGER.info("email {}", email);
-                            sendEmailBl.sendMail("adam123quiroz@gmail.com", email, "Facturacion", "Hola");
+                            sendEmailBl.sendMail("adam123quiroz@gmail.com", email, "Facturacion", "Hola", invoiceMaker);
 
 
 
