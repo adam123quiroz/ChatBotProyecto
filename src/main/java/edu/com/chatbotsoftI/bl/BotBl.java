@@ -148,8 +148,8 @@ public class BotBl {
         cpChat.setEvePersonByIdPerson(personEntity);
         cpChat.setInMessage(update.getMessage().getText());
         cpChat.setOutMessage(response);
-        cpChat.setMsgDate(new Date()); //FIXME Obtener la fecha del campo entero update.getMessage().
-        cpChat.setTxDate(new Date());
+        cpChat.setMsgDate(new java.sql.Date(new Date(update.getMessage().getDate()).getTime())); //FIXME Obtener la fecha del campo entero update.getMessage().
+        cpChat.setTxDate(new java.sql.Date(new Date().getTime()));
         cpChat.setTxUser(String.valueOf(personEntity.getIdPerson()));
         cpChat.setTxHost(update.getMessage().getChatId().toString());
         // Guardamos en base dedatos
