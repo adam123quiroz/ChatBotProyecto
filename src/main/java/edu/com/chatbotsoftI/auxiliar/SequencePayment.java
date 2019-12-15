@@ -8,7 +8,10 @@ import com.stripe.param.PaymentIntentUpdateParams;
 import edu.com.chatbotsoftI.bl.SendEmailBl;
 import edu.com.chatbotsoftI.bot.BoltonBot;
 import edu.com.chatbotsoftI.bot.commands.Command;
+import edu.com.chatbotsoftI.dao.EvePaymentMethodRepository;
 import edu.com.chatbotsoftI.dao.EvePaymentRepository;
+import edu.com.chatbotsoftI.dao.EvePersonRepository;
+import edu.com.chatbotsoftI.dao.EveTicketRepository;
 import edu.com.chatbotsoftI.entity.EvePaymentEntity;
 
 import edu.com.chatbotsoftI.entity.EvePaymentMethodEntity;
@@ -32,11 +35,17 @@ public class SequencePayment extends Sequence {
     private String email;
     private EvePaymentRepository evePaymentRepository;
     private SendEmailBl sendEmailBl;
-
-    public SequencePayment(EvePaymentRepository evePaymentRepository, SendEmailBl sendEmailBl) {
+    private EveTicketRepository eveTicketRepository;
+    private EvePaymentMethodRepository evePaymentMethodRepository;
+    private EvePersonRepository evePersonRepository;
+    public SequencePayment(EvePaymentRepository evePaymentRepository, SendEmailBl sendEmailBl, EveTicketRepository eveTicketRepository
+    ,EvePaymentMethodRepository evePaymentMethodRepository,EvePersonRepository evePersonRepository) {
         super(true, 2, 0);
         this.evePaymentRepository = evePaymentRepository;
         this.sendEmailBl = sendEmailBl;
+        this.eveTicketRepository = eveTicketRepository;
+        this.evePaymentMethodRepository = evePaymentMethodRepository;
+        this.evePersonRepository = evePersonRepository;
     }
 
     @Override
@@ -77,24 +86,51 @@ public class SequencePayment extends Sequence {
                             EvePaymentEntity evePaymentEntity = new EvePaymentEntity();
                             java.util.Date date;
                             date = new Date();
+                            evePaymentEntity.setTxHost("Localhost");
+                            evePaymentEntity.setTxUser("Admin");
+                            evePaymentEntity.setTxDate(new java.sql.Date(new Date().getTime()));
                             evePaymentEntity.setDate(new java.sql.Date(date.getTime()));
                             evePaymentEntity.setStatus(Status.ACTIVE.getStatus());
                             evePaymentEntity.setTotal(new BigDecimal(payment.getAmount()));
+                            String detalle = "Payment to bot @Bolton_EventBot";
+                            int cantidad = 1;
+                            long amount = payment.getAmount();
+                            Date buydate = date;
+                            InvoiceMaker invoiceMaker = new
+                                    InvoiceMaker(buydate, detalle,cantidad, amount);
+                            EvePaymentMethodEntity evePaymentMethodEntity = new EvePaymentMethodEntity();
+                            evePaymentMethodEntity.setPaymentMethod(payment.getPaymentMethod());
+                            evePaymentMethodRepository.save(evePaymentMethodEntity);
+
 //                            evePaymentEntity.set
+                            EvePersonEntity userEntity = evePersonRepository.findByBotUserId(update.getMessage().getFrom().getId().toString());
+                            evePaymentEntity.setEvePersonByIdPerson(userEntity);
+                            EveTicketEntity eveTicketEntity = new EveTicketEntity();
+                            int x = (int) Math.random()*(1-(100000+1))+(10000);
+                            String dato = String.valueOf(x);
+                            eveTicketEntity.setNumberTicket(dato);
+                            eveTicketEntity.setStatus(1);
+                            eveTicketEntity.setTxDate(new java.sql.Date(new Date().getTime()));
+                            eveTicketEntity.setTxHost("Localhost");
+                            eveTicketEntity.setTxUser("admin");
+                            eveTicketRepository.save(eveTicketEntity);
+                            evePaymentEntity.setEveTicketByIdTicket(eveTicketEntity);
+                            evePaymentEntity.setEvePaymentMethodByIdPaymentMethod(evePaymentMethodEntity);
+
+
 
 
 //
-                            EvePaymentMethodEntity evePaymentMethodEntity = new EvePaymentMethodEntity();
-                            evePaymentMethodEntity.setPaymentMethod("Card");
+
                             evePaymentEntity.setEvePaymentMethodByIdPaymentMethod(evePaymentMethodEntity);
 //                            evePaymentEntity.setEveTicketByIdTicket();
 //                            evePaymentRepository.save(evePaymentEntity);
-                            EveTicketEntity eveTicketEntity = new EveTicketEntity();
+                          //  EveTicketEntity eveTicketEntity = new EveTicketEntity();
 //                            eveTicketEntity.setNumberTicket();
 
-
+                        evePaymentRepository.save(evePaymentEntity);
                         LOGGER.info("email {}", email);
-                            sendEmailBl.sendMail("adam123quiroz@gmail.com", email, "Facturacion", "Hola");
+                            sendEmailBl.sendMail("adam123quiroz@gmail.com", email, "Facturacion", "Hola", invoiceMaker);
 
 
 

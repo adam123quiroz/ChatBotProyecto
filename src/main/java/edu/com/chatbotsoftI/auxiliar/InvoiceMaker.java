@@ -2,8 +2,10 @@
 package edu.com.chatbotsoftI.auxiliar;
 
 import java.io.*;
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import com.itextpdf.io.image.ImageData;
@@ -22,7 +24,17 @@ import javax.lang.model.element.Element;
 
 
 public class InvoiceMaker {
+    java.util.Date date;
+    private String descript;
+    private Long amount;
+    int cantidad;
 
+    public InvoiceMaker(Date date, String descript, int cantidad ,Long amount) {
+        this.date = date;
+        this.descript = descript;
+        this.amount = amount;
+        this.cantidad = cantidad;
+    }
 
     public void createPdf(OutputStream outputStream) throws MalformedURLException {
 
@@ -37,15 +49,15 @@ public class InvoiceMaker {
 
         addCustomerReference(layoutDocument);
         addTable(layoutDocument, Arrays.asList(
-                new Article(1, "VentaTicket",1, 60),
-                new Article(2, "ServicioBot", 1, 1)));
-        double total = 61;
+                new Article(1, descript,cantidad,amount )));
+
         QrCreator qrCreator = new QrCreator();
         qrCreator.SaveQr("Nombre del evento: Avengers EndGame \n Fecha y hora:14-12-2019 | 14:31:07","png",150);
-        addTotal(layoutDocument,total);
+//        addTotal(layoutDocument,total);
         String imageFile = "./MyQRCode.png";
         ImageData data = ImageDataFactory.create(imageFile);
         Image img = new Image(data);
+        img.setUnderline().setTextAlignment(TextAlignment.CENTER);
         layoutDocument.add(img);
 
         layoutDocument.close();
@@ -55,7 +67,7 @@ public class InvoiceMaker {
         String imageFile = "./BoltonLogo.jpg";
         ImageData data = ImageDataFactory.create(imageFile);
         Image img = new Image(data);
-        img.scaleToFit(50,150);
+        img.scaleToFit(150,300);
 
         img.setUnderline().setTextAlignment(TextAlignment.LEFT);
         layoutDocument.add(img);
@@ -69,10 +81,10 @@ public class InvoiceMaker {
         layoutDocument.add(new Paragraph("La Paz, Bolivia").setMultipliedLeading(.2f));
         layoutDocument.add(new Paragraph("UCB Bolivia").setMultipliedLeading(.2f));
     }
-    public void addTotal(Document layoutDocument, double total){
+    public void addTotal(Document layoutDocument, Long amount){
 
         Table table = new Table(UnitValue.createPointArray(new float[]{200f}));
-        table.addCell(new Paragraph("Total:            "+total).setBold());
+        table.addCell(new Paragraph("Total:            "+amount).setBold());
         layoutDocument.add(table);
     }
     public void addTable(Document layoutDocument, List<Article> articleList)

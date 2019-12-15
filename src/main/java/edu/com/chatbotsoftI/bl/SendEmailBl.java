@@ -18,15 +18,12 @@ import java.util.Properties;
 @Service
 public class SendEmailBl {
 
-
-    private InvoiceMaker invoiceMaker;
-
     @Autowired
     public SendEmailBl() {
-        invoiceMaker = new InvoiceMaker();
+
     }
 
-    public void sendMail(String from, String to, String  subject, String body) {
+    public void sendMail(String from, String to, String  subject, String body, InvoiceMaker invoiceMaker) {
 
         String mailHost = "smtp.gmail.com";
         String username = "boltonbot2019@gmail.com";
