@@ -1,9 +1,8 @@
 package edu.com.chatbotsoftI.bl;
 
+
+import edu.com.chatbotsoftI.auxiliar.InvoiceMaker;
 import com.sun.mail.smtp.SMTPTransport;
-import edu.com.chatbotsoftI.invoice.PdfInvoiceBasic;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -13,35 +12,36 @@ import javax.mail.*;
 import javax.mail.internet.*;
 import javax.mail.util.ByteArrayDataSource;
 import java.io.ByteArrayOutputStream;
+import java.net.MalformedURLException;
 import java.util.Properties;
 
 @Service
 public class SendEmailBl {
-    private PdfInvoiceBasic pdfInvoiceBasic;
-    private static final Logger LOGGER = LoggerFactory.getLogger(BotBl.class);
+
+
+    private InvoiceMaker invoiceMaker;
 
     @Autowired
     public SendEmailBl() {
-        pdfInvoiceBasic = new PdfInvoiceBasic();
+        invoiceMaker = new InvoiceMaker();
     }
 
     public void sendMail(String from, String to, String  subject, String body) {
 
-        String mailHost = "smtp.mailtrap.io";
-        String username1 = "4b6a8a34d44361";
-        String password1 = "2f5624fd2c0d24";
+        String mailHost = "smtp.mailgun.org";
+        String username1 = "";
+        String password1 = "";
 
         String smtpHost = mailHost; //replace this with a valid host
-        int smtpPort = 2525; //replace this with a valid port
+        int smtpPort = 587; //replace this with a valid port
 
-        Properties properties = System.getProperties();
-//        properties.put("mail.smtp.host", smtpHost);
+        Properties properties = new Properties();
+        properties.put("mail.smtp.host", smtpHost);
         properties.put("mail.smtp.port", smtpPort);
 
 
-
-//        properties.setProperty("mail.smtp.user", username1);
-//        properties.setProperty("mail.smtp.password", password1);
+        properties.setProperty("mail.smtp.user", username1);
+        properties.setProperty("mail.smtp.password", password1);
         properties.setProperty("mail.smtp.auth", "true");
         Session session = Session.getInstance(properties,null);
 
@@ -53,7 +53,7 @@ public class SendEmailBl {
 
             //now write the PDF content to the output stream
             outputStream = new ByteArrayOutputStream();
-            pdfInvoiceBasic.createPdf(outputStream);
+            invoiceMaker.createPdf(outputStream);
             byte[] bytes = outputStream.toByteArray();
 
             //construct the pdf body part
@@ -67,30 +67,28 @@ public class SendEmailBl {
             mimeMultipart.addBodyPart(textBodyPart);
             mimeMultipart.addBodyPart(pdfBodyPart);
 
+            //create the sender/recipient addresses
+            InternetAddress iaSender = new InternetAddress(to);
+            InternetAddress iaRecipient = new InternetAddress(from);
 
             //construct the mime message
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress("adam123quiroz@gmail.com"));
-
-            InternetAddress[] address = InternetAddress.parse(from, false);
-            message.setRecipients(Message.RecipientType.TO, address);
-
-
             message.setSubject(subject);
-            message.setText("testing");
+            message.setRecipient(Message.RecipientType.TO, iaRecipient);
             message.setContent(mimeMultipart);
 
             SMTPTransport t = (SMTPTransport) session.getTransport("smtps");
-            t.connect(smtpHost,  username1, password1);
+            t.connect(smtpHost, username1, password1);
 //            t.sendMessage();
             //send off the email
-            t.sendMessage(message, message.getAllRecipients());
-            LOGGER.info("Send Message {}", t.getLastServerResponse());
-            t.close();
+            Transport.send(message);
 
         } catch (AddressException e) {
             e.printStackTrace();
         } catch (MessagingException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
     }

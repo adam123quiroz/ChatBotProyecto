@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.awt.image.BufferedImage;
 import java.util.Date;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class DateVerifier {
     private EveEventEntity eveEventEntity;
     public void DeletePastEventsMovie(){
         List<EveEventEntity> movieEvents=eveEventRepository.findAllByEveTypeEventByIdTypeEvent_TypeEventAndStatus(Option.OP_MOVIE, Status.ACTIVE.getStatus());
-        LOGGER.info("chat id : {}", movieEvents );
+        LOGGER.info("chat id:{}", movieEvents );
         if(movieEvents!=null){
             for (EveEventEntity events:
                     movieEvents) {
@@ -55,8 +56,8 @@ public class DateVerifier {
         }
     }
     public void DeletePastEventsMuseum(){
-        List<EveEventEntity> museumEvents=eveEventRepository.findAllByEveTypeEventByIdTypeEvent_TypeEventAndStatus(Option.OP_MOVIE, Status.ACTIVE.getStatus());
-        LOGGER.info("chat id : {}", museumEvents );
+        List<EveEventEntity> museumEvents=eveEventRepository.findAllByEveTypeEventByIdTypeEvent_TypeEventAndStatus(Option.OP_MUSEUM, Status.ACTIVE.getStatus());
+        LOGGER.info("chat id: {}", museumEvents );
         if(museumEvents!=null){
             for (EveEventEntity events:
                     museumEvents) {
@@ -70,4 +71,5 @@ public class DateVerifier {
             }
         }
     }
+
 }

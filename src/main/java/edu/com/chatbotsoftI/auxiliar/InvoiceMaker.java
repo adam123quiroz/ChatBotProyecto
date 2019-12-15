@@ -1,14 +1,15 @@
-/*
- * This example was written by Bruno Lowagie in the context of a book.
- * See http://developers.itextpdf.com/content/zugferd-future-invoicing/5-creating-pdf-invoices-basic-profile
- */
-package edu.com.chatbotsoftI.invoice;
+
+package edu.com.chatbotsoftI.auxiliar;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.List;
 
+import com.itextpdf.io.image.ImageData;
+import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.pdf.*;
+import com.itextpdf.layout.element.Image;
 import edu.com.chatbotsoftI.invoice.*;
 
 import com.itextpdf.layout.Document;
@@ -22,9 +23,9 @@ import com.itextpdf.layout.property.UnitValue;
  * (Basic profile).
  * @author Bruno Lowagie
  */
-public class PdfInvoiceBasic {
+public class InvoiceMaker {
 
-    public void createPdf(OutputStream outputStream) {
+    public void createPdf(OutputStream outputStream) throws MalformedURLException {
 
 
 
@@ -37,23 +38,28 @@ public class PdfInvoiceBasic {
         // customer reference information
         addCustomerReference(layoutDocument);
         addTable(layoutDocument, Arrays.asList(
-                new Article(1, "Envelopes",2000, 1.70),
-                new Article(2, "Voucher Book", 50, 41)));
+                new Article(1, "VentaTicket",1, 60),
+                new Article(2, "ServicioBot", 1, 1)));
 
         // articles
+
+        String imageFile = "./MyQRCode.png";
+        ImageData data = ImageDataFactory.create(imageFile);
+        Image img = new Image(data);
+        layoutDocument.add(img);
         layoutDocument.close();
     }
 
     public static void addTitle(Document layoutDocument)
     {
-        layoutDocument.add(new Paragraph("RETAIL INVOICE").setBold().setUnderline().setTextAlignment(TextAlignment.CENTER));
+        layoutDocument.add(new Paragraph("BOLTON BOT INVOICE").setBold().setUnderline().setTextAlignment(TextAlignment.CENTER));
     }
 
     public static void addCustomerReference(Document layoutDocument)
     {
-        layoutDocument.add(new Paragraph("M/s Indian Convent School").setTextAlignment(TextAlignment.LEFT).setMultipliedLeading(0.2f));
-        layoutDocument.add(new Paragraph("y Pocket-3, Sector-24, Rohini Delhi-110085").setMultipliedLeading(.2f));
-        layoutDocument.add(new Paragraph("b 011-64660271").setMultipliedLeading(.2f));
+        layoutDocument.add(new Paragraph("BoltonBot Services").setTextAlignment(TextAlignment.LEFT).setMultipliedLeading(0.2f));
+        layoutDocument.add(new Paragraph("La Paz, Bolivia").setMultipliedLeading(.2f));
+        layoutDocument.add(new Paragraph("UCB Bolivia").setMultipliedLeading(.2f));
     }
 
     public void addTable(Document layoutDocument, List<Article> articleList)

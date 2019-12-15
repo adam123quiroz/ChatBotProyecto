@@ -72,13 +72,13 @@ public class InvoiceData {
         profileImp.setName("INVOICE");
         profileImp.setTypeCode(DocumentTypeCode.COMMERCIAL_INVOICE);
         profileImp.setDate(invoice.getInvoiceDate(), DateFormatCode.YYYYMMDD);
-        profileImp.setSellerName("Das Company");
-        profileImp.setSellerLineOne("ZUG Business Center");
-        profileImp.setSellerLineTwo("Highway 1");
-        profileImp.setSellerPostcode("9000");
-        profileImp.setSellerCityName("Ghent");
-        profileImp.setSellerCountryID("BE");
-        profileImp.addSellerTaxRegistration(TaxIDTypeCode.FISCAL_NUMBER, "201/113/40209");
+        profileImp.setSellerName("BoltonBot");
+        profileImp.setSellerLineOne("UCB");
+        profileImp.setSellerLineTwo("San Pablo");
+        profileImp.setSellerPostcode("590");
+        profileImp.setSellerCityName("La Paz");
+        profileImp.setSellerCountryID("BO");
+        profileImp.addSellerTaxRegistration(TaxIDTypeCode.FISCAL_NUMBER, "111/111/40111");
         profileImp.addSellerTaxRegistration(TaxIDTypeCode.VAT, "BE123456789");
         Customer customer = invoice.getCustomer();
         profileImp.setBuyerName(String.format("%s, %s", customer.getLastName(), customer.getFirstName()));
@@ -88,7 +88,7 @@ public class InvoiceData {
         profileImp.setBuyerCityName(customer.getCity());
         profileImp.setBuyerCountryID(customer.getCountryId());
         profileImp.setPaymentReference(String.format("%09d", invoice.getId()));
-        profileImp.setInvoiceCurrencyCode("EUR");
+        profileImp.setInvoiceCurrencyCode("BOB");
     }
 
     /**
@@ -99,7 +99,7 @@ public class InvoiceData {
      */
     public void importBasicData(BasicProfileImp profileImp, Invoice invoice) {
         profileImp.addNote(
-                new String[]{"This is a test invoice.\nNothing on this invoice is real.\nThis invoice is part of a tutorial."});
+                new String[]{"This is a test invoice.\nNothing on this invoice is real."});
         profileImp.addPaymentMeans("", "", "BE 41 7360 0661 9710", "", "", "KREDBEBB", "", "KBC");
         profileImp.addPaymentMeans("", "", "BE 56 0015 4298 7888", "", "", "GEBABEBB", "", "BNP Paribas");
         Map<Double,Double> taxes = new TreeMap<Double, Double>();
@@ -125,14 +125,14 @@ public class InvoiceData {
             tA = round((100 * total) / (100 + tax));
             ttA += (total - tA);
             ltN += tA;
-            profileImp.addApplicableTradeTax(format2dec(total - tA), "EUR", TaxTypeCode.VALUE_ADDED_TAX, format2dec(tA), "EUR", format2dec(tax));
+            profileImp.addApplicableTradeTax(format2dec(total - tA), "BOB", TaxTypeCode.VALUE_ADDED_TAX, format2dec(tA), "BOB", format2dec(tax));
         }
-        profileImp.setMonetarySummation(format2dec(ltN), "EUR",
-                format2dec(0), "EUR",
-                format2dec(0), "EUR",
-                format2dec(ltN), "EUR",
-                format2dec(ttA), "EUR",
-                format2dec(gtA), "EUR");
+        profileImp.setMonetarySummation(format2dec(ltN), "BOB",
+                format2dec(0), "BOB",
+                format2dec(0), "BOB",
+                format2dec(ltN), "BOB",
+                format2dec(ttA), "BOB",
+                format2dec(gtA), "BOB");
     }
 
     /**
@@ -202,16 +202,16 @@ public class InvoiceData {
             ttA += (total - tA);
             ltN += tA;
             profileImp.addApplicableTradeTax(
-                    format2dec(total - tA), "EUR", TaxTypeCode.VALUE_ADDED_TAX,
-                    null, format2dec(tA), "EUR",
+                    format2dec(total - tA), "BOB", TaxTypeCode.VALUE_ADDED_TAX,
+                    null, format2dec(tA), "BOB",
                     TaxCategoryCode.STANDARD_RATE, format2dec(tax));
         }
-        profileImp.setMonetarySummation(format2dec(ltN), "EUR",
-                format2dec(0), "EUR",
-                format2dec(0), "EUR",
-                format2dec(ltN), "EUR",
-                format2dec(ttA), "EUR",
-                format2dec(gtA), "EUR");
+        profileImp.setMonetarySummation(format2dec(ltN), "BOB",
+                format2dec(0), "BOB",
+                format2dec(0), "BOB",
+                format2dec(ltN), "BOB",
+                format2dec(ttA), "BOB",
+                format2dec(gtA), "BOB");
     }
 
     /**
