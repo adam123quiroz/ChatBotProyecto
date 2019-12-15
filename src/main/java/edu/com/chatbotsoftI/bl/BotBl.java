@@ -8,8 +8,10 @@ import edu.com.chatbotsoftI.bot.special.keyboard.KbOptionsBot;
 import edu.com.chatbotsoftI.dao.*;
 import edu.com.chatbotsoftI.dto.*;
 import edu.com.chatbotsoftI.entity.EveLeasePlaceEntity;
-import edu.com.chatbotsoftI.entity.EvePersonEntity;
-import edu.com.chatbotsoftI.entity.EveUserEntity;
+//import edu.com.chatbotsoftI.entity.EvePersonChatEntity;
+//import edu.com.chatbotsoftI.entity.EvePersonEntity;
+//import edu.com.chatbotsoftI.entity.EveUserEntity;
+import edu.com.chatbotsoftI.entity.*;
 import edu.com.chatbotsoftI.enums.TypeEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +56,8 @@ public class BotBl {
     private EveStatusRepository eveStatusRepository;
     private EveCityRepository eveCityRepository;
     private EvePaymentRepository evePaymentRepository;
+    private EvePersonChatRepository evePersonChatRepository;
+    private EvePersonRepository evePersonRepository;
 
     private EveLeasePlaceRepository eveLeasePlaceRepository;
     private LeaseplaceBl leaseplaceBl;
@@ -78,7 +82,9 @@ public class BotBl {
                  EvePaymentRepository evePaymentRepository,
                  LeaseplaceBl leaseplaceBl,
                  MailServiceBl mailServiceBl,
-                 EveNotificationRepository notificationRepository) {
+                 EveNotificationRepository notificationRepository,
+                 EvePersonChatRepository evePersonChatRepository,
+                 EvePersonRepository evePersonRepository) {
 
     this.evePaymentRepository = evePaymentRepository;
         this.userRepository = userRepository;
@@ -95,6 +101,8 @@ public class BotBl {
         this.leaseplaceBl = leaseplaceBl;
         this.mailServiceBl = mailServiceBl;
         this.notificationRepository = notificationRepository;
+        this.evePersonChatRepository =evePersonChatRepository;
+        this.evePersonRepository = evePersonRepository;
     }
 
     public List<String> processUpdate(Update update, BoltonBot boltonBot) throws TelegramApiException {
@@ -114,6 +122,9 @@ public class BotBl {
 
     private EvePersonEntity initUser(User user) {
         boolean result = false;
+
+     //   String response =null;
+
         EvePersonEntity userEntity = userRepository.findByBotUserId(user.getId().toString());
         if (userEntity == null) {
             EvePersonEntity evePerson = new EvePersonEntity();
@@ -122,15 +133,47 @@ public class BotBl {
             evePerson.setBotUserId(user.getId().toString());
             userRepository.save(evePerson);
         }
+            // agregado
+           // EvePersonChatEntity lastmessage=evePersonChatRepository.findLastChatByIdevuserchat(BotBl.getUserEntity().getIduser());
+       /*     EvePersonChatEntity lastmessage=evePersonChatRepository.findLastChatByIdperson(BotBl.getUserEntity().getIduser());
+            LOGGER.info("LastMessage {}",lastmessage);
+            if (lastmessage ==null)
+            {
+                LOGGER.info("PRIMER MENSAJE {}",BotBl.getUserEntity().getIduser());
+                response="0";
+                EvePersonChatEntity evePersonChatEntity =new EvePersonChatEntity();
+                Integer idperson= BotBl.getUserEntity().getIduser();
+                EvePersonEntity evePersonEntity;
+                if (evePersonRepository.existsById(idperson)) {
+                    evePersonEntity = evePersonRepository.findByIdperson(idperson);
+                }else{
+                    EvePersonEntity newevepersonentity = new EvePersonEntity();
+                    evePersonEntity = newevepersonentity;
+                }
+                evePersonChatEntity.setEvepersonByIdperson(evePersonEntity);
+                LOGGER.info("Nuevo usuario en chat {} ",evePersonChatEntity);
+                evePersonChatEntity.setUserbotchatid(response);
+                evePersonChatRepository.save(evePersonChatEntity);
+            }
+        }
+
+        int conversation;
+        conversation = Integer.parseInt(lastmessage.getUserbotchatid());
+        LOGGER.info("Conversacion {}", conversation);
+        */
         return userEntity;
     }
 
     private void continueChatWithUser( Update update, EvePersonEntity personEntity ) throws TelegramApiException {
-        Message message = update.getMessage();
-        int idChat = Integer.parseInt(message.getChatId().toString());
-        List<EventDto> eventDtos;
-        KbOptionsBot kbOptionsBot;
-        List<LeasePlaceDto> leaseplaceDtos;
+            Message message = update.getMessage();
+            int idChat = Integer.parseInt(message.getChatId().toString());
+        //agregado
+      /*  EvePersonChatEntity lastmessage=evePersonChatRepository.findLastChatByIdevuserchat(Integer.parseInt(personEntity.getBotUserId()));
+        String response=null;   //para in message
+        */
+            List<EventDto> eventDtos;
+            KbOptionsBot kbOptionsBot;
+            List<LeasePlaceDto> leaseplaceDtos;
 
         switch(message.getText()) {
             case Command.startCommand:
@@ -182,6 +225,8 @@ public class BotBl {
                 break;
             default:
                 if ( !(BotBl.getUserEntity() == null) ) {
+                //agregado
+                //if ( !(lastmessage == null) ) {
                     switch (message.getText()) {
                         case Option.OP_ADD_EVENT:
                             SequenceAddEvent sequenceAddEvent = new SequenceAddEvent(eveEventRepository, eveCategoryRepository,
@@ -203,9 +248,10 @@ public class BotBl {
                         case Option.OP_LEASEPLACE:
 
                             SequenceAddLeasePlace sequenceAddLeasePlace = new SequenceAddLeasePlace(eveLeasePlaceRepository,eveAddressRepository,
-                                    eveStatusRepository,eveCityRepository,mailServiceBl,notificationRepository,eveUserRepository);
+                                    eveStatusRepository,eveCityRepository,mailServiceBl,notificationRepository,eveUserRepository,evePersonChatRepository,evePersonRepository);
                             startSequence(4, update, sequenceAddLeasePlace);
                     }
+
                 } else {
                     SendMessage sendMessageGreeting = new SendMessage().setChatId(update.getMessage().getChatId());
                     sendMessageGreeting.setText("Tienes que iniciar sesion para poder entrar al modo Administrativo");

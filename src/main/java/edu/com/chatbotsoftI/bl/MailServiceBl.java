@@ -31,7 +31,7 @@ public class MailServiceBl {
 
     private Mail mail;
 
-    public void sendEmail(String from,String to, String subject, String content) {
+    public void sendEmail(String from, String to, String subject, String content) {
 
         /*JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost(this.mailCfg.getHost());
@@ -81,22 +81,22 @@ public class MailServiceBl {
 
 
     }
-//    public void sendAllEmail(String from,List<EveUserEntity> listusers, String subject, String content) {
-//
-//
-//        for (EveUserEntity userEntity : listusers) {
-//
-//            SimpleMailMessage email = new SimpleMailMessage();
-//
-//            email.setFrom(from);
-//            email.setTo(userEntity.getEmail());
-//            email.setSubject(subject);
-//            email.setText(content);
-//
-//            mailSender.send(email);
-//        }
-//
-//    }
+    public void sendAllEmailList(String from,List<EveUserEntity> listusers, String subject, String content) {
+
+
+        for (EveUserEntity userEntity : listusers) {
+
+            SimpleMailMessage email = new SimpleMailMessage();
+
+            email.setFrom(from);
+            email.setTo(userEntity.getEmail());
+            email.setSubject(subject);
+            email.setText(content);
+
+            mailSender.send(email);
+        }
+
+    }
 
 
 }

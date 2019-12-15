@@ -4,9 +4,12 @@ import edu.com.chatbotsoftI.bl.BotBl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import java.util.List;
 
 public class BoltonBot extends TelegramLongPollingBot {
     private static final Logger LOGGER = LoggerFactory.getLogger(BoltonBot.class);
@@ -19,9 +22,11 @@ public class BoltonBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         LOGGER.info("Update Principal {}", update);
+
         if (update.hasMessage()) {
             Message message = update.getMessage();
             if (message.hasText() || message.hasLocation() || message != null) {
+
 //                List<String> messages = null;
                 try {
                     botBl.processUpdate(update, this);
@@ -39,13 +44,24 @@ public class BoltonBot extends TelegramLongPollingBot {
             botBl.processPayment(update, this);
         }
     }
-    @Override
-    public String getBotUsername() {
-        return "Bolton_EventBot";
-    }
-
+//    @Override
+//    public String getBotUsername() {
+//        return "Bolton_EventBot";
+//    }
+//
+//    @Override
+//    public String getBotToken() {
+//        return "751201519:AAGpBvLDr_56bftx-rzDG9iBr7d2ddbRPZs"; //Token del bot
+//    }
+@Override
+public String getBotUsername() {
+    return "Wladisbot";     //Nombre del bot creado en telegram @Wladisbot si quieren le cambian el nombre usando el token para tener el control
+}
     @Override
     public String getBotToken() {
-        return "751201519:AAGpBvLDr_56bftx-rzDG9iBr7d2ddbRPZs"; //Token del bot
+        return "882974617:AAGlH5jSnqC1GELGLzIpwd-e5BZnpvvGBKA"; //Token del bot
     }
+
+
+
 }

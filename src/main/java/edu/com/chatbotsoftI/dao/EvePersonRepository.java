@@ -8,4 +8,5 @@ import java.util.List;
 public interface EvePersonRepository extends JpaRepository<EvePersonEntity, Integer> {
     List<EvePersonEntity> findAll();
     EvePersonEntity findByBotUserId(String botUserId);
+    EvePersonEntity findByIdperson(Integer idperson);
 }
