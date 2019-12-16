@@ -16,4 +16,10 @@ public class Command {
     public static final String RESTART_COMMAND = commandInitChar + "restart";
 
     public static final String STRIPE_KEY = "sk_test_vceSL7gg1Ggwjl8Yl5Pxd7Ob006KWSLj5y";
+
+    public static final String setLanguageCommand = commandInitChar + "language";
+
+    public static final String uploadCommand = commandInitChar + "upload";
+
+    public static final String listCommand = commandInitChar + "list";
 }
