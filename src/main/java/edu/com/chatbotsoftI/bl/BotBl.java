@@ -309,16 +309,12 @@ public class BotBl {
                             SequenceDeleteEvent sequenceDeleteEvent = new SequenceDeleteEvent(eveEventRepository);
                             startSequence(2, update, sequenceDeleteEvent);
                             break;
-//                        case Option.OP_LEASEPLACE:
-//                            SequenceAddLeasePlace sequenceAddLeasePlace =
-//                                    new SequenceAddLeasePlace(eveLeasePlaceRepository,eveAddressRepository,
-//                                    eveStatusRepository,eveCityRepository);
-//                            startSequence(4, update, sequenceAddLeasePlace);
                         case Option.OP_LEASEPLACE:
 
                             SequenceAddLeasePlace sequenceAddLeasePlace = new SequenceAddLeasePlace(eveLeasePlaceRepository,eveAddressRepository,
                                     eveStatusRepository,eveCityRepository,mailServiceBl,notificationRepository,eveUserRepository,evePersonChatRepository,evePersonRepository);
                             startSequence(4, update, sequenceAddLeasePlace);
+                            break;
                     }
 
                 } else {
